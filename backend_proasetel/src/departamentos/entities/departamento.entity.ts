@@ -1,4 +1,5 @@
-import { BeforeInsert, BeforeUpdate, Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { BeforeInsert, BeforeUpdate, Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { User } from '../../auth/entities/usuario.entity';
 
 
 @Entity()
@@ -20,6 +21,16 @@ export class Departamento {
     }) 
     descripcion: string
 
+
+    // Relación
+
+    @OneToMany(
+        () => User,
+        ( user ) => user.departamento
+    )
+    user: User;
+
+
     // Verificar antes de insertar
     @BeforeInsert()
     checkNombreInsert() {
@@ -30,4 +41,6 @@ export class Departamento {
     checkNombreUpdate(){
         this.nombre = this.nombre.toLowerCase()
     }
+
+
 }

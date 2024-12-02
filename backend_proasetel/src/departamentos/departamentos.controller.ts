@@ -2,12 +2,15 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, ParseUUIDPipe } from
 import { DepartamentosService } from './departamentos.service';
 import { CreateDepartamentoDto } from './dto/create-departamento.dto';
 import { UpdateDepartamentoDto } from './dto/update-departamento.dto';
+import { Auth } from 'src/auth/decorators';
+import { ValidRoles } from 'src/auth/interfaces';
 
 @Controller('departamentos')
 export class DepartamentosController {
   constructor(private readonly departamentosService: DepartamentosService) {}
 
   @Post()
+  @Auth(ValidRoles.admin)
   create(@Body() createDepartamentoDto: CreateDepartamentoDto) {
     return this.departamentosService.create(createDepartamentoDto);
   }
@@ -23,6 +26,7 @@ export class DepartamentosController {
   }
 
   @Patch(':id')
+  @Auth(ValidRoles.admin)
   update(
     @Param('id', ParseUUIDPipe) id: string, 
     @Body() updateDepartamentoDto: UpdateDepartamentoDto
@@ -31,6 +35,7 @@ export class DepartamentosController {
   }
 
   @Delete(':id')
+  @Auth(ValidRoles.admin)
   remove(@Param('id', ParseUUIDPipe) id: string) {
     return this.departamentosService.remove(id);
   }

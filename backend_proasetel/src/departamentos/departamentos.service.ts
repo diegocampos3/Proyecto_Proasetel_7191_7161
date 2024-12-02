@@ -21,7 +21,7 @@ export class DepartamentosService {
 
   async create(createDepartamentoDto: CreateDepartamentoDto) {
     
-   try {
+  try {
 
     // Creación de instancia del departamento con sus propiedades
     const departamento = this.departamentoRepository.create(createDepartamentoDto);
