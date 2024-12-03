@@ -1,9 +1,9 @@
-import { BadRequestException, Injectable, InternalServerErrorException, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, Injectable, InternalServerErrorException, Logger, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt'
 
-import { CreateUserDto, LoginUserDto } from './dto';
+import { CreateUserDto, LoginUserDto, UpdateUserDto } from './dto';
 import { User } from './entities/usuario.entity';
 import { JwtPayload } from './interfaces/jwt-payload.interface';
 import { JwtService } from '@nestjs/jwt';
@@ -13,6 +13,9 @@ import { Departamento } from '../departamentos/entities/departamento.entity';
 @Injectable()
 export class AuthService {
   
+
+  private readonly logger = new Logger('DepartamentosServices');
+
   // Injección del repositorio
 
   constructor(
@@ -90,6 +93,49 @@ export class AuthService {
 
   }
 
+  // Actualización de usuario 
+
+  async update(id: string, updateUserDto: UpdateUserDto) {
+    const { departamento: departamentoNombre, ...restoDatos } = updateUserDto;
+  
+    let departamento: Departamento | undefined = undefined;
+  
+    if (departamentoNombre) {
+      // Busca el departamento por nombre o ID
+      departamento = await this.departamentoRepository.findOne({
+        where: { nombre: departamentoNombre.toLowerCase() },
+      });
+  
+      if (!departamento) {
+        throw new NotFoundException(`El departamento ${departamentoNombre} no fue encontrado`);
+      }
+    }
+  
+    // Prepara los datos para la actualización
+    const user = await this.userRepository.preload({
+      id: id,
+      ...restoDatos,
+      departamento, // Asigna el objeto completo del departamento
+    });
+  
+    if (!user) {
+      throw new NotFoundException(`El usuario con id ${id} no fue encontrado`);
+    }
+  
+    try {
+      
+      const savedUser = await this.userRepository.save(user);
+      // Retorna el usuario con su departamento cargado
+      return this.userRepository.findOne({
+        where: { id: savedUser.id },
+        relations: ['departamento'], // Asegura que la relación está cargada
+      });
+      
+    } catch (error) {
+      this.handleDBErrors(error);
+    }
+  }
+  
 
   private getJwtToken( payload: JwtPayload ){
     

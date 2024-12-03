@@ -1,6 +1,6 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Req, SetMetadata } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Req, SetMetadata, ParseUUIDPipe } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { CreateUserDto, LoginUserDto } from './dto';
+import { CreateUserDto, LoginUserDto, UpdateUserDto } from './dto';
 import { AuthGuard } from '@nestjs/passport';
 import { request } from 'http';
 import { User } from './entities/usuario.entity';
@@ -24,6 +24,19 @@ export class AuthController {
     return this.authService.login(loginUserDto);
   }
 
+
+  @Patch(':id')
+  @Auth(ValidRoles.admin)
+  update(
+    @Param('id', ParseUUIDPipe) id: string, 
+    @Body() updateUserDto: UpdateUserDto
+  ) {
+    return this.authService.update(id, updateUserDto);
+  }
+
+
+
+  // Endpoint de prueba
 
   @Get('private')
   @UseGuards( AuthGuard())

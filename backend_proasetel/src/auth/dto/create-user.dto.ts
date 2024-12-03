@@ -20,6 +20,9 @@ export class CreateUserDto{
     departamento: string;
 
     @IsString()
+    rol: string;
+
+    @IsString()
     @MinLength(6)
     @MaxLength(50)
     @Matches(
