@@ -1,6 +1,6 @@
 import { Entity, PrimaryColumn, Column, ManyToOne } from "typeorm";
-import { PeriodoEvaluacion } from "./periodoEvaluacion.entity";
-import { Usuario } from "./usuarios.entity";
+import { PeriodoEvaluacion } from "../../periodo-evaluacion/entities/periodoEvaluacion.entity";
+import { Usuario } from "../../auth/entities/usuarios.entity";
 
 @Entity()
 export class Feedback {

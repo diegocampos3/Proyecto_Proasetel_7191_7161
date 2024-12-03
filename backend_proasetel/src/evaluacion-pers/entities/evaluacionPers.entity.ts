@@ -1,7 +1,7 @@
 import { Entity, PrimaryColumn, Column, ManyToOne, ManyToMany } from "typeorm";
-import { PeriodoEvaluacion } from "./periodoEvaluacion.entity";
-import { Usuario } from "./usuarios.entity";
-import { ObjetivosPers } from "./objetivosPers.entity";
+import { PeriodoEvaluacion } from "../../periodo-evaluacion/entities/periodoEvaluacion.entity";
+import { Usuario } from "../../auth/entities/usuarios.entity";
+import { ObjetivosPers } from "../../objetivos-pers/entities/objetivosPers.entity";
 
 @Entity()
 export class EvaluacionPers {
