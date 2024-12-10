@@ -25,15 +25,26 @@ export class AuthController {
   }
 
 
-  @Patch(':id')
-  @Auth(ValidRoles.admin)
-  update(
-    @Param('id', ParseUUIDPipe) id: string, 
-    @Body() updateUserDto: UpdateUserDto
-  ) {
-    return this.authService.update(id, updateUserDto);
-  }
+  // @Patch(':id')
+  // @Auth(ValidRoles.admin)
+  // update(
+  //   @Param('id', ParseUUIDPipe) id: string, 
+  //   @Body() updateUserDto: UpdateUserDto
+  // ) {
+  //   return this.authService.update(id, updateUserDto);
+  // }
 
+  //nuevo para update
+
+  @Patch(':id')
+  @Auth(ValidRoles.admin, ValidRoles.supervisor)
+  update(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() updateUserDto: UpdateUserDto,
+    @GetUser() currentUser: User
+  ) {
+    return this.authService.update(id, updateUserDto, currentUser);
+  }
 
 
   // Endpoint de prueba
