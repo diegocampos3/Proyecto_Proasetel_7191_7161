@@ -14,7 +14,7 @@ export class ObjetivosEmpr {
 
     @BeforeInsert()
     checkTitutuloInsert() {
-        this.titulo = this.titulo.toLocaleLowerCase();
+        this.titulo = this.titulo.toLowerCase();
     }
 
     @BeforeUpdate()
