@@ -1,6 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from "typeorm";
-import { Departamento } from "./departamento.entity";
-import { ObjetivosEmpr } from "./objetivosEmpr.entity";
+import { Departamento } from "../../departamentos/entities/departamento.entity";
+import { ObjetivosEmpr } from "../../objetivos-empr/entities/objetivosEmpr.entity";
 
 @Entity()
 export class ObjetivosDep {

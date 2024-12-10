@@ -10,6 +10,9 @@ import { ObjetivosPersModule } from './objetivos-pers/objetivos-pers.module';
 import { PeriodoModule } from './periodo/periodo.module';
 import { PeriodoEvaluacionModule } from './periodo-evaluacion/periodo-evaluacion.module';
 import { RolModule } from './rol/rol.module';
+import { FormularioModule } from './formulario/formulario.module';
+import { FormularioPreguntasModule } from './formulario-preguntas/formulario-preguntas.module';
+import { AnalisisSentimientosModule } from './analisis-sentimientos/analisis-sentimientos.module';
 
 @Module({
   imports: [
@@ -33,6 +36,9 @@ import { RolModule } from './rol/rol.module';
     PeriodoModule,
     PeriodoEvaluacionModule,
     RolModule,
+    FormularioModule,
+    FormularioPreguntasModule,
+    AnalisisSentimientosModule,
   ],
   
 })
