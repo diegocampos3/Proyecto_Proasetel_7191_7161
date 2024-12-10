@@ -3,7 +3,20 @@ import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { DepartamentosModule } from './departamentos/departamentos.module';
 import { AuthModule } from './auth/auth.module';
+<<<<<<< HEAD
 import { ObjetivosEmprModule } from './objetivos-empr/objetivos-empr.module';
+=======
+import { ObjetivosDepModule } from './objetivos-dep/objetivos-dep.module';
+import { EvaluacionPersModule } from './evaluacion-pers/evaluacion-pers.module';
+import { FeedbackModule } from './feedback/feedback.module';
+import { ObjetivosEmprModule } from './objetivos-empr/objetivos-empr.module';
+import { ObjetivosPersModule } from './objetivos-pers/objetivos-pers.module';
+import { PeriodoModule } from './periodo/periodo.module';
+import { PeriodoEvaluacionModule } from './periodo-evaluacion/periodo-evaluacion.module';
+import { FormularioModule } from './formulario/formulario.module';
+import { FormularioPreguntasModule } from './formulario-preguntas/formulario-preguntas.module';
+import { AnalisisSentimientosModule } from './analisis-sentimientos/analisis-sentimientos.module';
+>>>>>>> 6f494fd4d20514cbe27f6bcbd702a180a733d7dc
 
 @Module({
   imports: [
@@ -20,7 +33,20 @@ import { ObjetivosEmprModule } from './objetivos-empr/objetivos-empr.module';
     }),
     DepartamentosModule,
     AuthModule,
+<<<<<<< HEAD
     ObjetivosEmprModule,
+=======
+    ObjetivosDepModule,
+    EvaluacionPersModule,
+    FeedbackModule,
+    ObjetivosEmprModule,
+    ObjetivosPersModule,
+    PeriodoModule,
+    PeriodoEvaluacionModule,
+    FormularioModule,
+    FormularioPreguntasModule,
+    AnalisisSentimientosModule,
+>>>>>>> 6f494fd4d20514cbe27f6bcbd702a180a733d7dc
   ],
   
 })

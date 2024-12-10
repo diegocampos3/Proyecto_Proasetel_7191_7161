@@ -2,9 +2,15 @@ import { BadRequestException, Injectable, InternalServerErrorException, Logger, 
 import { CreateObjetivosEmprDto } from './dto/create-objetivos-empr.dto';
 import { UpdateObjetivosEmprDto } from './dto/update-objetivos-empr.dto';
 import { InjectRepository } from '@nestjs/typeorm';
+<<<<<<< HEAD
 import { ObjetivosEmpr } from './entities/objetivos-empr.entity';
 import { Repository } from 'typeorm';
 import { validate as isUUID } from 'uuid'
+=======
+import { Repository } from 'typeorm';
+import { validate as isUUID } from 'uuid'
+import { ObjetivosEmpr } from './entities/objetivosEmpr.entity';
+>>>>>>> 6f494fd4d20514cbe27f6bcbd702a180a733d7dc
 
 
 @Injectable()
