@@ -1,8 +1,8 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, ManyToMany } from "typeorm";
-import { PeriodoEvaluacion } from "../../periodo-evaluacion/entities/periodoEvaluacion.entity";
-import { ObjetivosPers } from "../../objetivos-pers/entities/objetivosPers.entity";
-import { Formulario } from "../../formulario/entities/formulario.entity";
-import { User } from "src/auth/entities/usuario.entity";
+import { User } from "./usuario.entity";
+import { Formulario } from "./formulario.entity";
+import { ObjetivosPers } from "./objetivosPers.entity";
+import { PeriodoEvaluacion } from "./periodoEvaluacion.entity";
 
 @Entity()
 export class EvaluacionPers {

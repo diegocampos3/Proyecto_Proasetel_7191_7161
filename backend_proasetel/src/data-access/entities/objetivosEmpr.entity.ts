@@ -6,7 +6,9 @@ export class ObjetivosEmpr {
     @PrimaryGeneratedColumn('uuid')
     id: string;
 
-    @Column('text')
+    @Column('text',{
+        unique: true
+    })
     titulo: string;
 
     @Column('text')

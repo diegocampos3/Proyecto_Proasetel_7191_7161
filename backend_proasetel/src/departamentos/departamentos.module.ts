@@ -3,8 +3,8 @@ import { DepartamentosService } from './departamentos.service';
 import { DepartamentosController } from './departamentos.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
-import { Departamento } from './entities/departamento.entity';
 import { AuthModule } from 'src/auth/auth.module';
+import { Departamento } from 'src/data-access/entities/departamento.entity';
 
 
 @Module({

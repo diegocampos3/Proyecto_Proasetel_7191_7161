@@ -1,5 +1,5 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from "typeorm";
-import { ObjetivosDep } from "../../objetivos-dep/entities/objetivosDep.entity";
+import { ObjetivosDep } from "./objetivosDep.entity";
 
 @Entity()
 export class ObjetivosPers {

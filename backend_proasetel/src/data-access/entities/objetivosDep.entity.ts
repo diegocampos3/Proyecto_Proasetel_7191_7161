@@ -1,6 +1,6 @@
+import { Departamento } from "src/data-access/entities/departamento.entity";
+import { ObjetivosEmpr } from "src/data-access/entities/objetivosEmpr.entity";
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from "typeorm";
-import { Departamento } from "../../departamentos/entities/departamento.entity";
-import { ObjetivosEmpr } from "../../objetivos-empr/entities/objetivosEmpr.entity";
 
 @Entity()
 export class ObjetivosDep {

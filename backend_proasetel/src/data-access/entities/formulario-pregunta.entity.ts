@@ -1,5 +1,5 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from "typeorm";
-import { Formulario } from "../../formulario/entities/formulario.entity";
+import { Formulario } from "./formulario.entity";
 
 @Entity()
 export class FormulariosPreg {

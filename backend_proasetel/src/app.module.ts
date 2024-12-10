@@ -1,6 +1,4 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
-import { TypeOrmModule } from '@nestjs/typeorm';
 import { DepartamentosModule } from './departamentos/departamentos.module';
 import { AuthModule } from './auth/auth.module';
 import { ObjetivosDepModule } from './objetivos-dep/objetivos-dep.module';
@@ -13,21 +11,12 @@ import { PeriodoEvaluacionModule } from './periodo-evaluacion/periodo-evaluacion
 import { FormularioModule } from './formulario/formulario.module';
 import { FormularioPreguntasModule } from './formulario-preguntas/formulario-preguntas.module';
 import { AnalisisSentimientosModule } from './analisis-sentimientos/analisis-sentimientos.module';
+import { DataAccessModule } from './data-access/data-access.module';
 
 @Module({
   imports: [
-    ConfigModule.forRoot(),
-    TypeOrmModule.forRoot({
-      type: "postgres",
-      host: process.env.DB_HOST,
-      port: +process.env.DB_PORT,
-      database: process.env.DB_NAME,
-      username: process.env.DB_USERNAME,
-      password: process.env.DB_PASSWORD,
-      autoLoadEntities: true,
-      synchronize: true
-    }),
-    DepartamentosModule,
+    DataAccessModule,
+    DepartamentosModule, // Módulo de conexión
     AuthModule,
     ObjetivosDepModule,
     EvaluacionPersModule,

@@ -3,8 +3,8 @@ import { CreateDepartamentoDto } from './dto/create-departamento.dto';
 import { UpdateDepartamentoDto } from './dto/update-departamento.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Departamento } from './entities/departamento.entity';
 import { validate as isUUID } from 'uuid'
+import { Departamento } from 'src/data-access/entities/departamento.entity';
 
 @Injectable()
 export class DepartamentosService {

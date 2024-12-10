@@ -4,7 +4,7 @@ import { UpdateObjetivosEmprDto } from './dto/update-objetivos-empr.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { validate as isUUID } from 'uuid'
-import { ObjetivosEmpr } from './entities/objetivosEmpr.entity';
+import { ObjetivosEmpr } from 'src/data-access/entities/objetivosEmpr.entity';
 
 
 @Injectable()
