@@ -3,6 +3,7 @@ import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { DepartamentosModule } from './departamentos/departamentos.module';
 import { AuthModule } from './auth/auth.module';
+import { ObjetivosEmprModule } from './objetivos-empr/objetivos-empr.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { AuthModule } from './auth/auth.module';
     }),
     DepartamentosModule,
     AuthModule,
+    ObjetivosEmprModule,
   ],
   
 })

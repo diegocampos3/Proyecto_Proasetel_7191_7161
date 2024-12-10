@@ -73,7 +73,7 @@ export class DepartamentosService {
 
   async update(id: string, updateDepartamentoDto: UpdateDepartamentoDto) {
 
-    // Prepara para la actualizaci'on
+    // Prepara para la actualización
     const departamento = await this.departamentoRepository.preload({
       id: id,
       ...updateDepartamentoDto
