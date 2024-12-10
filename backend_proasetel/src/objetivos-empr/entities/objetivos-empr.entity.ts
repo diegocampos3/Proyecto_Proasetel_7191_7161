@@ -1,4 +1,4 @@
-import { BeforeInsert, Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { BeforeInsert, BeforeUpdate, Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
 export class ObjetivosEmpr {
@@ -15,6 +15,11 @@ export class ObjetivosEmpr {
     @BeforeInsert()
     checkTitutuloInsert() {
         this.titulo = this.titulo.toLocaleLowerCase();
+    }
+
+    @BeforeUpdate()
+    checkNombreUpdate(){
+        this.titulo = this.titulo.toLowerCase()
     }
 
 }
