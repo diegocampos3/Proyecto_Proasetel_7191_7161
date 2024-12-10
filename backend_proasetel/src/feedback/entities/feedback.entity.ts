@@ -1,6 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from "typeorm";
 import { PeriodoEvaluacion } from "../../periodo-evaluacion/entities/periodoEvaluacion.entity";
-import { Usuario } from "../../auth/entities/usuarios.entity";
+import { User } from "src/auth/entities/usuario.entity";
 
 @Entity()
 export class Feedback {
@@ -11,8 +11,8 @@ export class Feedback {
     @ManyToOne(() => PeriodoEvaluacion, (periodo) => periodo.idPeriodoEva)
     idPeriodoEva: PeriodoEvaluacion;
 
-    @ManyToOne(() => Usuario, (usuario) => usuario.id)
-    idUserEvaluado: Usuario;
+    @ManyToOne(() => User, (usuario) => usuario.id)
+    idUserEvaluado: User;
 
     @Column({ type: 'text', nullable: false })
     descripcion: string;

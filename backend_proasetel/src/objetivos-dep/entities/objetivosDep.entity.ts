@@ -16,6 +16,6 @@ export class ObjetivosDep {
     @ManyToOne(() => Departamento, (departamento) => departamento.id)
     idDep: Departamento;
 
-    @ManyToOne(() => ObjetivosEmpr, (objetivoEmpr) => objetivoEmpr.idObjEmp)
+    @ManyToOne(() => ObjetivosEmpr, (objetivoEmpr) => objetivoEmpr.id)
     idObjEmp: ObjetivosEmpr;
 }

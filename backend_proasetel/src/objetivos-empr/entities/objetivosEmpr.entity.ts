@@ -1,13 +1,20 @@
-import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
+import { BeforeInsert, Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
 export class ObjetivosEmpr {
-    @PrimaryGeneratedColumn('uuid')
-    idObjEmp: string;
 
-    @Column({ type: 'text', nullable: false })
+    @PrimaryGeneratedColumn('uuid')
+    id: string;
+
+    @Column('text')
     titulo: string;
 
-    @Column({ type: 'text', nullable: true })
+    @Column('text')
     descripcion: string;
+
+    @BeforeInsert()
+    checkTitutuloInsert() {
+        this.titulo = this.titulo.toLocaleLowerCase();
+    }
+
 }

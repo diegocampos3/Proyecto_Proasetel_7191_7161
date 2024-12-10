@@ -1,13 +1,16 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, ParseUUIDPipe } from '@nestjs/common';
 import { ObjetivosEmprService } from './objetivos-empr.service';
 import { CreateObjetivosEmprDto } from './dto/create-objetivos-empr.dto';
 import { UpdateObjetivosEmprDto } from './dto/update-objetivos-empr.dto';
+import { Auth } from 'src/auth/decorators';
+import { ValidRoles } from 'src/auth/interfaces';
 
-@Controller('objetivosEmpr')
+@Controller('objetivos-empr')
 export class ObjetivosEmprController {
   constructor(private readonly objetivosEmprService: ObjetivosEmprService) {}
 
   @Post()
+  @Auth(ValidRoles.admin)
   create(@Body() createObjetivosEmprDto: CreateObjetivosEmprDto) {
     return this.objetivosEmprService.create(createObjetivosEmprDto);
   }
@@ -17,18 +20,23 @@ export class ObjetivosEmprController {
     return this.objetivosEmprService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.objetivosEmprService.findOne(+id);
+  @Get(':term')
+  findOne(@Param('term') term: string) {
+    return this.objetivosEmprService.findOne(term);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateObjetivosEmprDto: UpdateObjetivosEmprDto) {
-    return this.objetivosEmprService.update(+id, updateObjetivosEmprDto);
+  @Auth(ValidRoles.admin)
+  update(
+    @Param('id', ParseUUIDPipe) id: string, 
+    @Body() updateObjetivosEmprDto: UpdateObjetivosEmprDto
+  ) {
+    return this.objetivosEmprService.update(id, updateObjetivosEmprDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.objetivosEmprService.remove(+id);
+  @Auth(ValidRoles.admin)
+  remove(@Param('id', ParseUUIDPipe) id: string) {
+    return this.objetivosEmprService.remove(id);
   }
 }
