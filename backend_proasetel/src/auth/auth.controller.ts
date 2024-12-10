@@ -3,10 +3,10 @@ import { AuthService } from './auth.service';
 import { CreateUserDto, LoginUserDto, UpdateUserDto } from './dto';
 import { AuthGuard } from '@nestjs/passport';
 import { request } from 'http';
-import { User } from './entities/usuario.entity';
 import { Auth, GetUser, RoleProtected } from './decorators';
 import { UserRoleGuard } from './guards/user-role/user-role.guard';
 import { ValidRoles } from './interfaces';
+import { User } from 'src/data-access/entities/usuario.entity';
 
 
 @Controller('auth')
@@ -35,7 +35,7 @@ export class AuthController {
   // }
 
   //nuevo para update
-
+  
   @Patch(':id')
   @Auth(ValidRoles.admin, ValidRoles.supervisor)
   update(

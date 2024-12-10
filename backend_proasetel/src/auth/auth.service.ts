@@ -4,10 +4,10 @@ import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt'
 
 import { CreateUserDto, LoginUserDto, UpdateUserDto } from './dto';
-import { User } from './entities/usuario.entity';
 import { JwtPayload } from './interfaces/jwt-payload.interface';
 import { JwtService } from '@nestjs/jwt';
-import { Departamento } from '../departamentos/entities/departamento.entity';
+import { Departamento } from 'src/data-access/entities/departamento.entity';
+import { User } from 'src/data-access/entities/usuario.entity';
 
 
 @Injectable()
@@ -93,7 +93,7 @@ export class AuthService {
 
   }
 
-  // Actualización de usuario 
+  // // Actualización de usuario 
 
   // async update(id: string, updateUserDto: UpdateUserDto) {
   //   const { departamento: departamentoNombre, ...restoDatos } = updateUserDto;
@@ -135,6 +135,7 @@ export class AuthService {
   //     this.handleDBErrors(error);
   //   }
   // }
+
 
   //nueva actualizacion de usuario para permitir a los supervisores tambien asignar rol de empleado
   async update(id: string, updateUserDto: UpdateUserDto, currentUser: User) {

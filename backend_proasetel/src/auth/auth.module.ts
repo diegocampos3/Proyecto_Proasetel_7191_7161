@@ -2,12 +2,12 @@ import { forwardRef, Module } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { User } from './entities/usuario.entity';
 import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { DepartamentosModule } from '../departamentos/departamentos.module'; // Importa DepartamentosModule
+import { User } from 'src/data-access/entities/usuario.entity';
 
 @Module({
   controllers: [AuthController],

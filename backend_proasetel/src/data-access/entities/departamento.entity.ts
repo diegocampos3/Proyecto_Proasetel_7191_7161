@@ -1,5 +1,5 @@
 import { BeforeInsert, BeforeUpdate, Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
-import { User } from '../../auth/entities/usuario.entity';
+import { User } from "./usuario.entity";
 
 
 @Entity()

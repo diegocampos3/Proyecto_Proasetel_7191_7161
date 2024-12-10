@@ -1,5 +1,5 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from "typeorm";
-import { Feedback } from "../../feedback/entities/feedback.entity";
+import { Feedback } from "./feedback.entity";
 
 @Entity()
 export class AnalisisSentimientos {

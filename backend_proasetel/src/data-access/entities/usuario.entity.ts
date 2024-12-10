@@ -1,4 +1,4 @@
-import { Departamento } from '../../departamentos/entities/departamento.entity';
+import { Departamento } from "src/data-access/entities/departamento.entity";
 import { BeforeInsert, BeforeUpdate, Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 
 
