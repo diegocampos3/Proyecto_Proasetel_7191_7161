@@ -34,6 +34,8 @@ export class AuthController {
   //   return this.authService.update(id, updateUserDto);
   // }
 
+  //nuevo para update
+  
   @Patch(':id')
   @Auth(ValidRoles.admin, ValidRoles.supervisor)
   update(
@@ -43,7 +45,6 @@ export class AuthController {
   ) {
     return this.authService.update(id, updateUserDto, currentUser);
   }
-
 
 
   // Endpoint de prueba

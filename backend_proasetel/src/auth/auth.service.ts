@@ -137,9 +137,8 @@ export class AuthService {
   // }
 
 
-
-   //nueva actualizacion de usuario para permitir a los supervisores tambien asignar rol de empleado
-   async update(id: string, updateUserDto: UpdateUserDto, currentUser: User) {
+  //nueva actualizacion de usuario para permitir a los supervisores tambien asignar rol de empleado
+  async update(id: string, updateUserDto: UpdateUserDto, currentUser: User) {
     const { departamento: departamentoNombre, rol, ...restoDatos } = updateUserDto;
   
     let departamento: Departamento | undefined = undefined;
@@ -190,6 +189,11 @@ export class AuthService {
     }
   }
   
+  
+
+
+
+
 
   private getJwtToken( payload: JwtPayload ){
     
