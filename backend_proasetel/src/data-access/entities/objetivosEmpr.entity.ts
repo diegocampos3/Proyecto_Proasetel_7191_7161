@@ -1,4 +1,5 @@
-import { BeforeInsert, Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { BeforeInsert, Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { ObjetivosDep } from "./objetivosDep.entity";
 
 @Entity()
 export class ObjetivosEmpr {
@@ -13,6 +14,14 @@ export class ObjetivosEmpr {
 
     @Column('text')
     descripcion: string;
+
+    // Relación 
+    @OneToMany(
+        () => ObjetivosDep,
+        ( objetivoDep ) => objetivoDep.objetivoEmpr
+    )
+    objetivoDep: ObjetivosDep;
+
 
     @BeforeInsert()
     checkTitutuloInsert() {
