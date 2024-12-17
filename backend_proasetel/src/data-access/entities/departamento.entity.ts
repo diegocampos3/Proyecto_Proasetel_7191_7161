@@ -1,5 +1,6 @@
 import { BeforeInsert, BeforeUpdate, Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { User } from "./usuario.entity";
+import { ObjetivosDep } from "./objetivosDep.entity";
 
 
 @Entity()
@@ -29,6 +30,13 @@ export class Departamento {
         ( user ) => user.departamento
     )
     user: User;
+
+
+    @OneToMany(
+        () => ObjetivosDep,
+        ( objetivoDep ) => objetivoDep.departamento
+    )
+    objetivoDep: ObjetivosDep;
 
 
     // Verificar antes de insertar
