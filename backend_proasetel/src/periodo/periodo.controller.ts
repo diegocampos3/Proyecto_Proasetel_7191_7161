@@ -19,16 +19,16 @@ export class PeriodoController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.periodoService.findOne(+id);
+    return this.periodoService.findOne(id);
   }
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updatePeriodoDto: UpdatePeriodoDto) {
-    return this.periodoService.update(+id, updatePeriodoDto);
+    return this.periodoService.update(id, updatePeriodoDto);
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.periodoService.remove(+id);
+    return this.periodoService.remove(id);
   }
 }

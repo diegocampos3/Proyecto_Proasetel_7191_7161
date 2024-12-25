@@ -1,6 +1,8 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from "typeorm";
-import { Periodo } from "./periodo.entity";
-import { User } from "./usuario.entity";
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from "typeorm";
+import { User } from "src/data-access/entities/usuario.entity";
+import { Periodo } from "src/data-access/entities/periodo.entity";
+
+
 
 @Entity()
 export class PeriodoEvaluacion {
@@ -8,12 +10,18 @@ export class PeriodoEvaluacion {
     @PrimaryGeneratedColumn('uuid')
     idPeriodoEva: string;
 
-    @ManyToOne(() => Periodo, (periodo) => periodo.idPeriodo)
-    idPeriodo: Periodo;
+     @ManyToOne(
+        () => Periodo, 
+        (periodo) => periodo.periodoEvaluacion)
+        @JoinColumn({ name: 'periodoId' })
+        periodo: Periodo;
 
-    @ManyToOne(() => User, (usuario) => usuario.id)
-    idUserEvaluador: User;
+    @ManyToOne(
+        () => User, 
+        (user) => user.periodoeEvaluacion)
+    user: User;
+    
 
-    @Column({ type: 'boolean', nullable: false })
+    @Column({ type: 'boolean', nullable: false, default: false })
     estado: boolean;
 }

@@ -1,5 +1,7 @@
 import { Departamento } from "src/data-access/entities/departamento.entity";
-import { BeforeInsert, BeforeUpdate, Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { BeforeInsert, BeforeUpdate, Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { PeriodoEvaluacion } from "src/data-access/entities/periodoEvaluacion.entity";
+
 
 
 @Entity('usuarios')
@@ -41,6 +43,13 @@ export class User  {
         ( departamento ) => departamento.user
     )
     departamento: Departamento
+
+
+    @OneToMany(
+        () => PeriodoEvaluacion,
+        ( periodoeEvaluacion ) => periodoeEvaluacion.user
+    )
+    periodoeEvaluacion: PeriodoEvaluacion
 
     @BeforeInsert()
     checkFieldsBeforeInsert(){

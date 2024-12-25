@@ -12,6 +12,9 @@ export class ObjetivosPers {
     @Column({ type: 'text', nullable: true })
     descripcion: string;
 
+    @Column({type: 'boolean', default: true})
+    estado: boolean;
+
     @ManyToOne(
         () => ObjetivosDep, 
         (objetivoDep) => objetivoDep.objetivoPers
