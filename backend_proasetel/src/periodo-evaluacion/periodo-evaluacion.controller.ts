@@ -4,15 +4,19 @@ import { CreatePeriodoEvaluacionDto } from './dto/create-periodo-evaluacion.dto'
 import { UpdatePeriodoEvaluacionDto } from './dto/update-periodo-evaluacion.dto';
 import { User } from 'src/data-access/entities/usuario.entity';
 import { Auth, GetUser } from 'src/auth/decorators';
+import { ValidRoles } from 'src/auth/interfaces';
 
 @Controller('periodoEva')
 export class PeriodoEvaluacionController {
   constructor(private readonly periodoEvaluacionService: PeriodoEvaluacionService) {}
 
   @Post()
-  create(@Body() createPeriodoEvaluacionDto: CreatePeriodoEvaluacionDto,
+  @Auth(ValidRoles.admin)
+  create(
+    @Body() createPeriodoEvaluacionDto: CreatePeriodoEvaluacionDto,
+    @GetUser() user: User,
  ) {
-    return this.periodoEvaluacionService.create(createPeriodoEvaluacionDto);
+    return this.periodoEvaluacionService.create(createPeriodoEvaluacionDto, user);
   }
 
   @Get()
@@ -26,11 +30,16 @@ export class PeriodoEvaluacionController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updatePeriodoEvaluacionDto: UpdatePeriodoEvaluacionDto) {
-    return this.periodoEvaluacionService.update(id, updatePeriodoEvaluacionDto);
+  @Auth(ValidRoles.admin)
+  update(@Param('id') id: string, 
+    @Body() updatePeriodoEvaluacionDto: UpdatePeriodoEvaluacionDto,
+    @GetUser() user: User
+  ) {
+    return this.periodoEvaluacionService.update(id, updatePeriodoEvaluacionDto, user);
   }
 
   @Delete(':id')
+  @Auth(ValidRoles.admin)
   remove(@Param('id') id: string) {
     return this.periodoEvaluacionService.remove(id);
   }
