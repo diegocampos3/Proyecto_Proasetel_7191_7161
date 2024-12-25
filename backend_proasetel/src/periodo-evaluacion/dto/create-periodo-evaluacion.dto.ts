@@ -1,13 +1,11 @@
-import { IsBoolean, IsUUID } from "class-validator";
+import { IsBoolean, IsOptional, IsUUID } from "class-validator";
 
 export class CreatePeriodoEvaluacionDto {
 
     @IsUUID()
     idPeriodo: string;
 
-    @IsUUID()
-    idUser: string;
-
+    @IsOptional()
     @IsBoolean()
     estado: boolean;
 }

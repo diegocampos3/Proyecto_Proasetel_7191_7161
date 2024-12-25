@@ -20,21 +20,17 @@ export class PeriodoEvaluacionService {
   
   
   
-  async create(createPeriodoEvaluacionDto: CreatePeriodoEvaluacionDto) {
+  async create(createPeriodoEvaluacionDto: CreatePeriodoEvaluacionDto, user: User) {
     try {
-      const { idPeriodo, idUser } = createPeriodoEvaluacionDto;
+      const { idPeriodo } = createPeriodoEvaluacionDto;
   
       if (!isUUID(idPeriodo)) {
         throw new BadRequestException('El periodo ingresado no existe o no es válido');
       }
   
-      if (!isUUID(idUser)) {
-        throw new BadRequestException('El usuario ingresado no existe o no es válido');
-      }
-  
       const periodoEva = this.periodoEvaRepository.create({
         periodo: { idPeriodo }, 
-        user: { id: idUser } as User,      
+        user,      
       });
   
       await this.periodoEvaRepository.save(periodoEva);
@@ -68,7 +64,7 @@ export class PeriodoEvaluacionService {
   
 
   async findOne(id: string) {
-    try {
+    
       if (!isUUID(id)) {
         throw new BadRequestException('El ID de periodo no es válido');
       }
@@ -83,12 +79,10 @@ export class PeriodoEvaluacionService {
       }
   
       return periodoEva;
-    } catch (error) {
-      throw new InternalServerErrorException('Error al obtener la evaluación de periodo');
-    }
   }
   
-  async update(id: string, updatePeriodoEvaluacionDto: UpdatePeriodoEvaluacionDto) {
+  async update(id: string, updatePeriodoEvaluacionDto: UpdatePeriodoEvaluacionDto, user: User) {
+    
     try {
       if (!isUUID(id)) {
         throw new BadRequestException('El ID de periodo no es válido');
@@ -100,9 +94,13 @@ export class PeriodoEvaluacionService {
       }
   
       const updatedPeriodoEva = Object.assign(periodoEva, updatePeriodoEvaluacionDto);
+      
+      updatedPeriodoEva.user = user;
+
       await this.periodoEvaRepository.save(updatedPeriodoEva);
   
       return updatedPeriodoEva;
+
     } catch (error) {
       throw new InternalServerErrorException('Error al actualizar la evaluación de periodo');
     }
