@@ -12,6 +12,7 @@ import { FormularioModule } from './formulario/formulario.module';
 import { FormularioPreguntasModule } from './formulario-preguntas/formulario-preguntas.module';
 import { AnalisisSentimientosModule } from './analisis-sentimientos/analisis-sentimientos.module';
 import { DataAccessModule } from './data-access/data-access.module';
+import { MessagesWsModule } from './messages-ws/messages-ws.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { DataAccessModule } from './data-access/data-access.module';
     FormularioModule,
     FormularioPreguntasModule,
     AnalisisSentimientosModule,
+    MessagesWsModule,
   ],
   
 })
