@@ -1,5 +1,7 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, ManyToMany, JoinColumn, JoinTable, OneToMany } from "typeorm";
 import { ObjetivosDep } from "./objetivosDep.entity";
+import { EvaluacionObjetivoPers } from "./evaluacion-Obj-Pers.entity";
+
 
 @Entity()
 export class ObjetivosPers {
@@ -21,4 +23,11 @@ export class ObjetivosPers {
     )
     @JoinColumn({ name: 'objetivoDepId' })
     objetivoDep: ObjetivosDep;
+
+    @OneToMany(
+        () => EvaluacionObjetivoPers,
+        (evaluacionObjetivoPers) => evaluacionObjetivoPers.objetivo,
+    )
+    evaluacionObjetivoPers: EvaluacionObjetivoPers[];
+    
 }

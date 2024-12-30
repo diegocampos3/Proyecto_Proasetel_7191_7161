@@ -2,6 +2,7 @@ import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, OneToMan
 import { User } from "src/data-access/entities/usuario.entity";
 import { Periodo } from "src/data-access/entities/periodo.entity";
 import { Feedback } from './feedback.entity';
+import { EvaluacionPers } from "./evaluacionPers.entity";
 
 
 
@@ -28,7 +29,12 @@ export class PeriodoEvaluacion {
     )
     feedback: Feedback
     
-
     @Column({ type: 'boolean', nullable: false, default: false })
     estado: boolean;
+
+    @OneToMany(
+        () => EvaluacionPers,
+        (evaluacionPers) => evaluacionPers.periodoEva
+    )
+    evaluacionPers: EvaluacionPers
 }
