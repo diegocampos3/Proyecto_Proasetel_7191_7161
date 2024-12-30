@@ -1,13 +1,16 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, ParseUUIDPipe } from '@nestjs/common';
 import { FormularioService } from './formulario.service';
 import { CreateFormularioDto } from './dto/create-formulario.dto';
 import { UpdateFormularioDto } from './dto/update-formulario.dto';
+import { Auth } from 'src/auth/decorators';
+import { ValidRoles } from 'src/auth/interfaces';
 
 @Controller('formulario')
 export class FormularioController {
   constructor(private readonly formularioService: FormularioService) {}
 
   @Post()
+  @Auth(ValidRoles.admin, ValidRoles.supervisor)
   create(@Body() createFormularioDto: CreateFormularioDto) {
     return this.formularioService.create(createFormularioDto);
   }
@@ -19,16 +22,18 @@ export class FormularioController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.formularioService.findOne(+id);
+    return this.formularioService.findOne(id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateFormularioDto: UpdateFormularioDto) {
-    return this.formularioService.update(+id, updateFormularioDto);
+  @Auth(ValidRoles.admin, ValidRoles.supervisor)
+  update(@Param('id', ParseUUIDPipe) id: string, @Body() updateFormularioDto: UpdateFormularioDto) {
+    return this.formularioService.update(id, updateFormularioDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.formularioService.remove(+id);
+  @Auth(ValidRoles.admin, ValidRoles.supervisor)
+  remove(@Param('id', ParseUUIDPipe) id: string) {
+    return this.formularioService.remove(id);
   }
 }

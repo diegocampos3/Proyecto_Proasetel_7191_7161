@@ -2,7 +2,7 @@ import { Departamento } from "src/data-access/entities/departamento.entity";
 import { BeforeInsert, BeforeUpdate, Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { PeriodoEvaluacion } from "src/data-access/entities/periodoEvaluacion.entity";
 import { Feedback } from "./feedback.entity";
-
+import { EvaluacionPers } from "./evaluacionPers.entity";
 
 
 @Entity('usuarios')
@@ -69,6 +69,9 @@ export class User  {
         (feedback) => feedback.user
     )
     feedback: Feedback
+
+    @OneToMany(() => EvaluacionPers, (evaluacionPers) => evaluacionPers.user)
+    evaluacionPers: EvaluacionPers;
 
     @BeforeInsert()
     checkFieldsBeforeInsert(){

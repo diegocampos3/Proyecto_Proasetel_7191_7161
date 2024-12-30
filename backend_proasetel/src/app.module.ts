@@ -16,6 +16,7 @@ import { MessagesWsModule } from './messages-ws/messages-ws.module';
 import { MailsModule } from './mails/mails.module';
 import { ConfigModule } from '@nestjs/config';
 
+import { EvaluacionObjetivoPersModule } from './evaluacion_objetivo_pers/evaluacion_objetivo_pers.module';
 
 @Module({
   imports: [
@@ -36,7 +37,8 @@ import { ConfigModule } from '@nestjs/config';
     FormularioPreguntasModule,
     AnalisisSentimientosModule,
     MessagesWsModule,
-    MailsModule
+    MailsModule,
+    EvaluacionObjetivoPersModule,
   ],
   
 })
