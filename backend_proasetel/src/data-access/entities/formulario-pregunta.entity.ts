@@ -7,8 +7,9 @@ export class FormulariosPreg {
     @PrimaryGeneratedColumn('uuid')
     idPregunta: string;
 
-    @ManyToOne(() => Formulario, (formulario) => formulario.idFormulario)
-    idFormulario: Formulario;
+    @ManyToOne(() => Formulario, (formulario) => formulario.formularioPreg)
+    @JoinColumn({ name: 'idFormulario' })
+    formulario: Formulario;
 
     @Column({ type: 'text', nullable: false })
     pregunta: string;

@@ -1,4 +1,6 @@
-import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from "typeorm";
+import { EvaluacionPers } from "./evaluacionPers.entity";
+import { FormulariosPreg } from "./formulario-pregunta.entity";
 
 @Entity()
 export class Formulario {
@@ -8,4 +10,16 @@ export class Formulario {
 
     @Column({ type: 'text', nullable: false })
     descripcion: string;
+
+    @OneToMany(
+        () => EvaluacionPers,
+        (evaluacionPers) => evaluacionPers.formulario
+    )
+    evaluacionPers: EvaluacionPers
+
+    @OneToMany(
+        () => FormulariosPreg,
+        (formularioPreg) => formularioPreg.formulario
+    )
+    formularioPreg: FormulariosPreg
 }

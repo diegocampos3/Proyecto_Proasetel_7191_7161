@@ -30,7 +30,7 @@ export class FormularioPreguntasService {
       
       const pregunta = this.formulariosPregRepository.create({
         ...createFormularioPregDto,
-        idFormulario: formulario,
+        formulario,
       });
 
       await this.formulariosPregRepository.save(pregunta);
@@ -68,7 +68,7 @@ export class FormularioPreguntasService {
     const pregunta = await this.formulariosPregRepository.preload({
       idPregunta: id,
       ...updateFormularioPregDto,
-      idFormulario: formulario,  // Asignamos el objeto completo de formulario
+      formulario,  // Asignamos el objeto completo de formulario
     });
 
 

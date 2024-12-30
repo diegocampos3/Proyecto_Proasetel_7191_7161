@@ -1,8 +1,9 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, ManyToMany } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, ManyToMany, JoinColumn, OneToMany } from "typeorm";
 import { User } from "./usuario.entity";
 import { Formulario } from "./formulario.entity";
 import { ObjetivosPers } from "./objetivosPers.entity";
 import { PeriodoEvaluacion } from "./periodoEvaluacion.entity";
+import { EvaluacionObjetivoPers } from "./evaluacion-Obj-Pers.entity";
 
 @Entity()
 export class EvaluacionPers {
@@ -10,21 +11,23 @@ export class EvaluacionPers {
     @PrimaryGeneratedColumn('uuid')
     idEvaPer: string;
 
-    @ManyToOne(() => Formulario, (formulario) => formulario.idFormulario)
-    idFormulario: Formulario;
+    @ManyToOne(() => Formulario, (formulario) => formulario.evaluacionPers)
+    @JoinColumn({ name: 'idFormulario' })
+    formulario: Formulario;
 
-    @ManyToOne(() => PeriodoEvaluacion, (periodo) => periodo.idPeriodoEva)
-    idPeriodoEva: PeriodoEvaluacion;
+    @ManyToOne(() => PeriodoEvaluacion, (periodoEva) => periodoEva.evaluacionPers)
+    @JoinColumn({ name: 'idPeriodoEva' })
+    periodoEva: PeriodoEvaluacion;
 
-    @ManyToOne(() => User, (usuario) => usuario.id)
-    idUserEvaluado: User;
+    @ManyToOne(() => User, (user) => user.evaluacionPers)
+    user: User;
 
-    @ManyToMany(() => ObjetivosPers, (objetivoPers) => objetivoPers.idObjPer)
-    idObjPer: ObjetivosPers;
-
-    @Column({ type: 'boolean', nullable: false })
+    @Column({ type: 'boolean', nullable: false, default: true })
     estado: boolean;
 
-    @Column({ type: 'float', nullable: true })
-    nivelLogro: number;
+    @OneToMany(
+        () => EvaluacionObjetivoPers,
+        (evaluacionObjetivoPers) => evaluacionObjetivoPers.evaluacion,
+    )
+    evaluacionObjetivoPers: EvaluacionObjetivoPers[];
 }

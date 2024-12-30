@@ -11,7 +11,7 @@ export class PeriodoEvaluacionController {
   constructor(private readonly periodoEvaluacionService: PeriodoEvaluacionService) {}
 
   @Post()
-  @Auth(ValidRoles.admin)
+  @Auth(ValidRoles.admin, ValidRoles.supervisor)
   create(
     @Body() createPeriodoEvaluacionDto: CreatePeriodoEvaluacionDto,
     @GetUser() user: User,
@@ -30,7 +30,7 @@ export class PeriodoEvaluacionController {
   }
 
   @Patch(':id')
-  @Auth(ValidRoles.admin)
+  @Auth(ValidRoles.admin, ValidRoles.supervisor)
   update(@Param('id') id: string, 
     @Body() updatePeriodoEvaluacionDto: UpdatePeriodoEvaluacionDto,
     @GetUser() user: User
@@ -39,7 +39,7 @@ export class PeriodoEvaluacionController {
   }
 
   @Delete(':id')
-  @Auth(ValidRoles.admin)
+  @Auth(ValidRoles.admin, ValidRoles.supervisor)
   remove(@Param('id') id: string) {
     return this.periodoEvaluacionService.remove(id);
   }
