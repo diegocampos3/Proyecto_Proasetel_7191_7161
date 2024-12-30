@@ -8,6 +8,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { DepartamentosModule } from '../departamentos/departamentos.module'; // Importa DepartamentosModule
 import { User } from 'src/data-access/entities/usuario.entity';
+import { MailsModule } from 'src/mails/mails.module';
 
 @Module({
   controllers: [AuthController],

@@ -13,9 +13,15 @@ import { FormularioPreguntasModule } from './formulario-preguntas/formulario-pre
 import { AnalisisSentimientosModule } from './analisis-sentimientos/analisis-sentimientos.module';
 import { DataAccessModule } from './data-access/data-access.module';
 import { MessagesWsModule } from './messages-ws/messages-ws.module';
+import { MailsModule } from './mails/mails.module';
+import { ConfigModule } from '@nestjs/config';
+
 
 @Module({
   imports: [
+    ConfigModule.forRoot(
+      {isGlobal: true}
+    ),
     DataAccessModule,
     DepartamentosModule, // Módulo de conexión
     AuthModule,
@@ -30,6 +36,7 @@ import { MessagesWsModule } from './messages-ws/messages-ws.module';
     FormularioPreguntasModule,
     AnalisisSentimientosModule,
     MessagesWsModule,
+    MailsModule
   ],
   
 })

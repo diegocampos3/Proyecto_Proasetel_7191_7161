@@ -70,6 +70,7 @@ export class DepartamentosService {
     return departamento
 
   }
+  
 
   async update(id: string, updateDepartamentoDto: UpdateDepartamentoDto) {
 

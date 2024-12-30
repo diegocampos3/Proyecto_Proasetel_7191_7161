@@ -7,6 +7,14 @@ async function bootstrap() {
 
   app.setGlobalPrefix('api');
 
+  // Habilitación de CORS para solicitudes http
+  app.enableCors({
+    origin: 'http://localhost:4000',
+    methods: '*',
+    allowedHeaders: 'Content-Type,Authorization'
+  })
+
+
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,

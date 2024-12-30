@@ -37,6 +37,18 @@ export class User  {
     })
     rol: string
 
+    @Column(
+        {
+            type: 'uuid', 
+            unique: true, 
+            name:'reset_password_token', 
+            nullable: true
+        })
+    resetPasswordToken: string
+    
+    @Column({ type: 'timestamp', nullable: true })
+    resetPasswordTokenExpiration: Date;
+
 
     //Relación
     @ManyToOne(

@@ -7,6 +7,9 @@ import { Auth, GetUser, RoleProtected } from './decorators';
 import { UserRoleGuard } from './guards/user-role/user-role.guard';
 import { ValidRoles } from './interfaces';
 import { User } from 'src/data-access/entities/usuario.entity';
+import { SendMail } from './dto/send-mail.dto';
+import { RequestResetPasswordDto } from './dto/request-reset-passwod.dto';
+import { ResetPasswordDto } from './dto/reset-password.dto';
 
 
 @Controller('auth')
@@ -24,6 +27,22 @@ export class AuthController {
     return this.authService.login(loginUserDto);
   }
 
+  // Ruta para obtener los datos del usuario autenticado
+  @Get('me')
+  @UseGuards(AuthGuard('jwt')) // Asegura que la ruta está protegida
+  getMyProfile(@GetUser() user: User) {
+    return {
+      ok: true,
+      user, // Retorna los datos del usuario autenticado
+    };
+  }
+
+  @Get(':term')
+  findOne(@Param('term') term: string){
+    return this.authService.findOne(term)
+  }
+
+
 
   // @Patch(':id')
   // @Auth(ValidRoles.admin)
@@ -36,15 +55,28 @@ export class AuthController {
 
   //nuevo para update
   
-  @Patch(':id')
-  @Auth(ValidRoles.admin, ValidRoles.supervisor)
+  @Patch('update-user/:id')
+  //@Auth(ValidRoles.admin, ValidRoles.supervisor)
   update(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() updateUserDto: UpdateUserDto,
-    @GetUser() currentUser: User
+    //@GetUser() currentUser: User
   ) {
-    return this.authService.update(id, updateUserDto, currentUser);
+    return this.authService.update(id, updateUserDto);
   }
+
+
+  @Patch('request-reset-password')
+  requestResetPasswordDto(@Body() requestResetPasswordDto: RequestResetPasswordDto){
+    return this.authService.requestResetPasswordDto(requestResetPasswordDto);
+  }
+
+
+  @Patch('reset-password')
+  resetPassword(@Body() resetPasswordDto: ResetPasswordDto){
+    return this.authService.resetPassword(resetPasswordDto);
+  }
+  
 
 
   // Endpoint de prueba

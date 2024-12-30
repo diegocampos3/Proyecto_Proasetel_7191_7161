@@ -1,14 +1,14 @@
-import { IsEmail, IsString, Matches, MaxLength, MinLength } from "class-validator";
+import { IsEmail, IsOptional, IsString, Matches, MaxLength, MinLength } from "class-validator";
 
 
 export class CreateUserDto{
 
     @IsString()
-    @MinLength(10)
+    @MinLength(1)
     nombres: string;
 
     @IsString()
-    @MinLength(10)
+    @MinLength(1)
     apellidos: string;
 
     @IsString()
@@ -20,10 +20,11 @@ export class CreateUserDto{
     departamento: string;
 
     @IsString()
+    @IsOptional()
     rol: string;
 
     @IsString()
-    @MinLength(6)
+    @MinLength(8)
     @MaxLength(50)
     @Matches(
         /(?:(?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/, {
