@@ -158,6 +158,7 @@ const MegaMenuSection = () => {
 
     return (
         <>
+        {/*
             <HeaderAvatar
                 variant="rounded"
                 ref={anchorRef}
@@ -263,6 +264,7 @@ const MegaMenuSection = () => {
                     </ClickAwayListener>
                 )}
             </Popper>
+         */}
         </>
     );
 };

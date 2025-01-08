@@ -8,10 +8,16 @@ import utilities from './utilities';
 import support from './support';
 import other from './other';
 
+// ---MENU PROSASETEL
+import management from './management';
+
 // ==============================|| MENU ITEMS ||============================== //
 
 const menuItems = {
-    items: [dashboard, application, forms, elements, samplePage, pages, utilities, support, other]
+    items: [ management]
+    //items: [ management, dashboard, application, forms, elements, samplePage, pages, utilities, support, other]
+
 };
 
 export default menuItems;
+

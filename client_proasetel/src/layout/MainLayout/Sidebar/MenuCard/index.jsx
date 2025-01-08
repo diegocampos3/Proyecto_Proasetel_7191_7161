@@ -90,6 +90,7 @@ const MenuCard = () => {
                 }
             }}
         >
+            {/*
             <Box sx={{ p: 2 }}>
                 <List disablePadding sx={{ m: 0 }}>
                     <ListItem alignItems="flex-start" disableGutters disablePadding>
@@ -124,8 +125,10 @@ const MenuCard = () => {
                 </List>
                 <LinearProgressWithLabel value={80} />
             </Box>
+            */}
         </Card>
     );
 };
+
 
 export default memo(MenuCard);

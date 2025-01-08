@@ -7,6 +7,7 @@ import Loadable from 'ui-component/Loadable';
 import AuthGuard from 'utils/route-guard/AuthGuard';
 
 import { loader as productsLoader, productLoader } from 'api/products';
+import { element } from 'prop-types';
 
 // dashboard routing
 const DashboardDefault = Loadable(lazy(() => import('views/dashboard/Default')));
@@ -78,6 +79,7 @@ const AppCrmCommunicationHistory = Loadable(lazy(() => import('views/application
 const AppCrmStatement = Loadable(lazy(() => import('views/application/crm/SalesManagement/Statement')));
 const AppCrmRefund = Loadable(lazy(() => import('views/application/crm/SalesManagement/Refund')));
 const AppCrmEarning = Loadable(lazy(() => import('views/application/crm/SalesManagement/Earning')));
+
 
 // map routing
 const AppMap = Loadable(lazy(() => import('views/application/map')));
@@ -172,6 +174,14 @@ const UtilsGrid = Loadable(lazy(() => import('views/utilities/Grid')));
 // sample page routing
 const SamplePage = Loadable(lazy(() => import('views/sample-page')));
 
+
+
+// management - routing
+const ManagStaffList = Loadable(lazy(() => import('views/management/StaffList')));
+const ManagCalendar = Loadable(lazy(() => import('views/management/calendar')));
+const ManagDeparment = Loadable(lazy(() => import('views/management/deparmet')));
+
+
 // ==============================|| MAIN ROUTING ||============================== //
 
 const MainRoutes = {
@@ -182,6 +192,19 @@ const MainRoutes = {
         </AuthGuard>
     ),
     children: [
+        {
+           path: '/management/stafflist',
+           element: <ManagStaffList />
+
+        },
+        {
+            path: '/management/calendar',
+            element: <ManagCalendar />
+        },
+        {
+            path: '/management/deparment',
+            element: <ManagDeparment/>
+        },
         {
             path: '/widget/statistics',
             element: <WidgetStatistics />

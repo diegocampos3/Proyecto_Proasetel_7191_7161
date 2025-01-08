@@ -14,12 +14,12 @@ import TableRow from '@mui/material/TableRow';
 import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
 import Stack from '@mui/material/Stack';
-
+  
 // third-party
 import { Chance } from 'chance';
 
 // project imports
-import AddLeadDialog from './AddLeadDialog';
+import AddStaffDialog from './AddStaffDialog';
 import NewMessage from './NewMessage';
 import useConfig from 'hooks/useConfig';
 import { ImagePath, getImageUrl } from 'utils/getImageUrl';
@@ -39,98 +39,79 @@ import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 
 const chance = new Chance();
 
-// ==============================|| LEAD LIST - TABLE BODY ||============================== //
+// ==============================|| STAFF LIST - TABLE BODY ||============================== //
 
-const LeadTableBody = ({ row, selected, handleClick }) => {
+const StaffTableBody = ({ row, selected, handleClick }) => {
     const theme = useTheme();
     const { mode, borderRadius } = useConfig();
 
-    let name = chance.name();
-
     const [open, setOpen] = useState(false);
-    const [openMsgDialog, setOpenMsgDialog] = useState(false);
     const [openAddDialog, setOpenAddDialog] = useState(false);
+    const [showEmail, setShowEmail] = useState(false);
 
-    const isSelected = (name) => selected.indexOf(name) !== -1;
-    const isItemSelected = isSelected(row.name);
+    const isSelected = (nombres) => selected.indexOf(nombres) !== -1;
+    const isItemSelected = isSelected(row.nombres);
 
     const handleToggleAddDialog = () => {
         setOpenAddDialog(!openAddDialog);
     };
 
-    // open dialog to edit review
-    const handleToggleMsgDialog = () => {
-        setOpenMsgDialog(!openMsgDialog);
+
+    const handleEmailClick = () => {
+        setShowEmail(!showEmail);
     };
 
-    let icon;
-    let followup;
+   
     let label;
     let color;
     let chipcolor;
 
 
-    switch (row.status) {
-        case 1:
-            followup = 'Yes';
-            label = 'Qualified';
-            color = 'warning.dark';
-            chipcolor = 'warning.light';
-            break;
-        case 2:
-            followup = 'Yes';
-            label = 'Contacted';
-            color = 'success.dark';
-            chipcolor = alpha(theme.palette.success.light, 0.6);
-            break;
-        case 3:
-        default:
-            followup = 'No';
-            label = 'Lost';
-            color = 'orange.dark';
-            chipcolor = alpha(theme.palette.orange.light, 0.8);
+    if (row.isActive){
+        label = 'Activo';
+        color = 'success.dark';
+        chipcolor = alpha(theme.palette.success.light, 0.6);
+    }else{
+        label = 'Inactivo';
+        color = 'error.dark';
+        chipcolor = alpha(theme.palette.error.light, 0.6);
     }
 
-    switch (Math.floor(Math.random() * 4 + 1)) {
-        case 1:
-            icon = <CallOutlinedIcon color="success" />;
-            break;
-        case 2:
-            icon = <FacebookIcon color="primary" />;
-            break;
-        case 3:
-            icon = <LinkedInIcon color="inherit" />;
-            break;
-        case 4:
-        default:
-            icon = <InsertLinkIcon color="info" />;
-    }
+
+    const capitalizeFirstLetters = (str) => {
+        return str.replace(/\b\w/g, char => char.toUpperCase());
+    };
 
     return (
         <>
             <TableRow hover role="checkbox" aria-checked={isItemSelected} tabIndex={-1} selected={isItemSelected}>
-                <TableCell sx={{ pl: 3 }} onClick={() => handleClick(row.name)}>
+                <TableCell sx={{ pl: 3 }} onClick={() => handleClick(row.nombres)}>
                     <Checkbox color="primary" checked={isItemSelected} />
                 </TableCell>
-                <TableCell sx={{ cursor: 'pointer' }}>#{row.id}</TableCell>
-                <TableCell>
-                    <Typography variant="h5" onClick={() => handleClick(row.name)}>
-                        {row.name.slice(0, -2)}
+                <TableCell sx={{ cursor: 'pointer' }}>
+                    <Typography variant="h5">
+                        {row.id.slice(0,6)}
                     </Typography>
                 </TableCell>
                 <TableCell>
-                    <Stack direction="row" justifyContent="center" alignItems="center">
-                        <IconButton>
+                    {capitalizeFirstLetters(row.nombres)}
+
+                </TableCell>
+                <TableCell>
+                    {capitalizeFirstLetters(row.apellidos)}
+                </TableCell>
+                <TableCell>
+                <Stack direction="row" justifyContent="center" alignItems="center">
+                        <IconButton onClick={handleEmailClick}>
                             <EmailOutlinedIcon />
                         </IconButton>
-                        <Tooltip title="Message">
-                            <IconButton onClick={handleToggleMsgDialog}>
-                                <ForumOutlinedIcon />
-                            </IconButton>
-                        </Tooltip>
+                        {showEmail ? (
+                            <span>{row.email}</span>
+                        ) : (
+                            <span></span>
+                        )}
                     </Stack>
                 </TableCell>
-                <TableCell align="center">{icon}</TableCell>
                 <TableCell>
                     <Chip
                         label={label}
@@ -143,19 +124,12 @@ const LeadTableBody = ({ row, selected, handleClick }) => {
                     />
                 </TableCell>
                 <TableCell>
-                    <Tooltip title={name} placement="right" arrow>
-                        <Avatar alt="User 1" src={getImageUrl(`avatar-${Math.floor(Math.random() * 9) + 1}.png`, ImagePath.USERS)} />
-                    </Tooltip>
+                    {capitalizeFirstLetters(row.departamento ? row.departamento : 'Ninguno')}
                 </TableCell>
                 <TableCell>
-                    <Stack width={160} overflow="hidden" textOverflow="ellipsis" whiteSpace="normal">
-                        {chance.company()}
-                    </Stack>
+                    {capitalizeFirstLetters(row.rol )}
                 </TableCell>
-                <TableCell>{chance.phone()}</TableCell>
-                <TableCell>{Math.floor(Math.random() * 12) + 1} month ago</TableCell>
-                <TableCell>{followup}</TableCell>
-                <TableCell>{Math.floor(Math.random() * 3) + 1} year ago</TableCell>
+                
                 <TableCell sx={{ pr: 3 }}>
                     <IconButton size="small" onClick={() => setOpen(!open)}>
                         {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
@@ -174,17 +148,18 @@ const LeadTableBody = ({ row, selected, handleClick }) => {
                                             src={getImageUrl(`avatar-${Math.floor(Math.random() * 5) + 1}.png`, ImagePath.USERS)}
                                         />
                                         <Stack>
-                                            <Typography variant="subtitle2">Assigned name</Typography>
-                                            <Typography variant="h5">{name}</Typography>
+                                            <Typography variant="subtitle2">Nombre Registrado</Typography>
+                                            <Typography variant="h5">{row.nombres} {row.apellidos}</Typography>
                                         </Stack>
                                     </Stack>
                                     <Stack justifyContent="center">
-                                        <Typography variant="subtitle2">Name</Typography>
-                                        <Typography variant="h5">{row.name.slice(0, -2)}</Typography>
+                                        <Typography variant="subtitle2">Departamento</Typography>
+                                        <Typography variant="h5">{capitalizeFirstLetters(row.departamento ? row.departamento : 'Ninguno')}
+                                        </Typography>
                                     </Stack>
                                     <Stack justifyContent="center">
-                                        <Typography variant="subtitle2">Created date</Typography>
-                                        <Typography variant="h5">{Math.floor(Math.random() * 12) + 1} month ago</Typography>
+                                        <Typography variant="subtitle2">Rol</Typography>
+                                        <Typography variant="h5">{capitalizeFirstLetters(row.rol)}</Typography>
                                     </Stack>
                                     <Stack direction="row" spacing={1.25} justifyContent="center">
                                         <IconButton
@@ -200,18 +175,6 @@ const LeadTableBody = ({ row, selected, handleClick }) => {
                                         >
                                             <EditTwoTone />
                                         </IconButton>
-                                        <IconButton
-                                            color="error"
-                                            size="small"
-                                            sx={{
-                                                borderRadius: `${borderRadius}px`,
-                                                p: 1.25,
-                                                border: '1px solid',
-                                                borderColor: 'divider'
-                                            }}
-                                        >
-                                            <DeleteOutlineOutlined />
-                                        </IconButton>
                                     </Stack>
                                 </Stack>
                             </Box>
@@ -219,16 +182,15 @@ const LeadTableBody = ({ row, selected, handleClick }) => {
                     </Collapse>
                 </TableCell>
             </TableRow>
-            <AddLeadDialog {...{ open: openAddDialog, handleToggleAddDialog, row }} />
-            <NewMessage {...{ open: openMsgDialog, handleToggleMsgDialog }} />
+            <AddStaffDialog {...{ open: openAddDialog, handleToggleAddDialog, row }} />
         </>
     );
 };
 
-LeadTableBody.propTypes = {
-    row: PropTypes.object,
-    selected: PropTypes.array,
-    handleClick: PropTypes.func
+StaffTableBody.propTypes = {
+    row: PropTypes.object.isRequired,
+    selected: PropTypes.array.isRequired,
+    handleClick: PropTypes.func.isRequired
 };
 
-export default LeadTableBody;
+export default StaffTableBody;

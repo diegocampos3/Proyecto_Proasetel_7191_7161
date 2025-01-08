@@ -85,7 +85,11 @@ const Customization = () => {
 
     return (
         <>
+
+        
             {/* toggle button */}
+
+            {/*
             <Tooltip title="Live Customize">
                 <Fab
                     component="div"
@@ -113,6 +117,10 @@ const Customization = () => {
                     </AnimateButton>
                 </Fab>
             </Tooltip>
+
+            */}
+
+            {/*
 
             <Drawer anchor="right" onClose={handleToggle} open={open} PaperProps={{ sx: { width: 375 } }}>
                 {open && (
@@ -149,37 +157,45 @@ const Customization = () => {
                             <CustomTabPanel value={value} index={0}>
                                 <Grid container spacing={2.5}>
                                     <Grid item xs={12}>
+                */}
                                         {/* layout type */}
+                {/*
                                         <ThemeModeLayout />
                                         <Divider />
                                     </Grid>
                                     <Grid item xs={12}>
                                         {/* Theme Preset Color */}
+                {/*
                                         <PresetColor />
                                         <Divider />
                                     </Grid>
                                     <Grid item xs={12}>
                                         {/* Input Background */}
+                {/*
                                         <InputFilled />
                                         <Divider />
                                     </Grid>
                                     <Grid item xs={12}>
-                                        {/* Theme Width */}
+                                        {/* Theme Width */}\
+                {/*
                                         <BoxContainer />
                                         <Divider />
                                     </Grid>
                                     <Grid item xs={12}>
                                         {/* Theme Layout */}
+                {/*
                                         <Layout />
                                         <Divider />
                                     </Grid>
                                     <Grid item xs={12}>
                                         {/* Sidebar Drawer */}
+                {/*
                                         <SidebarDrawer />
                                         <Divider />
                                     </Grid>
                                     <Grid item xs={12}>
                                         {/* Menu Orientation */}
+                {/*
                                         <MenuOrientation />
                                         <Divider />
                                     </Grid>
@@ -189,11 +205,13 @@ const Customization = () => {
                                 <Grid container spacing={2}>
                                     <Grid item xs={12}>
                                         {/* font family */}
+                {/*
                                         <FontFamily />
                                         <Divider />
                                     </Grid>
                                     <Grid item xs={12}>
                                         {/* border radius */}
+                {/*
                                         <BorderRadius />
                                         <Divider />
                                     </Grid>
@@ -203,6 +221,8 @@ const Customization = () => {
                     </PerfectScrollbar>
                 )}
             </Drawer>
+            */}
+            
         </>
     );
 };
