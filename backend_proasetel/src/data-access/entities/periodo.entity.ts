@@ -7,11 +7,24 @@ export class Periodo {
     @PrimaryGeneratedColumn('uuid')
     idPeriodo: string;
 
-    @Column({ type: 'date', nullable: false })
+    @Column()
+    titulo: string;
+
+
+    @Column()
+    descripcion: string
+
+    @Column({ type: 'timestamptz', nullable: true})
     fecha_ini: Date;
 
-    @Column({ type: 'date', nullable: false })
+    @Column({ type: 'timestamptz', nullable: true })
     fecha_fin: Date;
+
+    @Column()
+    color: string;
+
+    @Column()
+    textColor: string;
 
     @OneToMany(
           () => PeriodoEvaluacion,
