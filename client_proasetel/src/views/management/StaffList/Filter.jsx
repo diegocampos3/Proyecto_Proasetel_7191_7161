@@ -78,7 +78,7 @@ const Filter = ({ handleToggleDrawer, rows, setRows }) => {
                 />
                 <Stack direction="row" alignItems="center" justifyContent={{ xs: 'center' }} spacing={1.25}>
                     
-                    <Tooltip title="Filter">
+                    <Tooltip title="Filtrar">
                         <IconButton size="large" onClick={handleToggleDrawer}>
                             <FilterListIcon />
                         </IconButton>

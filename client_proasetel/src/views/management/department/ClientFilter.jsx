@@ -17,20 +17,37 @@ import PrintIcon from '@mui/icons-material/PrintTwoTone';
 import FileCopyIcon from '@mui/icons-material/FileCopyTwoTone';
 import AddIcon from '@mui/icons-material/AddTwoTone';
 
+// project imports
+
+import AddDepartment from './AddDepartment';
+
 // ==============================|| CLIENT LIST - FILTER ||============================== //
 
-const ClientFilter = ({ users, setUsers }) => {
+const ClientFilter = ({rows, setRows }) => {
+    
     const [search, setSearch] = React.useState('');
+
+    // Ventana- Add
+    const [openAddDepart, setOpenAddDepart] = React.useState(false);
+
+    const handleToggleAdd = () => {
+        setOpenAddDepart(!openAddDepart);
+    }
+    
+    const handleAddClick = () => {
+        handleToggleAdd();
+    }
+
+
 
     const handleSearch = (event) => {
         const newString = event?.target.value;
         setSearch(newString || '');
 
         if (newString) {
-            const newRows = users?.filter((row) => {
+            const newRows = rows?.filter((row) => {
                 let matches = true;
-
-                const properties = ['id', 'name', 'email', 'contact', 'role', 'location', 'about'];
+                const properties = ['id', 'nombre'];
                 let containsQuery = false;
 
                 properties.forEach((property) => {
@@ -38,15 +55,17 @@ const ClientFilter = ({ users, setUsers }) => {
                         containsQuery = true;
                     }
                 });
-
                 if (!containsQuery) {
                     matches = false;
                 }
                 return matches;
             });
-            setUsers(newRows);
+            setRows(newRows);
+            console.log('Filter setRows:', newRows)
         } else {
-            setUsers(users);
+            setRows(rows);
+            console.log('Filter Rows:', rows)
+
         }
     };
 
@@ -61,44 +80,31 @@ const ClientFilter = ({ users, setUsers }) => {
                     )
                 }}
                 onChange={handleSearch}
-                placeholder="Search client"
+                placeholder="Búsqueda de departamento"
                 value={search}
                 size="small"
                 sx={{ width: { xs: 1, sm: 'auto' } }}
             />
             <Stack direction="row" alignItems="center" spacing={1.25}>
-                <Tooltip title="Copy">
-                    <IconButton size="large">
-                        <FileCopyIcon />
-                    </IconButton>
-                </Tooltip>
-                <Tooltip title="Print">
-                    <IconButton size="large">
-                        <PrintIcon />
-                    </IconButton>
-                </Tooltip>
-                <Tooltip title="Filter">
-                    <IconButton size="large">
-                        <FilterListIcon />
-                    </IconButton>
-                </Tooltip>
-
                 {/* client add & dialog */}
-                <Tooltip title="Add Client">
-                    <Link to="/apps/invoice/client/add-client">
+                <Tooltip title="Crear Departamento">
+                    <IconButton 
+                        onClick={() => handleAddClick()}
+                    >
                         <Fab color="primary" size="small" sx={{ boxShadow: 'none', width: 32, height: 32, minHeight: 32 }}>
                             <AddIcon fontSize="small" />
                         </Fab>
-                    </Link>
+                    </IconButton>
                 </Tooltip>
             </Stack>
+            <AddDepartment open={openAddDepart} handleToggleAdd = {handleToggleAdd}></AddDepartment>
         </Stack>
     );
 };
 
 ClientFilter.propTypes = {
-    setUsers: PropTypes.func,
-    users: PropTypes.array
+    setListDepartments: PropTypes.func,
+    listDepartments: PropTypes.array
 };
 
 export default ClientFilter;

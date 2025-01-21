@@ -27,16 +27,20 @@ const headCells = [
         align: 'center'
     },
     {
-        id: 'nombre',
+        id: 'titulo',
         numeric: false,
-        label: 'Nombre'
+        label: 'Título'
     },
     {
         id: 'descripcion',
-        numeric: true,
+        numeric: false,
         label: 'Descripción'
     },
-    
+    {
+        id: 'estado',
+        numeric: false,
+        label: 'Estado'
+    },
 ];
 
 // ==============================|| CLIENT LIST - HEADER TOOLBAR ||============================== //
@@ -49,7 +53,7 @@ const EnhancedTableToolbar = ({ numSelected }) => (
             </Typography>
         ) : (
             <Typography variant="h6" id="tableTitle">
-                Nutrition
+                Departamentos
             </Typography>
         )}
         <Box sx={{ flexGrow: 1 }} />
@@ -69,7 +73,7 @@ EnhancedTableToolbar.propTypes = {
 
 // ==============================|| CLIENT LIST - HEADER ||============================== //
 
-const ClientTableHeader = ({ drawer, onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort, selected }) => {
+const DepObjTableHeader = ({ drawer, onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort, selected }) => {
     const createSortHandler = (property) => (event) => {
         onRequestSort(event, property);
     };
@@ -118,7 +122,7 @@ const ClientTableHeader = ({ drawer, onSelectAllClick, order, orderBy, numSelect
                     ))}
                 {numSelected <= 0 && (
                     <TableCell sortDirection={false} align="center" sx={drawer ? { pr: 3, display: 'none' } : { pr: 3 }}>
-                        Action
+                        Acción
                     </TableCell>
                 )}
             </TableRow>
@@ -126,7 +130,7 @@ const ClientTableHeader = ({ drawer, onSelectAllClick, order, orderBy, numSelect
     );
 };
 
-ClientTableHeader.propTypes = {
+DepObjTableHeader.propTypes = {
     drawer: PropTypes.bool,
     selected: PropTypes.array,
     numSelected: PropTypes.number.isRequired,
@@ -137,4 +141,4 @@ ClientTableHeader.propTypes = {
     rowCount: PropTypes.number.isRequired
 };
 
-export default ClientTableHeader;
+export default DepObjTableHeader;

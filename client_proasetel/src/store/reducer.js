@@ -19,6 +19,8 @@ import kanbanReducer from './slices/kanban';
 import personalReducer from './slices/personal';
 import calendarReducer from './slices/calendar';
 import departmentReducer from './slices/department';
+import businessObjReducer from './slices/businessobj';
+import departmentObjReducer from './slices/departmentobj'
 
 
 
@@ -43,7 +45,9 @@ const reducer = combineReducers({
     mail: mailReducer,
     user: userReducer,
     personal: personalReducer,
-    department: departmentReducer
+    department: departmentReducer,
+    businessObj: businessObjReducer,
+    departmentObj: departmentObjReducer
 });
 
 export default reducer;

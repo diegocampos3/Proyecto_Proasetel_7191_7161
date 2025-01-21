@@ -1,3 +1,4 @@
+
 import {useEffect, useState} from 'react';
 
 // material-ui
@@ -9,53 +10,51 @@ import Grid from '@mui/material/Grid';
 import ClientFilter from './ClientFilter';
 import ClientDrawer from './ClientDrawer';
 import ClientTable from './ClientTable';
+import EditDepartment from './EditDepartment';
 import MainCard from 'ui-component/cards/MainCard';
 
 import { dispatch, useSelector } from 'store';
-import { getDepartments } from 'store/slices/department';
+import { getDepartments, updateDepartment } from 'store/slices/department';
 
-// ==============================|| DEPARMENT LIST ||============================== //
+// ==============================|| DEPARTMENT LIST ||============================== //
 
 const ClientList = () => {
     const [open, setOpen] = useState(false);
-    const [department, setDeparments] = useState([]);
+    const [listDepartments, setListDepartments] = useState([]) 
 
-    //const { detailCards } = useSelector((state) => state.user);
-    const { departments}   = useSelector((state) => state.department)
+    const { departments } = useSelector((state) => state.department)
     const [rowValue, setRowValue] = useState(null);
 
+
     useEffect(() => {
-        setDeparments(departments)
-    },[departments]);
+        setListDepartments(departments);
+    }, [departments]);
 
     useEffect(() => {
         dispatch(getDepartments());
-    },[])
+    }, []);
 
-    // React.useEffect(() => {
-    //     setUsers(detailCards);
-    // }, [detailCards]);
 
-    // React.useEffect(() => {
-    //     dispatch(getDetailCards());
-    // }, []);
+    
+
 
     return (
         <MainCard content={false}>
             {/* filter section */}
             <CardContent>
-                {/*<ClientFilter {...{ users: detailCards, setUsers }} /> */}
+                <ClientFilter {...{rows: departments, setRows: setListDepartments}} />
             </CardContent>
 
             {/* table */}
             <Box display={open ? 'flex' : 'block'}>
                 <Grid container sx={{ position: 'relative' }}>
                     <Grid item sm={open ? 5 : 12} xs={12}>
-                        <ClientTable open={open} setOpen={setOpen} department={department} setRowValue={setRowValue} />
+                        <ClientTable open={open} setOpen={setOpen} listDepartments={listDepartments} setRowValue={setRowValue} />
                     </Grid>
                     <Grid item sm={open ? 7 : 12} xs={12} sx={{ borderLeft: '1px solid', borderLeftColor: 'divider' }}>
                         <ClientDrawer open={open} setOpen={setOpen} rowValue={rowValue} />
                     </Grid>
+                    
                 </Grid>
             </Box>
         </MainCard>

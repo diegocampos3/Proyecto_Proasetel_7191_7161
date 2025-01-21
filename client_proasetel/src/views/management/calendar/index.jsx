@@ -66,9 +66,6 @@ const Calendar = () => {
 }, [calendarState]);
 
 
-
-
-
     const [date, setDate] = useState(new Date());
     const [view, setView] = useState(matchSm ? 'listWeek' : 'dayGridMonth');
 
