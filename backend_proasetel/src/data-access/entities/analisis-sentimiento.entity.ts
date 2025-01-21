@@ -8,9 +8,10 @@ export class AnalisisSentimientos {
     idAnalisis: string;
 
     @ManyToOne(() => Feedback, (feedback) => feedback.idFeedback)
+    @JoinColumn({ name: 'idFeedback' })
     idFeedback: Feedback;
 
-    @Column({ type: 'float', nullable: false })
-    resultado: number;
+    @Column({ type: 'boolean', nullable: false })
+    resultado: boolean;
 }
 

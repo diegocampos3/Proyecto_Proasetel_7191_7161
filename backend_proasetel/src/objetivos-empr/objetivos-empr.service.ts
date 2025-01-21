@@ -27,7 +27,7 @@ export class ObjetivosEmprService {
       
       await this.objetivosEmprRepository.save(objempr);
 
-      return objempr;
+      return this.findAll();
 
 
     } catch (error) {
@@ -37,7 +37,11 @@ export class ObjetivosEmprService {
   }
 
   findAll() {
-    return this.objetivosEmprRepository.find({});
+    return this.objetivosEmprRepository.find({
+      order: {
+        titulo: 'ASC',
+      }
+    });
   }
 
 
@@ -89,7 +93,7 @@ async update(id: string, updateObjetivosEmprDto: UpdateObjetivosEmprDto) {
     try {
       
       await this.objetivosEmprRepository.save(objetivoEmpr);
-      return objetivoEmpr;
+      return this.findAll();
 
     } catch (error) {
       
@@ -102,13 +106,15 @@ async update(id: string, updateObjetivosEmprDto: UpdateObjetivosEmprDto) {
     
     const objetivoEmpr = await this.findOne( id );
 
-    await this.objetivosEmprRepository.remove( objetivoEmpr)
+    await this.objetivosEmprRepository.remove( objetivoEmpr);
+
+    return this.findAll();
 
   }
 
   private handleDBExceptions( error: any) {
     if( error.code === '23505')
-      throw new BadRequestException(error.detail)
+      throw new BadRequestException('Ya existe un objetivo con ese título.');
 
     this.logger.error(error);
 

@@ -1,4 +1,4 @@
-import { IsString } from "class-validator";
+import { IsBoolean, IsString } from "class-validator";
 
 export class CreateObjetivosEmprDto {
     
@@ -7,4 +7,7 @@ export class CreateObjetivosEmprDto {
 
     @IsString()
     descripcion: string;
+
+    @IsBoolean()
+    estado: boolean;
 }

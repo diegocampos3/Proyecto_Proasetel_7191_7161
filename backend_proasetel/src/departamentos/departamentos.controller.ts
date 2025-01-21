@@ -34,6 +34,11 @@ export class DepartamentosController {
     return this.departamentosService.update(id, updateDepartamentoDto);
   }
 
+  @Get('details/:id')
+  details(@Param('id') id: string){
+    return this.departamentosService.details(id)
+  }
+
   @Delete(':id')
   @Auth(ValidRoles.admin)
   remove(@Param('id', ParseUUIDPipe) id: string) {
