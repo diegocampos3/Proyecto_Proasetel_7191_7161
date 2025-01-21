@@ -1,8 +1,14 @@
 import { Type } from "class-transformer";
-import { IsDate } from "class-validator";
+import { IsDate, IsString, Min } from "class-validator";
 
 export class CreatePeriodoDto {
 
+    @IsString()
+    titulo: string;
+
+    @IsString()
+    descripcion: string;
+    
     @Type(() => Date)
     @IsDate()
     fecha_ini: Date;
@@ -10,5 +16,11 @@ export class CreatePeriodoDto {
     @Type(() => Date)
     @IsDate()
     fecha_fin: Date;
+
+    @IsString()
+    color: string;
+
+    @IsString()
+    textColor: string;
 
 }

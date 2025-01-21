@@ -69,6 +69,7 @@ const LeadTableBody = ({ row, selected, handleClick }) => {
     let color;
     let chipcolor;
 
+
     switch (row.status) {
         case 1:
             followup = 'Yes';

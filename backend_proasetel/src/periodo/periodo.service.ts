@@ -3,7 +3,8 @@ import { CreatePeriodoDto } from './dto/create-periodo.dto';
 import { UpdatePeriodoDto } from './dto/update-periodo.dto';
 import { Periodo } from '../data-access/entities/periodo.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { fromZonedTime } from 'date-fns-tz';
+import { Not, Repository } from 'typeorm';
 import { validate as isUUID } from 'uuid'
 
 
@@ -24,8 +25,9 @@ async   create(createPeriodoDto: CreatePeriodoDto) {
     
   let {fecha_ini, fecha_fin} = createPeriodoDto;
 
-      fecha_ini = new Date(fecha_ini);
-      fecha_fin = new Date(fecha_fin);
+  const timeZone = 'America/Guayaquil';
+  fecha_ini = fromZonedTime(new Date(fecha_ini), timeZone);
+  fecha_fin = fromZonedTime(new Date(fecha_fin), timeZone);
 
        // Validar que las fechas de un periodo no sean iguales a las de otro ya existente
     const periodosExistentes = await this.periodoRepository.find({
@@ -38,13 +40,12 @@ async   create(createPeriodoDto: CreatePeriodoDto) {
       });
     
       if ( periodosExistentes.length > 0)
-        throw new BadRequestException('Las fechas proporcionadas coindiden con las de un periodo ya ecistente');
+        throw new BadRequestException('Las fechas proporcionadas coindiden con las de un evento de evaluación ya existente');
 
-      
-  //     const fechaActual = new Date();
-      
-  //     if ( fecha_ini < fechaActual)
-  //       throw new BadRequestException('La fecha inicio no puede ser anterior a la fecha actual');
+      // Validar que la fecha de fin no sea anterior a la fecha de inicio
+    if (fecha_fin < fecha_ini)
+      throw new BadRequestException('La fecha fin no puede ser anterior a la fecha de inicio');
+ 
     if ( fecha_fin < (fecha_ini))
       throw new BadRequestException('La fecha fin no puede ser anterior a la fecha de inicio');
 
@@ -54,7 +55,7 @@ async   create(createPeriodoDto: CreatePeriodoDto) {
 
       const periodo = this.periodoRepository.create(createPeriodoDto);
       await this.periodoRepository.save(periodo);
-      return periodo;
+      return this.findAll();
         
     } catch (error) {
       
@@ -105,13 +106,14 @@ async  update(id: string, updatePeriodoDto: UpdatePeriodoDto) {
         where: [
           {
             fecha_ini:  fecha_ini,
-            fecha_fin: fecha_fin
+            fecha_fin: fecha_fin,
+            idPeriodo: Not(id)
           }
         ]
       });
     
       if ( periodosExistentes.length > 0)
-        throw new BadRequestException('Las fechas proporcionadas coindiden con las de un periodo ya ecistente');
+        throw new BadRequestException('Las fechas proporcionadas coindiden con las de un periodo ya existente');
 
       
   //     const fechaActual = new Date();
@@ -124,7 +126,7 @@ async  update(id: string, updatePeriodoDto: UpdatePeriodoDto) {
     try {
 
       await this.periodoRepository.save(periodo);
-      return periodo;
+      return this.findAll();
       
     } catch (error) {
 
@@ -138,6 +140,8 @@ async remove(id: string) {
     const perido = await this.findOne( id );
 
     await this.periodoRepository.remove(perido);
+
+    return this.findAll();
   }
 
   private handleDBExceptions( error: any): never{

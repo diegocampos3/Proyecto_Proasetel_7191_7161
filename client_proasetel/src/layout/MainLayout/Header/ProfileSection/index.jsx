@@ -165,6 +165,8 @@ const ProfileSection = () => {
                             <Paper>
                                 {open && (
                                     <MainCard border={false} elevation={16} content={false} boxShadow shadow={theme.shadows[16]}>
+                                        
+                                        {/*}
                                         <Box sx={{ p: 2, pb: 0 }}>
                                             <Stack>
                                                 <Stack direction="row" spacing={0.5} alignItems="center">
@@ -193,10 +195,13 @@ const ProfileSection = () => {
                                             />
                                             <Divider />
                                         </Box>
+                                        */}
                                         <PerfectScrollbar style={{ height: '100%', maxHeight: 'calc(100vh - 250px)', overflowX: 'hidden' }}>
+                                            
                                             <Box sx={{ p: 2, pt: 0 }}>
                                                 <UpgradePlanCard />
                                                 <Divider />
+                                                {/*
                                                 <Card sx={{ bgcolor: mode === ThemeMode.DARK ? 'dark.800' : 'primary.light', my: 2 }}>
                                                     <CardContent>
                                                         <Grid container spacing={3} direction="column">
@@ -234,6 +239,7 @@ const ProfileSection = () => {
                                                         </Grid>
                                                     </CardContent>
                                                 </Card>
+                                                */}
                                                 <Divider />
                                                 <List
                                                     component="nav"
@@ -245,6 +251,7 @@ const ProfileSection = () => {
                                                         '& .MuiListItemButton-root': { mt: 0.5 }
                                                     }}
                                                 >
+                                                    {/*
                                                     <ListItemButton
                                                         sx={{ borderRadius: `${borderRadius}px` }}
                                                         selected={selectedIndex === 0}
@@ -293,6 +300,8 @@ const ProfileSection = () => {
                                                             }
                                                         />
                                                     </ListItemButton>
+
+                                                    */}
                                                     <ListItemButton
                                                         sx={{ borderRadius: `${borderRadius}px` }}
                                                         selected={selectedIndex === 4}
@@ -304,7 +313,7 @@ const ProfileSection = () => {
                                                         <ListItemText
                                                             primary={
                                                                 <Typography variant="body2">
-                                                                    <FormattedMessage id="logout" />
+                                                                    <FormattedMessage id="Cerrar Sesión" />
                                                                 </Typography>
                                                             }
                                                         />

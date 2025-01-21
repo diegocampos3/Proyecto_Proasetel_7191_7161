@@ -48,6 +48,8 @@ const UpgradePlanCard = () => {
                 }
             }}
         >
+
+            {/*
             <CardContent>
                 <Grid container direction="column" spacing={2}>
                     <Grid item>
@@ -76,6 +78,7 @@ const UpgradePlanCard = () => {
                     </Grid>
                 </Grid>
             </CardContent>
+            */}
         </Card>
     );
 };

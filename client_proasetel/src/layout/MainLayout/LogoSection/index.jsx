@@ -6,12 +6,14 @@ import Link from '@mui/material/Link';
 // project imports
 import { DASHBOARD_PATH } from 'config';
 import Logo from 'ui-component/Logo';
+import { Typography } from '@mui/material';
+
 
 // ==============================|| MAIN LOGO ||============================== //
 
 const LogoSection = () => (
     <Link component={RouterLink} to={DASHBOARD_PATH} aria-label="theme-logo">
-        <Logo />
+        <Logo /> 
     </Link>
 );
 

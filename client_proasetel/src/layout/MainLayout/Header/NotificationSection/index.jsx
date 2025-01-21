@@ -89,6 +89,7 @@ const NotificationSection = () => {
 
     return (
         <>
+        {/*
             <Box sx={{ ml: 2 }}>
                 <Avatar
                     variant="rounded"
@@ -200,6 +201,7 @@ const NotificationSection = () => {
                     </ClickAwayListener>
                 )}
             </Popper>
+        */}
         </>
     );
 };

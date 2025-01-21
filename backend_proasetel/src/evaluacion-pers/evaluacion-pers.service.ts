@@ -28,7 +28,7 @@ export class EvaluacionPersService {
  
   async create(createEvaluacionPerDto: CreateEvaluacionPerDto, user: User): Promise<EvaluacionPers> {
     const {  idFormulario, idPeriodoEva  } = createEvaluacionPerDto;
-    try {
+    
     //   Verificar si ya existe una evaluación activa para el mismo usuario y un formulario distinto
     //   const existingEvaluation = await this.evaluacionPersRepository.findOne({
     //     where: {
@@ -55,6 +55,10 @@ export class EvaluacionPersService {
         if (!periodoEva) {
         throw new NotFoundException(`El periodo de evaluación con id ${idPeriodoEva} no fue encontrado.`);
         }
+
+    
+    
+    try{
 
     // Crear nueva evaluación
     const newEvaluacionPers = this.evaluacionPersRepository.create({

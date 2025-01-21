@@ -16,7 +16,7 @@ const icons = {
 
 const loadingMenu = {
     id: 'group-widget-loading',
-    title: <FormattedMessage id="widget" />,
+    title: <FormattedMessage id="widgetDC" />,
     type: 'group',
     children: [
         {
@@ -84,6 +84,7 @@ export const Menu = () => {
 
     let menuList = {
         ...menu,
+        
         title: <FormattedMessage id={`${menu?.title}`} />,
         // @ts-ignore
         icon: icons[menu?.icon],
