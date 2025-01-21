@@ -69,6 +69,8 @@ export class AuthService {
 
       delete user.password;
 
+      console.log(`Imprimiento Dep: ${user.departamento}`)
+
       return {
         ...user,
         token: this.getJwtToken( {id: user.id })
@@ -95,6 +97,8 @@ export class AuthService {
 
     if ( !bcrypt.compareSync( password, user.password))
       throw new UnauthorizedException('Su correo o contraseña no es correcto');
+
+    console.log(`Imprimiento Dep: ${user.departamento}`)
 
     return {
       ...user,
@@ -208,6 +212,9 @@ export class AuthService {
     return this.userRepository.find({
       select: ['id', 'nombres', 'apellidos', 'email', 'rol', 'isActive'],
       relations: ['departamento'],
+      order: {
+        nombres: 'ASC',
+      }
     }).then(users => 
       users.map(user => ({
         ...user,

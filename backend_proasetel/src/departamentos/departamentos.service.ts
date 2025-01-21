@@ -2,9 +2,10 @@ import { BadRequestException, Injectable, InternalServerErrorException, Logger, 
 import { CreateDepartamentoDto } from './dto/create-departamento.dto';
 import { UpdateDepartamentoDto } from './dto/update-departamento.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Not, QueryFailedError, Repository } from 'typeorm';
 import { validate as isUUID } from 'uuid'
 import { Departamento } from 'src/data-access/entities/departamento.entity';
+import { User } from 'src/data-access/entities/usuario.entity';
 
 @Injectable()
 export class DepartamentosService {
@@ -15,7 +16,10 @@ export class DepartamentosService {
   // Patrón repositorio
   constructor (
     @InjectRepository(Departamento)
-    private readonly departamentoRepository: Repository<Departamento>
+    private readonly departamentoRepository: Repository<Departamento>,
+
+    @InjectRepository(User)
+    private readonly userRepositoy: Repository<User>
   
   ){}
 
@@ -31,7 +35,7 @@ export class DepartamentosService {
 
     // Retornar el departamento
     
-    return departamento;
+    return this.findAll();
 
     
    } catch (error) {
@@ -40,9 +44,13 @@ export class DepartamentosService {
 
   }
 
-  // TODO: paginar
+
   findAll() {
-    return this.departamentoRepository.find({})
+    return this.departamentoRepository.find({
+      order: {
+        nombre: 'ASC',
+      }
+    })
   }
 
   async findOne(term: string) {
@@ -74,7 +82,6 @@ export class DepartamentosService {
 
   async update(id: string, updateDepartamentoDto: UpdateDepartamentoDto) {
 
-    // Prepara para la actualizaci'on
     const departamento = await this.departamentoRepository.preload({
       id: id,
       ...updateDepartamentoDto
@@ -94,13 +101,63 @@ export class DepartamentosService {
   }
 
   async remove(id: string) {
-    const departamento = await this.findOne( id );
-    await this.departamentoRepository.remove( departamento );
+    const departamento = await this.findOne(id);
+  
+    try {
+      await this.departamentoRepository.remove(departamento);
+      return this.findAll();
+    } catch (error) {
+      // Verificamos si el error es una violación de clave foránea
+      if (
+        error instanceof QueryFailedError &&
+        error.message.includes('violates foreign key constraint')
+      ) {
+        throw new BadRequestException('No se puede eliminar este departamento porque se encuentra asignado a usuarios');
+      }
+      // Si no es un error manejado, lo lanzamos nuevamente
+      throw error;
+    }
   }
+
+
+  async details(id: string) {
+    const supervisor = await this.userRepositoy.findOne({
+        where: {
+            departamento: { id },
+            rol: 'supervisor',
+        },
+    });
+
+
+    const totalUsuarios = await this.userRepositoy.count({
+      where: {
+          departamento: { id },
+      },
+  });
+
+    if (!supervisor) {
+        
+       return {
+        id: null,
+        totalUsuarios,
+       }
+    }
+
+
+    return {
+        id: supervisor.id,
+        nombres: supervisor.nombres,
+        apellidos: supervisor.apellidos,
+        email: supervisor.email,
+        totalUsuarios,
+    };
+}
+
+  
 
   private handleDBExceptions( error: any){
     if ( error.code === '23505' )
-      throw new BadRequestException(error.detail);
+      throw new BadRequestException('Ya existe un departamento con ese nombre.');
   
     this.logger.error(error);
     // console.log(error);

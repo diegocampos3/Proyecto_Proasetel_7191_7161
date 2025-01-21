@@ -1,4 +1,4 @@
-import { IsString } from "class-validator";
+import { IsBoolean, IsString } from "class-validator";
 
 export class CreateObjetivosDepDto {
 
@@ -9,9 +9,9 @@ export class CreateObjetivosDepDto {
     descripcion: string;
 
     @IsString()
-    departamento: string;
+    objtivoEmpDep: string;
 
-    @IsString()
-    objetivoEmpr: string;
+    @IsBoolean()
+    estado: boolean;
 
 }
