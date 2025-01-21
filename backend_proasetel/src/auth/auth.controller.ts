@@ -78,6 +78,12 @@ export class AuthController {
   }
   
 
+  @Get()
+  findAll() {
+    return this.authService.findAll();
+  }
+  
+
 
   // Endpoint de prueba
 

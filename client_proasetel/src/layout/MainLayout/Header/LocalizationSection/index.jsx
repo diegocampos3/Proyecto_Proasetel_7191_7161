@@ -61,6 +61,7 @@ const LocalizationSection = () => {
     return (
         <>
             <Box sx={{ ml: { xs: 0, sm: 2 } }}>
+                {/*
                 <Avatar
                     variant="rounded"
                     sx={{
@@ -91,8 +92,10 @@ const LocalizationSection = () => {
                     )}
                     {i18n === 'en' && <TranslateTwoToneIcon sx={{ fontSize: '1.3rem' }} />}
                 </Avatar>
+                */}
             </Box>
-
+            
+            {/*
             <Popper
                 placement={downMD ? 'bottom-start' : 'bottom'}
                 open={open}
@@ -109,7 +112,9 @@ const LocalizationSection = () => {
                     }
                 ]}
             >
+                
                 {({ TransitionProps }) => (
+                    
                     <ClickAwayListener onClickAway={handleClose}>
                         <Transitions position={downMD ? 'top-left' : 'top'} in={open} {...TransitionProps}>
                             <Paper elevation={16}>
@@ -176,7 +181,9 @@ const LocalizationSection = () => {
                         </Transitions>
                     </ClickAwayListener>
                 )}
+                
             </Popper>
+            */}
         </>
     );
 };

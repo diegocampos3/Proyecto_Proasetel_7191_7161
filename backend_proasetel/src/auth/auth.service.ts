@@ -19,6 +19,9 @@ import { addMinutes } from 'date-fns';
 
 @Injectable()
 export class AuthService {
+  find(arg0: {}) {
+    throw new Error('Method not implemented.');
+  }
   
 
   private readonly logger = new Logger('DepartamentosServices');
@@ -133,8 +136,14 @@ export class AuthService {
       // Retorna el usuario con su departamento cargado
       return this.userRepository.findOne({
         where: { id: savedUser.id },
+        select: ['id', 'nombres', 'apellidos', 'email', 'rol', 'isActive'],
         relations: ['departamento'], // Asegura que la relación está cargada
-      });
+      }).then(user =>
+        user ? {
+          ...user,
+          departamento: user.departamento?.nombre || null
+        }: null
+      ) 
     } catch (error) {
       this.handleDBErrors(error);
     }
@@ -194,6 +203,19 @@ export class AuthService {
   //     this.handleDBErrors(error);
   //   }
   // }
+
+  async findAll() {
+    return this.userRepository.find({
+      select: ['id', 'nombres', 'apellidos', 'email', 'rol', 'isActive'],
+      relations: ['departamento'],
+    }).then(users => 
+      users.map(user => ({
+        ...user,
+        departamento: user.departamento?.nombre || null,  
+      }))
+    );
+  }
+  
 
   async findOne(term: string) {
 

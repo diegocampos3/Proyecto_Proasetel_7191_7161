@@ -10,12 +10,11 @@ const initialState = {
 
 export const endpoints = {
     key: 'api/menu',
-    master: 'master',
-    widget: '/widget' // server URL
+    master: 'master'
 };
 
 export function useGetMenu() {
-    const { data, isLoading, error, isValidating } = useSWR(endpoints.key + endpoints.widget, fetcher, {
+    const { data, isLoading, error, isValidating } = useSWR(endpoints.key + endpoints.master, fetcher, {
         revalidateIfStale: false,
         revalidateOnFocus: false,
         revalidateOnReconnect: false
@@ -23,7 +22,7 @@ export function useGetMenu() {
 
     const memoizedValue = useMemo(
         () => ({
-            menu: data?.widget,
+            menu: data,
             menuLoading: isLoading,
             menuError: error,
             menuValidating: isValidating,

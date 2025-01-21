@@ -48,11 +48,14 @@ export default slice.reducer;
 
 // ----------------------------------------------------------------------
 
+// Definición de constante para API de proasetel
+const apiUrl = import.meta.env.VITE_APP_API_URL2;
+
 export function getEvents() {
     return async () => {
         try {
-            const response = await axios.get('/api/calendar/events');
-            dispatch(slice.actions.getEventsSuccess(response.data.events));
+            const response = await axios.get(`${apiUrl}/periodo`);
+            dispatch(slice.actions.getEventsSuccess(response.data));
         } catch (error) {
             dispatch(slice.actions.hasError(error));
         }
@@ -62,29 +65,30 @@ export function getEvents() {
 export function addEvent(event) {
     return async () => {
         try {
-            const response = await axios.post('/api/calendar/events/add', event);
-            dispatch(slice.actions.addEventSuccess(response.data));
-        } catch (error) {
-            dispatch(slice.actions.hasError(error));
-        }
-    };
-}
+            const response = await axios.post(`${apiUrl}/periodo`, event);
+             dispatch(slice.actions.addEventSuccess(response.data));
+         } catch (error) {
+             dispatch(slice.actions.hasError(error));
+         }
+     }; 
+    }
 
-export function updateEvent(event) {
+export function updateEvent(eventId,event) {
     return async () => {
         try {
-            const response = await axios.post('/api/calendar/events/update', event);
-            dispatch(slice.actions.updateEventSuccess(response.data.events));
+            const response = await axios.patch(`${apiUrl}/periodo/${eventId}`, event);
+            dispatch(slice.actions.updateEventSuccess(response.data));
+
         } catch (error) {
             dispatch(slice.actions.hasError(error));
         }
     };
-}
+ }
 
 export function removeEvent(eventId) {
     return async () => {
         try {
-            const response = await axios.post('/api/calendar/events/delete', { eventId });
+            const response = await axios.delete(`${apiUrl}/periodo/${eventId}`);
             dispatch(slice.actions.removeEventSuccess(response.data));
         } catch (error) {
             dispatch(slice.actions.hasError(error));
