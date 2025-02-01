@@ -1,4 +1,4 @@
-import { OnGatewayConnection, SubscribeMessage, WebSocketGateway, WebSocketServer } from '@nestjs/websockets';
+import { MessageBody, OnGatewayConnection, SubscribeMessage, WebSocketGateway, WebSocketServer } from '@nestjs/websockets';
 import { MessagesWsService } from './messages-ws.service';
 import { Socket, Server } from 'socket.io';
 import { NewMessageDto } from './dtos/new-message.dto';
@@ -9,6 +9,7 @@ import { JwtPayload } from 'src/auth/interfaces';
 export class MessagesWsGateway implements OnGatewayConnection, OnGatewayConnection {
   
   @WebSocketServer() wss: Server
+  server: any;
   constructor(
     private readonly messagesWsService: MessagesWsService,
     private readonly JwtService: JwtService
@@ -43,10 +44,27 @@ async  handleConnection(client: Socket) {
 
   }
 
+  sendNewPeriodoNotification(message: string) {
+    console.log('Ingresando a websoket',{message})
+    this.wss.emit('new-periodo', { message });
+  }
+
+
+
+  @SubscribeMessage('mensaje')
+  handleMessage(client: Socket, @MessageBody() data: any) {
+    this.server.emit('mensaje', data);
+    // console.log(client.id);
+    // client.broadcast.emit('mensaje', data);
+  }
+
+
   // message-from-client
   @SubscribeMessage('message-from-client')
   async onMessageFromClient( client: Socket, payload: NewMessageDto){
-    
+  
+    console.log('Mensaje recibido:', payload); // 👈 Agrega este console.log
+
     // !Emite únicamente al cliente
     // client.emit('message-form-server',{
     //   fullName: 'Soy Yo!',
@@ -60,9 +78,9 @@ async  handleConnection(client: Socket) {
     //   });
 
     // Emitir a todos incluido el emisor
-    this.wss.emit('message-form-server',{
+    client.broadcast.emit('message-form-server',{
         fullName: this.messagesWsService.getUserFullName( client.id),
-        message: payload.message || 'no-message!!'
+        message: payload?.message || 'no-message!!'
       });
 
     // Adicionalmente podemos hacer
@@ -73,4 +91,5 @@ async  handleConnection(client: Socket) {
   
     
   }
+
 }

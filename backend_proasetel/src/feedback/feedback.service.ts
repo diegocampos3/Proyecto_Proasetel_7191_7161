@@ -63,7 +63,6 @@ export class FeedbackService {
         resultado = false
 
       console.log('Resultado', resultado);
-
     
       const analisis = this.analisisSentRepository.create({
         idFeedback: feedback, // Relación con el feedback recién creado

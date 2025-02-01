@@ -1,6 +1,7 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, ManyToMany, JoinColumn, JoinTable, OneToMany } from "typeorm";
 import { ObjetivosDep } from "./objetivosDep.entity";
 import { EvaluacionObjetivoPers } from "./evaluacion-Obj-Pers.entity";
+import { User } from "./usuario.entity";
 
 
 @Entity()
@@ -8,14 +9,6 @@ export class ObjetivosPers {
     @PrimaryGeneratedColumn('uuid')
     idObjPer: string;
 
-    @Column({ type: 'text', nullable: false, unique: true })
-    titulo: string;
-
-    @Column({ type: 'text', nullable: true })
-    descripcion: string;
-
-    @Column({type: 'boolean', default: true})
-    estado: boolean;
 
     @ManyToOne(
         () => ObjetivosDep, 
@@ -23,6 +16,12 @@ export class ObjetivosPers {
     )
     @JoinColumn({ name: 'objetivoDepId' })
     objetivoDep: ObjetivosDep;
+
+    @ManyToOne(
+        () => User,
+        (user) => user.objpers
+    )
+    user: User
 
     @OneToMany(
         () => EvaluacionObjetivoPers,
