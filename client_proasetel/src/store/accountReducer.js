@@ -1,30 +1,21 @@
-// action - state management
-import { LOGIN, LOGOUT, REGISTER } from './actions';
+import { LOGIN, LOGOUT, INITIALIZED } from './actions';
 
-// ==============================|| ACCOUNT REDUCER ||============================== //
-
+// Estado inicial
 const initialState = {
     isLoggedIn: false,
-    isInitialized: false,
+    isInitialized: false, // Indica si la autenticación se ha inicializado
     user: null
 };
 
 const accountReducer = (state = initialState, action) => {
     switch (action.type) {
-        case REGISTER: {
-            const { user } = action.payload;
-            return {
-                ...state,
-                user
-            };
-        }
         case LOGIN: {
             const { user } = action.payload;
             return {
                 ...state,
                 isLoggedIn: true,
                 isInitialized: true,
-                user
+                user // Asegúrate de que el usuario se actualice aquí
             };
         }
         case LOGOUT: {
@@ -33,6 +24,12 @@ const accountReducer = (state = initialState, action) => {
                 isInitialized: true,
                 isLoggedIn: false,
                 user: null
+            };
+        }
+        case INITIALIZED: {
+            return {
+                ...state,
+                isInitialized: true
             };
         }
         default: {

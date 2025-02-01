@@ -1,10 +1,10 @@
 import PropTypes from 'prop-types';
 import * as React from 'react';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+
 
 // material-ui
 import Fab from '@mui/material/Fab';
-import IconButton from '@mui/material/IconButton';
 import InputAdornment from '@mui/material/InputAdornment';
 import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
@@ -12,33 +12,14 @@ import Tooltip from '@mui/material/Tooltip';
 
 // assets
 import SearchIcon from '@mui/icons-material/Search';
-import FilterListIcon from '@mui/icons-material/FilterListTwoTone';
-import PrintIcon from '@mui/icons-material/PrintTwoTone';
-import FileCopyIcon from '@mui/icons-material/FileCopyTwoTone';
 import AddIcon from '@mui/icons-material/AddTwoTone';
 
-// project imports
 
-import AddDepartment from './AddDepartment';
+// ==============================|| OBJ PERSONAL - FILTER ||============================== //
 
-// ==============================|| CLIENT LIST - FILTER ||============================== //
-
-const ClientFilter = ({rows, setRows }) => {
+const PerObjFilter = ({rows, setRows }) => {
     
     const [search, setSearch] = React.useState('');
-
-    // Ventana- Add
-    const [openAddDepart, setOpenAddDepart] = React.useState(false);
-
-    const handleToggleAdd = () => {
-        setOpenAddDepart(!openAddDepart);
-    }
-    
-    const handleAddClick = () => {
-        handleToggleAdd();
-    }
-
-
 
     const handleSearch = (event) => {
         const newString = event?.target.value;
@@ -47,7 +28,7 @@ const ClientFilter = ({rows, setRows }) => {
         if (newString) {
             const newRows = rows?.filter((row) => {
                 let matches = true;
-                const properties = ['id', 'nombre'];
+                const properties = ['idObjDep','titulo', 'descripcion'];
                 let containsQuery = false;
 
                 properties.forEach((property) => {
@@ -69,6 +50,8 @@ const ClientFilter = ({rows, setRows }) => {
         }
     };
 
+    
+
     return (
         <Stack direction={{ xs: 'column', sm: 'row' }} alignItems="center" justifyContent="space-between" spacing={2}>
             <TextField
@@ -80,31 +63,19 @@ const ClientFilter = ({rows, setRows }) => {
                     )
                 }}
                 onChange={handleSearch}
-                placeholder="Búsqueda de departamento"
+                placeholder="Búsqueda de objetivo"
                 value={search}
                 size="small"
                 sx={{ width: { xs: 1, sm: 'auto' } }}
             />
-            <Stack direction="row" alignItems="center" spacing={1.25}>
-                {/* client add & dialog */}
-                <Tooltip title="Crear Departamento">
-                    <IconButton 
-                        onClick={() => handleAddClick()}
-                    >
-                        <Fab color="primary" size="small" sx={{ boxShadow: 'none', width: 32, height: 32, minHeight: 32 }}>
-                            <AddIcon fontSize="small" />
-                        </Fab>
-                    </IconButton>
-                </Tooltip>
-            </Stack>
-            <AddDepartment open={openAddDepart} handleToggleAdd = {handleToggleAdd}></AddDepartment>
+            
         </Stack>
     );
 };
 
-ClientFilter.propTypes = {
+PerObjFilter.propTypes = {
     setListDepartments: PropTypes.func,
     listDepartments: PropTypes.array
 };
 
-export default ClientFilter;
+export default PerObjFilter;

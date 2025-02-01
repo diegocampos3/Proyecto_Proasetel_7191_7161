@@ -1,4 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
+import { Manager } from 'socket.io-client';
+
 
 // material-ui
 import Button from '@mui/material/Button';
@@ -21,13 +23,15 @@ import CalendarStyled from './CalendarStyled';
 import Loader from 'ui-component/Loader';
 import MainCard from 'ui-component/cards/MainCard';
 import SubCard from 'ui-component/cards/SubCard';
+import Snackbar from '@mui/material/Snackbar';
+import Alert from '@mui/material/Alert';
+import esLocale from '@fullcalendar/core/locales/es';
+
+
 
 
 import { dispatch, useSelector } from 'store';
 import { getEvents, addEvent, updateEvent, removeEvent  } from 'store/slices/calendar';
-
-
-
 // assets
 import AddAlarmTwoToneIcon from '@mui/icons-material/AddAlarmTwoTone';
 
@@ -38,6 +42,10 @@ const Calendar = () => {
     const matchSm = useMediaQuery((theme) => theme.breakpoints.down('md'));
 
     const [loading, setLoading] = useState(true);
+    const [alertOpen, setAlertOpen] = useState(false);
+    const [alertMessage, setAlertMessage] = useState('');
+    const socketRef = useRef(null);
+
 
     // fetch events data
     const [events, setEvents] = useState([]);
@@ -148,11 +156,51 @@ const Calendar = () => {
         setIsModalOpen(true);
     };
 
+
+    const handleSendMessage = (message) => {
+        if (message.trim().length === 0) return;
+
+        socketRef.current?.emit('message-from-client', {
+            id: 'YO!!',
+            message: message,
+        });
+    };
+
+    const handleCloseAlert = () => {
+        setAlertOpen(false);
+    };
+
+    const connectToServer = (token) => {
+        const manager = new Manager('http://localhost:3000/socket.io/socket.io.js', {
+            extraHeaders: { authentication: token },
+        });
+
+        const socket = manager.socket('/');
+        socketRef.current = socket;
+
+        socket.on('connect', () => console.log('Conectado al servidor'));
+        socket.on('disconnect', () => console.log('Desconectado del servidor'));
+
+        socket.on('message-form-server', (payload) => {
+            console.log('Mensaje recibido:', payload);  // Verifica el payload
+            setAlertMessage(`Nuevo mensaje de ${payload.fullName}: ${payload.message}`);
+            setAlertOpen(true);
+        });
+    };
+
+    useEffect(() => {
+        const token = localStorage.getItem('serviceToken');
+        if (token) connectToServer(token);
+        return () => socketRef.current?.disconnect();
+    }, []);
+
     // Creación de evento
     const handleEventCreate = async (data) => {
         dispatch(addEvent(data));
+        handleSendMessage(data.titulo)
         handleModalClose();
     };
+
 
     const handleUpdateEvent = async (eventId, update) => {
         console.log('eventId:', eventId)
@@ -184,8 +232,9 @@ const Calendar = () => {
     if (loading) return <Loader />;
 
     return (
+        <>
         <MainCard
-            title="Calendario de evaluación"
+            title="Programación de Eventos"
             secondary={
                 <Button color="secondary" variant="contained" onClick={handleAddClick}>
                     <AddAlarmTwoToneIcon fontSize="small" sx={{ mr: 0.75 }} />
@@ -204,6 +253,7 @@ const Calendar = () => {
                 />
                 <SubCard>
                     <FullCalendar
+                        locale={esLocale}
                         weekends
                         editable
                         droppable
@@ -240,6 +290,7 @@ const Calendar = () => {
                 )}
             </Dialog>
         </MainCard>
+        </>
     );
 };
 

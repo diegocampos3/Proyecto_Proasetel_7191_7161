@@ -79,7 +79,7 @@ const AppBar = ({ ...others }) => {
                                 Dashboard
                             </Button>
                             <Button color="inherit" component={Link} href="https://codedthemes.gitbook.io/berry" target="_blank">
-                                Documentation
+                                Documentation25
                             </Button>
                             <Button
                                 component={Link}

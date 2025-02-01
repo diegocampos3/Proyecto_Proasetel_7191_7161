@@ -26,6 +26,7 @@ const Auth0Context = createContext(null);
 
 export const Auth0Provider = ({ children }) => {
     const [state, dispatch] = useReducer(accountReducer, initialState);
+    console.log('Imprimiendo state:', state)
 
     useEffect(() => {
         const init = async () => {

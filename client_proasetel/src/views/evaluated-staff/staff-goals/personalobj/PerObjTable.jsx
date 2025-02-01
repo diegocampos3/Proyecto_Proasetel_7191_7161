@@ -1,9 +1,11 @@
 import PropTypes from 'prop-types';
 import * as React from 'react';
+import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+
+
 
 // material-ui
-import { alpha, useTheme } from '@mui/material/styles';
-import Chip from '@mui/material/Chip';
 import Checkbox from '@mui/material/Checkbox';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -19,21 +21,11 @@ import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
 
 // project imports
-import EditDepartment from './EditDepartment';
-import ClientTableHeader from './ClientTableHeader';
-import Avatar from 'ui-component/extended/Avatar';
-
-import { ImagePath, getImageUrl } from 'utils/getImageUrl';
-import { ThemeMode } from 'config';
+import PerObjTableHeader from './PerObjTableHeader'
 
 
 // assets
-import ArrowUpward from '@mui/icons-material/ArrowUpward';
-import ArrowDownward from '@mui/icons-material/ArrowDownward';
-import VisibilityTwoToneIcon from '@mui/icons-material/VisibilityTwoTone';
-import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
 import DeleteTwoToneIcon from '@mui/icons-material/DeleteTwoTone';
-
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
@@ -42,9 +34,11 @@ import DialogTitle from '@mui/material/DialogTitle';
 import Button from '@mui/material/Button';
 
 
-import { dispatch, useSelector } from 'store';
-import { removeDepartment} from 'store/slices/department';
-import { ro } from 'date-fns/locale';
+import { dispatch } from 'store';
+import { removeStaffObj } from 'store/slices/staffobj';
+
+
+// ----------------------------------------------------------------------
 
 // table sort
 function descendingComparator(a, b, orderBy) {
@@ -75,10 +69,11 @@ const Alert = React.forwardRef((props, ref) => (
 ));
 
 
-// ==============================|| CLIENT LIST - TABLE ||============================== //
+// ==============================|| OBJ PERSONAL LIST - TABLE ||============================== //
 
-const ClientTable = ({ open, setOpen, listDepartments, setRowValue }) => {
-    const theme = useTheme();
+const PerObjTable = ({ open, setOpen, listPerObj, setRowValue}) => {
+    
+
 
     const [order, setOrder] = React.useState('asc');
     const [orderBy, setOrderBy] = React.useState('calories');
@@ -87,6 +82,8 @@ const ClientTable = ({ open, setOpen, listDepartments, setRowValue }) => {
     const [rows, setRows] = React.useState([]);
     const [rowsPerPage, setRowsPerPage] = React.useState(10);
     const [selectedRow, setSelectedRow] = React.useState(null);
+    const navigate = useNavigate();
+
 
     // Ventanas
     const [openEditDepart, setOpenEditDepart] = React.useState(false);
@@ -100,13 +97,10 @@ const ClientTable = ({ open, setOpen, listDepartments, setRowValue }) => {
     const [snackbarMessage, setSnackbarMessage] = React.useState('');
     const [snackbarSeverity, setSnackbarSeverity] = React.useState('success');
 
-    let label;
-    let color;
-    let chipcolor;
 
     React.useEffect(() => {
-        setRows(listDepartments);
-    }, [listDepartments]);
+        setRows(listPerObj);
+    }, [listPerObj]);
 
     const handleRequestSort = (event, property) => {
         const isAsc = orderBy === property && order === 'asc';
@@ -119,7 +113,7 @@ const ClientTable = ({ open, setOpen, listDepartments, setRowValue }) => {
             if (selected.length > 0) {
                 setSelected([]);
             } else {
-                const newSelectedId = rows.map((n) => n.nombre);
+                const newSelectedId = rows.map((n) => n.titulo);
                 setSelected(newSelectedId);
             }
             return;
@@ -165,26 +159,16 @@ const ClientTable = ({ open, setOpen, listDepartments, setRowValue }) => {
         return str.replace(/\b\w/g, char => char.toUpperCase());
     };
 
-    // Ventanas
-    const handleToggleEdit = () => {
-        setOpenEditDepart(!openEditDepart);
-    }
-
-
-    const handleEditClick = (row) => {
-        setSelectedRow(row);
-        handleToggleEdit(); 
-    };
-
-
     const handleSnackbarClose = () => {
         setSnackbarOpen(false);
     };
 
-    // Eliminación de departamento
-    const handleDepartmentDelete = async () => {
-        
-        const result = await dispatch(removeDepartment(rowToDelete.id));
+    // Eliminación de objetivo - Empr
+    const handlePersonalObjDelete = async () => {
+
+        const id = rowToDelete.idObjPer;
+
+        const result = await dispatch(removeStaffObj(id));
 
         if (result.success) {
             setSnackbarMessage('Eliminación exitosa.');
@@ -195,7 +179,6 @@ const ClientTable = ({ open, setOpen, listDepartments, setRowValue }) => {
         }
         setOpenConfirmDialog(false);
         setSnackbarOpen(true);
-
     }
 
     const handleDeleteClick = (row) => {
@@ -203,12 +186,18 @@ const ClientTable = ({ open, setOpen, listDepartments, setRowValue }) => {
         setOpenConfirmDialog(true); // Abrir el modal
     };
 
+    const handleEditClick = (row) => {
+        navigate('/management/departmentobj/manageDepartObj/editDepartObj', {
+            state: { objetivo: row, objEmpDep },
+        });
+    };
+
 
     return (
         <>
             <TableContainer>
                 <Table sx={{ minWidth: open ? 300 : 750 }} aria-labelledby="tableTitle">
-                    <ClientTableHeader
+                    <PerObjTableHeader
                         numSelected={selected.length}
                         order={order}
                         orderBy={orderBy}
@@ -225,7 +214,7 @@ const ClientTable = ({ open, setOpen, listDepartments, setRowValue }) => {
                                 /** Make sure no display bugs if row isn't an OrderData object */
                                 if (typeof row === 'number') return null;
 
-                                const isItemSelected = isSelected(row.nombre);
+                                const isItemSelected = isSelected(row.titulo);
                                 const labelId = `enhanced-table-checkbox-${index}`;
 
                                 return (
@@ -238,53 +227,19 @@ const ClientTable = ({ open, setOpen, listDepartments, setRowValue }) => {
                                         selected={isItemSelected}
                                         {...(open && { sx: { '&:first-of-type': { borderTop: '1px solid', borderTopColor: 'divider' } } })}
                                     >
-                                        <TableCell
-                                            padding="checkbox"
-                                            sx={open ? { pl: 3, display: 'none' } : { pl: 3 }}
-                                            onClick={() => handleClick(row.nombre)}
-                                        >
-                                            <Checkbox
-                                                color="primary"
-                                                checked={isItemSelected}
-                                                inputProps={{
-                                                    'aria-labelledby': labelId
-                                                }}
-                                            />
-                                        </TableCell>
-                                        <TableCell onClick={() => (open ? handleDrawerOpen(row) : '')}>
-                                            <Typography variant="h5" >{row.id.slice(0,6)}</Typography>
-                                        </TableCell>
                                         
-                                        <TableCell onClick={() => (open ? handleDrawerOpen(row) : '')} >{capitalizeFirstLetters(row.nombre)}</TableCell>
+                                        
+                                        <TableCell onClick={() => (open ? handleDrawerOpen(row) : '')} >{capitalizeFirstLetters(row.titulo)}</TableCell>
                                         <TableCell sx={open ? { display: 'none' } : {}}>{row.descripcion}</TableCell>
+                                        {/*<TableCell sx={open ? { display: 'none' } : {}}>{row.estado ? 'En curso' : 'Pendiente'}</TableCell>*/}
 
                                         <TableCell align="center" sx={{ pr: 3, ...(open && { display: 'none' }) }}>
                                             <Stack direction="row" alignItems="center" spacing={1} justifyContent="center">
-                                                <Tooltip title="Ver">
-                                                    <IconButton
-                                                        color="primary"
-                                                        size="small"
-                                                        aria-label="View"
-                                                        onClick={() => handleDrawerOpen(row)}
-                                                    >
-                                                        <VisibilityTwoToneIcon sx={{ fontSize: '1.3rem' }} />
-                                                    </IconButton>
-                                                </Tooltip>
-                                                <Tooltip title="Editar">
-                                                    <IconButton 
-                                                        color="secondary" 
-                                                        size="small" 
-                                                        aria-label="Edit"
-                                                        onClick={() => handleEditClick(row)}
-                                                        >
-                                                        <EditTwoToneIcon sx={{ fontSize: '1.3rem' }} />
-                                                    </IconButton>
-                                                </Tooltip>
                                                 <Tooltip title="Eliminar">
                                                     <IconButton 
                                                         color="error" 
                                                         size="small" 
-                                                        aria-label="Delete"
+                                                        aria-label="Eliminar"
                                                         onClick={() => handleDeleteClick(row)}
                                                         >
                                                         <DeleteTwoToneIcon sx={{ fontSize: '1.3rem' }} />
@@ -292,14 +247,17 @@ const ClientTable = ({ open, setOpen, listDepartments, setRowValue }) => {
                                                 </Tooltip>
                                             </Stack>
                                         </TableCell>
+                                        <TableCell align="center" sx={{ pr: 3, ...(open && { display: 'none'})}}>
+                                            <Stack direction="row" alignItems="center" spacing={1} justifyContent="center">
+                                                <Button>
+                                                    Evaluar
+                                                </Button>
+                                            </Stack>
+                                        </TableCell>
                                     </TableRow>
                                 );
                                 
                             })}
-
-                        {/* Edición */}
-                        <EditDepartment open={openEditDepart} handleToggleEdit = {handleToggleEdit} row={selectedRow} />
-                        
                         {emptyRows > 0 && (
                             <TableRow sx={{ height: 53 * emptyRows }}>
                                 <TableCell colSpan={10} />
@@ -330,22 +288,35 @@ const ClientTable = ({ open, setOpen, listDepartments, setRowValue }) => {
                 onClose={() => setOpenConfirmDialog(false)}
                 aria-labelledby="confirm-dialog-title"
                 aria-describedby="confirm-dialog-description"
-                >
+            >
                 <DialogTitle id="confirm-dialog-title">Confirmar eliminación</DialogTitle>
                 <DialogContent>
-                    <DialogContentText id="confirm-dialog-description">
-                        ¿Está seguro de que desea eliminar el departamento <strong>{rowToDelete?.nombre ? capitalizeFirstLetters(rowToDelete.nombre) : null}</strong>?
-                    </DialogContentText>
+                    {rowToDelete?.estado ? (
+                        <DialogContentText id="confirm-dialog-description" color="error">
+                            Este objetivo está en curso y no se puede eliminar.
+                        </DialogContentText>
+                    ) : (
+                        <DialogContentText id="confirm-dialog-description">
+                            ¿Está seguro de que desea eliminar el objetivo <strong>{rowToDelete?.titulo ? capitalizeFirstLetters(rowToDelete.titulo) : null}</strong>?
+                        </DialogContentText>
+                    )}
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={() => setOpenConfirmDialog(false)} color="primary">
                         Cancelar
                     </Button>
-                    <Button onClick={handleDepartmentDelete} color="error" autoFocus>
+                    {/* Deshabilitar el botón si el estado es true */}
+                    <Button 
+                        onClick={handlePersonalObjDelete} 
+                        color="error" 
+                        autoFocus 
+                        disabled={rowToDelete?.estado}
+                    >
                         Eliminar
                     </Button>
                 </DialogActions>
             </Dialog>
+
 
             <Snackbar
                 open={snackbarOpen}
@@ -362,11 +333,11 @@ const ClientTable = ({ open, setOpen, listDepartments, setRowValue }) => {
     );
 };
 
-ClientTable.propTypes = {
+PerObjTable.propTypes = {
     open: PropTypes.bool,
     setOpen: PropTypes.func,
     setRowValue: PropTypes.func,
-    listDepartments: PropTypes.array
+    listDepObj: PropTypes.array
 };
 
-export default ClientTable;
+export default PerObjTable;

@@ -1,40 +1,29 @@
 import PropTypes from 'prop-types';
 import React, { createContext, useEffect, useReducer } from 'react';
-
-// third-party
 import { Chance } from 'chance';
 import { jwtDecode } from 'jwt-decode';
-
-// reducer - state management
-import { LOGIN, LOGOUT } from 'store/actions';
+import { LOGIN, LOGOUT, INITIALIZED } from 'store/actions';
 import accountReducer from 'store/accountReducer';
-
-// project imports
 import Loader from 'ui-component/Loader';
 import axios from 'utils/axios';
-import { isAxiosError } from 'axios';
-
 
 const chance = new Chance();
 
-// constant
+// Estado inicial
 const initialState = {
     isLoggedIn: false,
-    isInitialized: false,
+    isInitialized: false, // Indica si la autenticación se ha inicializado
     user: null
 };
 
+// Verificar si el token es válido
 const verifyToken = (serviceToken) => {
-    if (!serviceToken) {
-        return false;
-    }
+    if (!serviceToken) return false;
     const decoded = jwtDecode(serviceToken);
-    /**
-     * Property 'exp' does not exist on type '<T = unknown>(token, options) => T'.
-     */
     return decoded.exp > Date.now() / 1000;
 };
 
+// Establecer o eliminar el token de la sesión
 const setSession = (serviceToken) => {
     if (serviceToken) {
         localStorage.setItem('serviceToken', serviceToken);
@@ -45,40 +34,55 @@ const setSession = (serviceToken) => {
     }
 };
 
-// ==============================|| JWT CONTEXT & PROVIDER ||============================== //
+// Crear el contexto
 const JWTContext = createContext(null);
 
-// Definición de constante para API de proasetel
+// URL de la API
 const apiUrl = import.meta.env.VITE_APP_API_URL2;
-
 
 export const JWTProvider = ({ children }) => {
     const [state, dispatch] = useReducer(accountReducer, initialState);
 
+    // Cargar los datos del usuario al iniciar
     useEffect(() => {
         const init = async () => {
             try {
                 const serviceToken = window.localStorage.getItem('serviceToken');
                 if (serviceToken && verifyToken(serviceToken)) {
                     setSession(serviceToken);
-                    const response = await axios.get(`${apiUrl}/auth/me`);
-                    const { user } = response.data;
-                    dispatch({
-                        type: LOGIN,
-                        payload: {
-                            isLoggedIn: true,
-                            user
-                        }
-                    });
+                    const response = await axios.get('/auth/me');
+                    console.log('Imprimiento response.data:', response.data)
+                    const {user } = response.data;
+                    console.log('Imprimiendo desde provider:', user)
+
+                    if (user) {
+                        dispatch({
+                            type: LOGIN,
+                            payload: {
+                                isLoggedIn: true,
+                                user
+                            }
+                        });
+                    } else {
+                        console.error('No se encontró el usuario en la respuesta de la API.');
+                        dispatch({
+                            type: LOGOUT
+                        });
+                    }
                 } else {
                     dispatch({
                         type: LOGOUT
                     });
                 }
             } catch (err) {
-                console.error(err);
+                console.error('Error al cargar los datos del usuario:', err);
                 dispatch({
                     type: LOGOUT
+                });
+            } finally {
+                // Marcar la autenticación como inicializada
+                dispatch({
+                    type: INITIALIZED
                 });
             }
         };
@@ -87,110 +91,57 @@ export const JWTProvider = ({ children }) => {
     }, []);
 
     const login = async (email, password) => {
-        
         try {
-            const response = await axios.post(`${apiUrl}/auth/login`, { email, password });
-            const { token, user } = response.data;
-        
-            if (token) {
-                setSession(token); 
+            const response = await axios.post('/auth/login', { email, password });
+            const { token, ...userData } = response.data; // Extrae el token y el resto de los datos
+    
+            if (token && userData) {
+                setSession(token);
                 dispatch({
                     type: LOGIN,
                     payload: {
                         isLoggedIn: true,
-                        user
+                        user: userData
                     }
                 });
-            } 
-            
+            } else {
+                throw new Error('No se recibieron datos válidos del usuario.');
+            }
         } catch (error) {
-
-            // Lanza el error con el mensaje adecuado
             throw new Error(error.message);
-         
         }
-    
-        
     };
-    
+
+    // Función para cerrar sesión
+    const logout = () => {
+        setSession(null);
+        dispatch({ type: LOGOUT });
+    };
+
+    // Función para registrar un usuario
     const register = async (nombres, apellidos, email, password, departamento) => {
         try {
-            // Realizar la solicitud POST para registrar el usuario
-            const response = await axios.post(`${apiUrl}/auth/register`, {
+            await axios.post(`${apiUrl}/auth/register`, {
                 nombres,
                 apellidos,
                 email,
                 password,
                 departamento
             });
-    
-            // Obtener usuarios del localStorage o usar el nuevo usuario
-            const localUsers = JSON.parse(window.localStorage.getItem('users') || '[]');
-            const users = [
-                ...localUsers,
-                { nombres, apellidos, email, password, departamento }
-            ];
-    
-            // Guardar los usuarios actualizados en localStorage
-            window.localStorage.setItem('users', JSON.stringify(users));
-    
         } catch (error) {
-            if(error.statusCode === 400)
-                throw new Error('Este correo electrónico ya se encuentra registrado');
-           
-        
-        }       
-    };
-    
-   
-
-    const logout = () => {
-        setSession(null);
-        dispatch({ type: LOGOUT });
-    };
-
-    const requestResetPassword = async (email) => {
-        try {
-          const response = await axios.patch(`${apiUrl}/auth/request-reset-password`,{
-            email
-          });
-      
-          if (response && response.status === 200) 
-            console.log('Enviando correo.....');
-          
-        } catch (error) {
-          
-            throw new Error(error.message);
+            throw new Error('Este correo electrónico ya se encuentra registrado');
         }
     };
 
-    const resetPassword = async (resetPasswordToken, password) => {
-        try {
-          const response = await axios.patch(`${apiUrl}/auth/reset-password`,{
-            resetPasswordToken,
-            password
-          });
-      
-          if (response && response.status === 200) 
-            console.log('Contraseña restablecida');
-          
-        } catch (error) {
-          
-            throw new Error(error.message);
-        }
-    };
-      
-
-
-
-    const updateProfile = () => {};
-
-    if (state.isInitialized !== undefined && !state.isInitialized) {
+    // Mostrar un loader mientras se inicializa la autenticación
+    if (!state.isInitialized) {
         return <Loader />;
     }
 
     return (
-        <JWTContext.Provider value={{ ...state, login, logout, register,requestResetPassword, resetPassword, updateProfile }}>{children}</JWTContext.Provider>
+        <JWTContext.Provider value={{ ...state, login, logout, register }}>
+            {children}
+        </JWTContext.Provider>
     );
 };
 

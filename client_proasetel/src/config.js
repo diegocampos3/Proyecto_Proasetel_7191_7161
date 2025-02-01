@@ -1,4 +1,4 @@
-export const DASHBOARD_PATH = '/management/stafflist';
+export const DASHBOARD_PATH = '/roles';
 export const HORIZONTAL_MAX_ITEM = 7;
 
 export const MenuOrientation = {

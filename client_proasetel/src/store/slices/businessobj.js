@@ -46,12 +46,11 @@ export default slice.reducer;
 
 // ----------------------
 
-const apiUrl = import.meta.env.VITE_APP_API_URL2;
 
 export function getBusinessObj() {
     return async () => {
         try {
-            const response = await axios.get(`${apiUrl}/objetivos-empr`);
+            const response = await axios.get(`/objetivos-empr`);
             dispatch(slice.actions.getBusinessObjSuccess(response.data));
         } catch (error) {
             dispatch(slice.actions.hasError(error));
@@ -63,7 +62,7 @@ export function getBusinessObj() {
 export function addBusinessObj(businessObj){
     return async () => {
         try {
-           const response =  await axios.post(`${apiUrl}/objetivos-empr`, businessObj);
+           const response =  await axios.post(`/objetivos-empr`, businessObj);
            dispatch(slice.actions.addBusinessObjSuccess(response.data)); 
            return { success: true}
         } catch (error) {
@@ -77,7 +76,7 @@ export function addBusinessObj(businessObj){
 export function updateBusinessObj(businessObjId, businessObj) {
     return async () => {
         try {
-            const response = await axios.patch(`${apiUrl}/objetivos-empr/${businessObjId}`, businessObj);
+            const response = await axios.patch(`/objetivos-empr/${businessObjId}`, businessObj);
             dispatch(slice.actions.updateBusinessObjSuccess(response.data));
             return { success: true}
         } catch (error) {
@@ -91,7 +90,7 @@ export function updateBusinessObj(businessObjId, businessObj) {
 export function removeBusinessObj(businessObjId) {
     return async () => {
         try {
-            const response = await axios.delete(`${apiUrl}/objetivos-empr/${businessObjId}`);
+            const response = await axios.delete(`/objetivos-empr/${businessObjId}`);
             dispatch(slice.actions.removeBusinessObjSuccess(response.data));
             return { success: true};
         } catch (error) {

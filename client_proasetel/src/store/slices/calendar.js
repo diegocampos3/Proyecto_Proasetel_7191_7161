@@ -48,13 +48,11 @@ export default slice.reducer;
 
 // ----------------------------------------------------------------------
 
-// Definición de constante para API de proasetel
-const apiUrl = import.meta.env.VITE_APP_API_URL2;
 
 export function getEvents() {
     return async () => {
         try {
-            const response = await axios.get(`${apiUrl}/periodo`);
+            const response = await axios.get(`/periodo`);
             dispatch(slice.actions.getEventsSuccess(response.data));
         } catch (error) {
             dispatch(slice.actions.hasError(error));
@@ -65,7 +63,7 @@ export function getEvents() {
 export function addEvent(event) {
     return async () => {
         try {
-            const response = await axios.post(`${apiUrl}/periodo`, event);
+            const response = await axios.post(`/periodo`, event);
              dispatch(slice.actions.addEventSuccess(response.data));
          } catch (error) {
              dispatch(slice.actions.hasError(error));
@@ -76,7 +74,7 @@ export function addEvent(event) {
 export function updateEvent(eventId,event) {
     return async () => {
         try {
-            const response = await axios.patch(`${apiUrl}/periodo/${eventId}`, event);
+            const response = await axios.patch(`/periodo/${eventId}`, event);
             dispatch(slice.actions.updateEventSuccess(response.data));
 
         } catch (error) {
@@ -88,7 +86,7 @@ export function updateEvent(eventId,event) {
 export function removeEvent(eventId) {
     return async () => {
         try {
-            const response = await axios.delete(`${apiUrl}/periodo/${eventId}`);
+            const response = await axios.delete(`/periodo/${eventId}`);
             dispatch(slice.actions.removeEventSuccess(response.data));
         } catch (error) {
             dispatch(slice.actions.hasError(error));

@@ -20,12 +20,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 
 // table header options
 const headCells = [
-    {
-        id: 'id',
-        numeric: false,
-        label: 'ID',
-        align: 'center'
-    },
+    
     {
         id: 'titulo',
         numeric: false,
@@ -81,17 +76,7 @@ const DepObjTableHeader = ({ drawer, onSelectAllClick, order, orderBy, numSelect
     return (
         <TableHead>
             <TableRow>
-                <TableCell padding="checkbox" sx={drawer ? { pl: 3, display: 'none' } : { pl: 3 }}>
-                    <Checkbox
-                        color="primary"
-                        indeterminate={numSelected > 0 && numSelected < rowCount}
-                        checked={rowCount > 0 && numSelected === rowCount}
-                        onChange={onSelectAllClick}
-                        inputProps={{
-                            'aria-label': 'select all desserts'
-                        }}
-                    />
-                </TableCell>
+                
                 {numSelected > 0 && (
                     <TableCell padding="none" colSpan={12}>
                         <EnhancedTableToolbar numSelected={selected.length} />

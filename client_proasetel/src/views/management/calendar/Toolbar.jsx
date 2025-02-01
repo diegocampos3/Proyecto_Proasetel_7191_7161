@@ -13,6 +13,8 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 
 // third-party
 import { format } from 'date-fns';
+import { es } from 'date-fns/locale';
+
 
 // assets
 import { IconChevronLeft, IconChevronRight, IconLayoutGrid, IconTemplate, IconLayoutList, IconListNumbers } from '@tabler/icons-react';
@@ -20,19 +22,9 @@ import { IconChevronLeft, IconChevronRight, IconLayoutGrid, IconTemplate, IconLa
 // constant
 const viewOptions = [
     {
-        label: 'Month',
+        label: 'Mes',
         value: 'dayGridMonth',
         icon: IconLayoutGrid
-    },
-    {
-        label: 'Week',
-        value: 'timeGridWeek',
-        icon: IconTemplate
-    },
-    {
-        label: 'Day',
-        value: 'timeGridDay',
-        icon: IconLayoutList
     },
     {
         label: 'Agenda',
@@ -59,7 +51,7 @@ const Toolbar = ({ date, view, onClickNext, onClickPrev, onClickToday, onChangeV
         <Grid alignItems="center" container justifyContent="space-between" spacing={3} {...others} sx={{ pb: 3 }}>
             <Grid item>
                 <Button variant="outlined" onClick={onClickToday}>
-                    Today
+                    Hoy
                 </Button>
             </Grid>
             <Grid item>
@@ -68,7 +60,7 @@ const Toolbar = ({ date, view, onClickNext, onClickPrev, onClickToday, onChangeV
                         <IconChevronLeft />
                     </IconButton>
                     <Typography variant="h3" color="textPrimary">
-                        {format(date, 'MMMM yyyy')}
+                    {format(date, 'MMMM yyyy', { locale: es })}
                     </Typography>
                     <IconButton onClick={onClickNext} size="large">
                         <IconChevronRight />

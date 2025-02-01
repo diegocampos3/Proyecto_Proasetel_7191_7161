@@ -21,6 +21,7 @@ const StaffList = () => {
     const [drawerOpen, setDrawerOpen] = useState(false);
 
     const { personal } = useSelector((state) => state.personal);
+     
 
     const handleToggleDrawer = () => {
         setDrawerOpen(!drawerOpen);
@@ -31,7 +32,6 @@ const StaffList = () => {
     }, []);
 
     useEffect(() => {
-        console.log("Datos de personal extraídos:", personal);
         setRows(personal);
     }, [personal]);
 

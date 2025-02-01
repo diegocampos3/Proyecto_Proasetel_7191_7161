@@ -235,22 +235,8 @@ const DepObjTable = ({ open, setOpen, listDepObj, setRowValue, objEmpDep }) => {
                                         selected={isItemSelected}
                                         {...(open && { sx: { '&:first-of-type': { borderTop: '1px solid', borderTopColor: 'divider' } } })}
                                     >
-                                        <TableCell
-                                            padding="checkbox"
-                                            sx={open ? { pl: 3, display: 'none' } : { pl: 3 }}
-                                            onClick={() => handleClick(row.nombre)}
-                                        >
-                                            <Checkbox
-                                                color="primary"
-                                                checked={isItemSelected}
-                                                inputProps={{
-                                                    'aria-labelledby': labelId
-                                                }}
-                                            />
-                                        </TableCell>
-                                        <TableCell onClick={() => (open ? handleDrawerOpen(row) : '')}>
-                                            <Typography variant="h5" >{row.idObjDep.slice(0,6)}</Typography>
-                                        </TableCell>
+                                        
+                
                                         
                                         <TableCell onClick={() => (open ? handleDrawerOpen(row) : '')} >{capitalizeFirstLetters(row.titulo)}</TableCell>
                                         <TableCell sx={open ? { display: 'none' } : {}}>{row.descripcion}</TableCell>
