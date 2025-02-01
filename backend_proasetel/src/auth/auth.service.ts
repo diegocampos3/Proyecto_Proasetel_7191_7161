@@ -69,11 +69,10 @@ export class AuthService {
 
       delete user.password;
 
-      console.log(`Imprimiento Dep: ${user.departamento}`)
 
       return {
         ...user,
-        token: this.getJwtToken( {id: user.id })
+        token: this.getJwtToken( {id: user.id , rol: user.rol})
       }
 
     } catch (error) {
@@ -89,7 +88,7 @@ export class AuthService {
 
     const user = await this.userRepository.findOne({ 
       where: { email},
-      select: { email: true, password: true, id: true}
+      select: { email: true, password: true, id: true, rol:true}
     });
 
     if (!user)
@@ -102,7 +101,7 @@ export class AuthService {
 
     return {
       ...user,
-      token: this.getJwtToken( {id: user.id })
+      token: this.getJwtToken( {id: user.id, rol: user.rol })
     }
 
   }

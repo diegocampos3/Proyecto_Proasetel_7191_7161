@@ -6,6 +6,7 @@ import { ObjetivosPers } from 'src/data-access/entities/objetivosPers.entity';
 import { Repository } from 'typeorm';
 import { ObjetivosDep } from 'src/data-access/entities/objetivosDep.entity';
 import { validate as isUUID } from 'uuid'
+import { User } from 'src/data-access/entities/usuario.entity';
 
 @Injectable()
 export class ObjetivosPersService {
@@ -24,31 +25,24 @@ export class ObjetivosPersService {
 
 
 
-  async create(createObjetivosPerDto: CreateObjetivosPerDto) {
+  async create(createObjetivosPerDto: CreateObjetivosPerDto, user: User) {
     
-    const { objetivoDep: tituloObj, ...objPersData } = createObjetivosPerDto;
+    const { objetivoDep: objId } = createObjetivosPerDto;
 
-    let objetivoDep: ObjetivosDep | undefined = undefined;
-
-    if( tituloObj){
-      objetivoDep = await this.objetivosDepRepository.findOne({
-        where: { titulo: tituloObj.toLocaleLowerCase() }
-      })
-
-      if(!objetivoDep)
-        throw new NotFoundException(`El objetivo departamental ${tituloObj} no fue encontrado`);
-    }
+    const objetivoDep = await this.objetivosDepRepository.findOne({
+      where: {idObjDep: objId}
+    })
 
     try {
       
       const objPers = this.objetivosPersRepository.create({
-        ...objPersData,
-        objetivoDep
+        objetivoDep,
+        user
       });
 
       await this.objetivosPersRepository.save(objPers);
 
-      return objPers;
+      return this.findAll(user);
 
     } catch (error) {
        this.handleDBExceptions(error);
@@ -57,8 +51,22 @@ export class ObjetivosPersService {
 
   }
 
-  findAll() {
-    return this.objetivosPersRepository.find({});
+ async findAll(user: User) {
+    const objPers =  await this.objetivosPersRepository.find({
+      where: {user: user},
+      relations: ['objetivoDep'],
+    });
+
+    if(objPers.length > 0){
+      return objPers.map(item => ({
+        idObjPer: item.idObjPer,
+        idObjDep: item.objetivoDep.idObjDep,
+        titulo: item.objetivoDep.titulo,
+        descripcion: item.objetivoDep.descripcion
+      }))
+    }else{
+      return []
+    }
   }
 
  async findOne(term: string) {
@@ -132,11 +140,13 @@ export class ObjetivosPersService {
 
   }
 
- async remove(id: string) {
+ async remove(id: string, user: User) {
 
     const objetivoPers = await this.findOne( id );
 
     await this.objetivosPersRepository.remove( objetivoPers);
+
+    return this.findAll(user)
   }
 
 

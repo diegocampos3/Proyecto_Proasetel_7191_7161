@@ -2,6 +2,7 @@ import { Entity, ManyToOne, OneToMany, PrimaryColumn, PrimaryGeneratedColumn } f
 import { Departamento } from "./departamento.entity";
 import { ObjetivosEmpr } from "./objetivosEmpr.entity";
 import { ObjetivosDep } from "./objetivosDep.entity";
+import { ObjetivosPersProp } from "./objetivos-pers-prop.entity";
 
 @Entity()
 export class ObjtivosEmpDep {
@@ -24,5 +25,11 @@ export class ObjtivosEmpDep {
         ( objetivoDep ) => objetivoDep.objtivoEmpDep
     )
     objetivoDep: ObjetivosDep;
+
+    @OneToMany(
+        () =>  ObjetivosPersProp,
+        (objetivosPersProp) => objetivosPersProp.objtivoEmpDep
+    )
+    objtivoEmpDep: ObjetivosPersProp
     
 }
