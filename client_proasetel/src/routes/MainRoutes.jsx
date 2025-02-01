@@ -189,6 +189,21 @@ const ManagDeparmentObj = Loadable(lazy(() => import ('views/management/departme
 const ManagAddDepartmentObj = Loadable(lazy(() => import ('views/management/departmentObj/manageDepartObjs/addDepObj')));
 const ManagEditDepartmentObj = Loadable(lazy(() => import ('views/management/departmentObj/manageDepartObjs/editDepObj')));
 
+
+// staff - routing
+const StaffGoalsBusinessObj = Loadable(lazy(() => import ('views/evaluated-staff/staff-goals/businessobj')));
+const StaffGoalsDepartmentObj = Loadable(lazy(() => import('views/evaluated-staff/staff-goals/departmentobj')));
+const StaffGoalsPersonalObj = Loadable(lazy(() => import ('views/evaluated-staff/staff-goals/personalobj')));
+const StaffGoalsPersonalObjProp = Loadable(lazy(() => import('views/evaluated-staff/staff-goals/personalobjprop')));
+const StaffGoalsAddPersonalObjProp = Loadable(lazy(() => import('views/evaluated-staff/staff-goals/personalobjprop/addPerPropObj')))
+const StaffGoalsEditPersonalObjProp = Loadable(lazy(() => import('views/evaluated-staff/staff-goals/personalobjprop/editPerPropObj')))
+
+// Aceptar objetivos personales propuestos
+const AcceptObjPersProp = Loadable(lazy(() => import('views/management/departmentObj/acceptObjPersProp') ));
+
+// Roles
+const RolesUser = Loadable(lazy(() => import('views/roles')))
+
 // ==============================|| MAIN ROUTING ||============================== //
 
 const MainRoutes = {
@@ -199,6 +214,10 @@ const MainRoutes = {
         </AuthGuard>
     ),
     children: [
+        {
+            path: '/roles',
+            element: <RolesUser/>
+        },
         {
            path: '/management/stafflist',
            element: <ManagStaffList />
@@ -244,6 +263,35 @@ const MainRoutes = {
         {
             path: '/management/departmentobj/manageDepartObj/editDepartObj',
             element: <ManagEditDepartmentObj/>
+        },
+        {
+            path: '/evaluated-staff/staff-goals/businessobj',
+            element: <StaffGoalsBusinessObj/>
+
+        },
+        {
+            path: '/evaluated-staff/staff-goals/departmentobj',
+            element: <StaffGoalsDepartmentObj/>
+        },
+        {
+            path: '/evaluated-staff/staff-goals/personalobj',
+            element: <StaffGoalsPersonalObj/>
+        },
+        {
+            path: '/evaluated-staff/staff-goals/personalobjprop',
+            element: <StaffGoalsPersonalObjProp/>
+        },
+        {
+            path: '/evaluated-staff/staff-goals/personalobjprop/addPerPropObj',
+            element: <StaffGoalsAddPersonalObjProp/>
+        },
+        {
+            path: '/evaluated-staff/staff-goals/personalobjprop/editPerPropObj',
+            element: <StaffGoalsEditPersonalObjProp/>
+        },
+        {
+            path: '/management/departmentObj/acceptObjPersProp',
+            element: <AcceptObjPersProp/>
         },
         {
             path: '/widget/statistics',

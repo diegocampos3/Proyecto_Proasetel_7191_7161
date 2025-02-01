@@ -83,9 +83,7 @@ const DepObjFilter = ({rows, setRows, objEmpDep }) => {
             />
             <div style={{ textAlign: "center" }}>
             <h2>{capitalizeFirstLetters(objEmpDep.titulo)}</h2>
-            <h5 style={{ color: "darkgray", marginTop: "0.5em" }}>
-            {objEmpDep.id.slice(0, 6)}
-            </h5>
+            
             </div>
             
 

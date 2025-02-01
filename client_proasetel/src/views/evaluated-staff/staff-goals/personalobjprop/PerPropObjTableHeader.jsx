@@ -20,25 +20,25 @@ import DeleteIcon from '@mui/icons-material/Delete';
 
 // table header options
 const headCells = [
+    
     {
-        id: 'id',
+        id: 'titulo',
         numeric: false,
-        label: 'ID',
-        align: 'center'
-    },
-    {
-        id: 'nombre',
-        numeric: false,
-        label: 'Nombre'
+        label: 'Título'
     },
     {
         id: 'descripcion',
         numeric: false,
         label: 'Descripción'
     },
+    {
+        id: 'aceptacion',
+        numeric: false,
+        label: 'Aceptacion'
+    },
 ];
 
-// ==============================|| CLIENT LIST - HEADER TOOLBAR ||============================== //
+// ==============================|| OBJ PERSONAL PROP LIST - HEADER TOOLBAR ||============================== //
 
 const EnhancedTableToolbar = ({ numSelected }) => (
     <Toolbar sx={{ p: 0, pl: 1, pr: 1, ...(numSelected > 0 && { color: 'secondary.main' }) }}>
@@ -68,7 +68,7 @@ EnhancedTableToolbar.propTypes = {
 
 // ==============================|| CLIENT LIST - HEADER ||============================== //
 
-const ClientTableHeader = ({ drawer, onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort, selected }) => {
+const PerPropObjTableHeader = ({ drawer, onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort, selected }) => {
     const createSortHandler = (property) => (event) => {
         onRequestSort(event, property);
     };
@@ -76,17 +76,7 @@ const ClientTableHeader = ({ drawer, onSelectAllClick, order, orderBy, numSelect
     return (
         <TableHead>
             <TableRow>
-                <TableCell padding="checkbox" sx={drawer ? { pl: 3, display: 'none' } : { pl: 3 }}>
-                    <Checkbox
-                        color="primary"
-                        indeterminate={numSelected > 0 && numSelected < rowCount}
-                        checked={rowCount > 0 && numSelected === rowCount}
-                        onChange={onSelectAllClick}
-                        inputProps={{
-                            'aria-label': 'select all desserts'
-                        }}
-                    />
-                </TableCell>
+                
                 {numSelected > 0 && (
                     <TableCell padding="none" colSpan={12}>
                         <EnhancedTableToolbar numSelected={selected.length} />
@@ -125,7 +115,7 @@ const ClientTableHeader = ({ drawer, onSelectAllClick, order, orderBy, numSelect
     );
 };
 
-ClientTableHeader.propTypes = {
+PerPropObjTableHeader.propTypes = {
     drawer: PropTypes.bool,
     selected: PropTypes.array,
     numSelected: PropTypes.number.isRequired,
@@ -136,4 +126,4 @@ ClientTableHeader.propTypes = {
     rowCount: PropTypes.number.isRequired
 };
 
-export default ClientTableHeader;
+export default PerPropObjTableHeader;

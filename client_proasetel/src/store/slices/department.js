@@ -55,12 +55,11 @@ export default slice.reducer;
 
 // .......................................
 
-const apiUrl = import.meta.env.VITE_APP_API_URL2;
 
 export function getDepartments(){
     return async () => {
         try {
-            const response = await axios.get(`${apiUrl}/departamentos`);
+            const response = await axios.get(`/departamentos`);
             dispatch(slice.actions.getDepartmentsSuccess(response.data))
         } catch (error) {
             dispatch(slice.actions.hasError(error));
@@ -71,7 +70,7 @@ export function getDepartments(){
 export function getDetailsUsersDep(departmentId){
     return async () => {
         try {
-            const response = await axios.get(`${apiUrl}/departamentos/details/${departmentId}`);
+            const response = await axios.get(`/departamentos/details/${departmentId}`);
             console.log('Datos del departamento _Redux:', response.data); // Verifica los datos antes de despacharlos
 
             dispatch(slice.actions.getDetailsUsersDepSuccess(response.data));
@@ -86,7 +85,7 @@ export function getDetailsUsersDep(departmentId){
 export function addDepartment(department){
     return async () => {
         try {
-            const response = await axios.post(`${apiUrl}/departamentos`, department);
+            const response = await axios.post(`/departamentos`, department);
             dispatch(slice.actions.addDepartmentSuccess(response.data));
             return { success: true}
         } catch (error) {
@@ -99,7 +98,7 @@ export function addDepartment(department){
 export function updateDepartment(departmentId, department){
     return async () => {
         try {
-            const response = await axios.patch(`${apiUrl}/departamentos/${departmentId}`, department);
+            const response = await axios.patch(`/departamentos/${departmentId}`, department);
             dispatch(slice.actions.updateDepartmentSuccess(response.data));
             return { success: true };
 
@@ -114,7 +113,7 @@ export function updateDepartment(departmentId, department){
 export function removeDepartment(departmentId){
     return async () => {
         try {
-            const response = await axios.delete(`${apiUrl}/departamentos/${departmentId}`);
+            const response = await axios.delete(`/departamentos/${departmentId}`);
             dispatch(slice.actions.removeDepartmentSuccess(response.data));
             return { success: true};
         } catch (error) {

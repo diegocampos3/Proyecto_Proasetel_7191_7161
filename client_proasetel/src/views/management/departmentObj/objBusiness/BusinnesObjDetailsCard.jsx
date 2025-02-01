@@ -123,7 +123,7 @@ const BusinnesObjDetailsCard = ({idbp, id, titulo, descripcion, setListBusinessO
                     </Grid>
                 </Grid>
                 <Grid item xs={12}>
-                    <Typography variant="caption">Objetivo Empresarial_{id.slice(0,6)}</Typography>
+                    <Typography variant="caption">Objetivo Empresarial</Typography>
                     <Typography variant="h3">{capitalizeFirstLetters(titulo)}</Typography>
                     <Typography variant="caption">Titulo</Typography>
                 </Grid>

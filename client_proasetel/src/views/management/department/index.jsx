@@ -7,9 +7,10 @@ import CardContent from '@mui/material/CardContent';
 import Grid from '@mui/material/Grid';
 
 // project-imports
-import ClientFilter from './ClientFilter';
-import ClientDrawer from './ClientDrawer';
-import ClientTable from './ClientTable';
+
+import DepartmentDrawer from './DepartmentDrawer';
+import DepartmentFilter from './DepartmentFilter';
+import DepartmentTable from './DepartmentTable';
 import EditDepartment from './EditDepartment';
 import MainCard from 'ui-component/cards/MainCard';
 
@@ -18,7 +19,7 @@ import { getDepartments, updateDepartment } from 'store/slices/department';
 
 // ==============================|| DEPARTMENT LIST ||============================== //
 
-const ClientList = () => {
+const DepartmentList = () => {
     const [open, setOpen] = useState(false);
     const [listDepartments, setListDepartments] = useState([]) 
 
@@ -42,17 +43,17 @@ const ClientList = () => {
         <MainCard content={false}>
             {/* filter section */}
             <CardContent>
-                <ClientFilter {...{rows: departments, setRows: setListDepartments}} />
+                <DepartmentFilter {...{rows: departments, setRows: setListDepartments}} />
             </CardContent>
 
             {/* table */}
             <Box display={open ? 'flex' : 'block'}>
                 <Grid container sx={{ position: 'relative' }}>
                     <Grid item sm={open ? 5 : 12} xs={12}>
-                        <ClientTable open={open} setOpen={setOpen} listDepartments={listDepartments} setRowValue={setRowValue} />
+                        <DepartmentTable  open={open} setOpen={setOpen} listDepartments={listDepartments} setRowValue={setRowValue} />
                     </Grid>
                     <Grid item sm={open ? 7 : 12} xs={12} sx={{ borderLeft: '1px solid', borderLeftColor: 'divider' }}>
-                        <ClientDrawer open={open} setOpen={setOpen} rowValue={rowValue} />
+                        <DepartmentDrawer open={open} setOpen={setOpen} rowValue={rowValue} />
                     </Grid>
                     
                 </Grid>
@@ -61,4 +62,4 @@ const ClientList = () => {
     );
 };
 
-export default ClientList;
+export default DepartmentList;

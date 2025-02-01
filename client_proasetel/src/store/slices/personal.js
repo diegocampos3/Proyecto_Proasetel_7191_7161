@@ -37,13 +37,11 @@ const slice = createSlice({
 // Reducer
 export default slice.reducer;
 
-// Definición de constante para API de proasetel
-const apiUrl = import.meta.env.VITE_APP_API_URL2;
 
 export function getPersonal() {
     return async () => {
         try {
-            const response = await axios.get(`${apiUrl}/auth`);
+            const response = await axios.get(`/auth`);
             dispatch(slice.actions.getPersonalSuccess(response.data))
         } catch (error) {
             dispatch(slice.actions.hasError(error))
@@ -54,19 +52,16 @@ export function getPersonal() {
 export function updatePersonal(data) {
     return async (dispatch) => {
         try {
-            console.log('Entrando a la actualizacion')
             const response = await axios.patch(
-                `${apiUrl}/auth/update-user/${data.id}`,
+                `/auth/update-user/${data.id}`,
                 {
                     rol: data.rol,
                     departamento: data.departamento,
                     isActive: data.isActive
                 }
             );
-            console.log('Respuesta de actualización:', response.data);
             dispatch(slice.actions.updatePersonalSuccess(response.data));
         } catch (error) {
-            console.error('Error updating user:', error);
             dispatch(slice.actions.hasError(error));
         }
     };

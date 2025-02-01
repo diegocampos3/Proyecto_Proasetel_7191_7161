@@ -10,18 +10,22 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 // project imports
 import NavItem from './NavItem';
 import NavGroup from './NavGroup';
-import menuItem from 'menu-items';
 import useConfig from 'hooks/useConfig';
 
 import { MenuOrientation } from 'config';
 import { Menu } from 'menu-items/widget';
 import { HORIZONTAL_MAX_ITEM } from 'config';
 import { useGetMenu, useGetMenuMaster } from 'api/menu';
+import useMenuItems from 'hooks/useMenuItems';
+
 
 // ==============================|| SIDEBAR MENU LIST ||============================== //
 
 const MenuList = () => {
     const downMD = useMediaQuery((theme) => theme.breakpoints.down('md'));
+    const menuItem = useMenuItems(); // Esto es correcto
+
+    console.log('Imprimiendo items de hook:', menuItem)
 
     const { menuOrientation } = useConfig();
     const { menuLoading } = useGetMenu();
@@ -31,6 +35,8 @@ const MenuList = () => {
 
     const [selectedID, setSelectedID] = useState('');
     const [menuItems, setMenuItems] = useState({ items: [] });
+
+    
 
     let widgetMenu = Menu();
 

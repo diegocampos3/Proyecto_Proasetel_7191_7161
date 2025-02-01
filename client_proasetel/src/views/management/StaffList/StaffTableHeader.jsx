@@ -17,11 +17,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 
 // table header options
 const headCells = [
-    {
-        id: 'id',
-        numeric: true,
-        label: 'ID'
-    },
+    
     {
         id: 'nombres',
         numeric: false,
@@ -86,7 +82,7 @@ EnhancedTableToolbar.propTypes = {
 
 // ==============================|| LEAD - TABLE HEADER ||============================== //
 
-function StaffTableHeader({ onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort, selected }) {
+function StaffTableHeader({ order, orderBy, numSelected, onRequestSort, selected }) {
     const createSortHandler = (property) => (event) => {
         onRequestSort(event, property);
     };
@@ -94,17 +90,6 @@ function StaffTableHeader({ onSelectAllClick, order, orderBy, numSelected, rowCo
     return (
         <TableHead>
             <TableRow>
-                <TableCell padding="checkbox" sx={{ pl: 3 }}>
-                    <Checkbox
-                        color="primary"
-                        indeterminate={numSelected > 0 && numSelected < rowCount}
-                        checked={rowCount > 0 && numSelected === rowCount}
-                        onChange={onSelectAllClick}
-                        inputProps={{
-                            'aria-label': 'select all desserts'
-                        }}
-                    />
-                </TableCell>
                 {numSelected > 0 && (
                     <TableCell padding="none" colSpan={12}>
                         <EnhancedTableToolbar numSelected={selected.length} />

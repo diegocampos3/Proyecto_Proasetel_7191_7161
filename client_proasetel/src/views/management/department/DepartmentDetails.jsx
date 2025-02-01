@@ -31,7 +31,7 @@ import { getDetailsUsersDep } from 'store/slices/department';
 
 // ==============================|| CLIENT LIST - DETAILS ||============================== //
 
-const ClientDetails = ({ rowValue, handleDrawerClose }) => {
+const DepartmentDetails = ({ rowValue, handleDrawerClose }) => {
     const theme = useTheme();
     const balance = Math.floor(Math.random() * 4);
     const matchesXs = useMediaQuery(theme.breakpoints.down('sm'));
@@ -184,9 +184,9 @@ const ClientDetails = ({ rowValue, handleDrawerClose }) => {
     );
 };
 
-ClientDetails.propTypes = {
+DepartmentDetails.propTypes = {
     rowValue: PropTypes.object,
     handleDrawerClose: PropTypes.func
 };
 
-export default ClientDetails;
+export default DepartmentDetails;

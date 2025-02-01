@@ -59,7 +59,7 @@ const Header = () => {
                     >
                         <IconMenu2 stroke={1.5} size="20px" />
                     </Avatar>
-                )}
+                )} 
             </Box>
 
             {/* header search */}

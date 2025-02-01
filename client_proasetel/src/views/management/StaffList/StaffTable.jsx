@@ -125,7 +125,6 @@ const StaffTable = ({ rows }) => {
                     </TableBody>
                 </Table>
             </TableContainer>
-
             {/* table pagination */}
             <TablePagination
                 rowsPerPageOptions={[10, 25]}
@@ -135,6 +134,8 @@ const StaffTable = ({ rows }) => {
                 page={page}
                 onPageChange={handleChangePage}
                 onRowsPerPageChange={handleChangeRowsPerPage}
+                labelRowsPerPage="Filas por página" 
+                labelDisplayedRows={({ from, to, count }) => `${from}-${to} de ${count}`} 
             />
         </>
     );

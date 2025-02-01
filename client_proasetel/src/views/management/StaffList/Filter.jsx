@@ -30,7 +30,7 @@ const Filter = ({ handleToggleDrawer, rows, setRows }) => {
         if (newString) {
             const newRows = rows?.filter((row) => {
                 let matches = true;
-                const properties = ['id', 'nombres', 'apellidos'];
+                const properties = ['nombres', 'apellidos','email'];
                 let containsQuery = false;
 
                 properties.forEach((property) => {

@@ -22,7 +22,7 @@ import { getObjDep } from 'store/slices/departmentobj';
 
 
 
-// ==============================||  LISTA DE OBJETIVOS EMPRESARIALES ||============================== //
+// ==============================||  LISTA DE OBJETIVOS DEPARTAMENTALES ||============================== //
 
 const ObjDepList = () => {
     const [open, setOpen] = useState(false);

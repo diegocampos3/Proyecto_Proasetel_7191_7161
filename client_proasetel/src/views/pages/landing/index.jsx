@@ -15,6 +15,8 @@ import CustomizeSection from './CustomizeSection';
 import PreBuildDashBoard from './PreBuildDashBoard';
 import StartupProjectSection from './StartupProjectSection';
 import { ThemeMode } from 'config';
+import Header from 'layout/MainLayout/Header';
+
 //import IncludeSection from './IncludeSection';
 //import RtlInfoSection from './RtlInfoSection';
 
@@ -26,6 +28,7 @@ const Landing = () => {
     return (
         <>
             {/* 1. header and hero section */}
+            <Header/>
             <Box
                 id="home"
                 sx={{
@@ -37,7 +40,7 @@ const Landing = () => {
                             : `linear-gradient(360deg, ${theme.palette.grey[100]} 1.09%, ${theme.palette.background.paper} 100%)`
                 }}
             >
-                <AppBar />
+                
                 <HeaderSection />
             </Box>
 
