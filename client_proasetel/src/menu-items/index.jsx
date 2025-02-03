@@ -6,11 +6,15 @@ import manager from './manager';
 import supervisor from './supervisor';
 import employee from './employee';
 
+// MENU PROASETEL 
+
+import management from './management';
+
 // ==============================|| MENU ITEMS ||============================== //
 
 
 const menuItems = {
-    items: [ manager, supervisor, employee ]
+    items: [ manager, supervisor, employee, management ]
     //items: [ management, dashboard, application, forms, elements, samplePage, pages, utilities, support, other]
 
 };

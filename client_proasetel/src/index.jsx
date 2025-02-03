@@ -34,18 +34,25 @@ import '@fontsource/poppins/500.css';
 import '@fontsource/poppins/600.css';
 import '@fontsource/poppins/700.css';
 
+
+// =========REACT QUERYS====
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
+const queryClient = new QueryClient();
 // ==============================|| REACT DOM RENDER ||============================== //
 
 const root = createRoot(document.getElementById('root'));
 
 root.render(
     <Provider store={store}>
-        <PersistGate loading={null} persistor={persister}>
-            <ConfigProvider>
-                <App />
-            </ConfigProvider>
-        </PersistGate>
-    </Provider>
+        <QueryClientProvider client={queryClient}>
+            <PersistGate loading={null} persistor={persister}>
+                <ConfigProvider>
+                    <App />
+                </ConfigProvider>
+            </PersistGate>
+        </QueryClientProvider>
+    </Provider >
 );
 
 // If you want your app to work offline and load faster, you can change
@@ -57,3 +64,5 @@ serviceWorker.unregister();
 // to log results (for example: reportWebVitals(console.log))
 // or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
 reportWebVitals();
+
+
