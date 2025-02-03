@@ -20,10 +20,16 @@ export class FormularioPreguntasController {
     return this.formularioPreguntasService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.formularioPreguntasService.findOne(id);
-  }
+  // @Get(':id')
+  // findOne(@Param('id') id: string) {
+  //   return this.formularioPreguntasService.findOne(id);
+  // }
+
+  @Get(':idFormulario')
+findAllByFormulario(@Param('idFormulario') idFormulario: string) {
+    return this.formularioPreguntasService.findAllByFormulario(idFormulario);
+    
+}
 
   @Patch(':id')
   @Auth(ValidRoles.admin, ValidRoles.supervisor)

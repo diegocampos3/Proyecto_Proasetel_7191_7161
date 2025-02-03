@@ -11,10 +11,6 @@ export class EvaluacionPers {
     @PrimaryGeneratedColumn('uuid')
     idEvaPer: string;
 
-    @ManyToOne(() => Formulario, (formulario) => formulario.evaluacionPers)
-    @JoinColumn({ name: 'idFormulario' })
-    formulario: Formulario;
-
     @ManyToOne(() => PeriodoEvaluacion, (periodoEva) => periodoEva.evaluacionPers)
     @JoinColumn({ name: 'idPeriodoEva' })
     periodoEva: PeriodoEvaluacion;

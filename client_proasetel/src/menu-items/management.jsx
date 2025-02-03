@@ -37,6 +37,28 @@ const managementList = {
     type: 'group',
     children: [
         {
+            id: 'formularios',
+            title: <FormattedMessage id="Formularios" />,
+            type: 'item',
+            url: '/management/formularios',
+            icon: icons.IconClipboardCheck,
+            breadcrumbs: false,
+            roles: ['admin']
+        },
+        {
+            id: 'config_evaluacion',
+            title: (
+                <span style={{ whiteSpace: 'normal', wordBreak: 'break-word' }}>
+                    <FormattedMessage id="Configuración - Evaluación" />
+                </span>
+                ),
+            type: 'item',
+            url: '/management/config_evaluacion',
+            icon: icons.IconFileSettings,
+            breadcrumbs: false,
+            roles: ['admin']
+        },
+        {
             id: 'personal',
             title: <FormattedMessage id="Personal" />,
             type: 'item',

@@ -5,6 +5,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { PeriodoEvaluacion } from 'src/data-access/entities/periodoEvaluacion.entity';
 import { PeriodoModule } from 'src/periodo/periodo.module';
 import { AuthModule } from 'src/auth/auth.module';
+import { FormularioModule } from 'src/formulario/formulario.module';
 
 @Module({
   controllers: [PeriodoEvaluacionController],
@@ -12,6 +13,7 @@ import { AuthModule } from 'src/auth/auth.module';
   imports: [
     TypeOrmModule.forFeature([PeriodoEvaluacion]),
     PeriodoModule,
+    FormularioModule,
     AuthModule
   ],
   exports: [TypeOrmModule]

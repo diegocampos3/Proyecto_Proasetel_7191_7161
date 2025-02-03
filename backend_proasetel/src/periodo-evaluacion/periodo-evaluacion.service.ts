@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, InternalServerErrorException, Logger } from '@nestjs/common';
+import { BadRequestException, Injectable, InternalServerErrorException, Logger, NotFoundException } from '@nestjs/common';
 import { CreatePeriodoEvaluacionDto } from './dto/create-periodo-evaluacion.dto';
 import { UpdatePeriodoEvaluacionDto } from './dto/update-periodo-evaluacion.dto';
 import { PeriodoEvaluacion } from 'src/data-access/entities/periodoEvaluacion.entity';
@@ -6,6 +6,7 @@ import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/data-access/entities/usuario.entity';
 import { isUUID } from 'class-validator';
+import { Formulario } from 'src/data-access/entities/formulario.entity';
 
 @Injectable()
 export class PeriodoEvaluacionService {
@@ -15,20 +16,30 @@ export class PeriodoEvaluacionService {
   constructor(
 
    @InjectRepository(PeriodoEvaluacion)
-    private readonly periodoEvaRepository: Repository<PeriodoEvaluacion>
+    private readonly periodoEvaRepository: Repository<PeriodoEvaluacion>,
+
+    @InjectRepository(Formulario)
+    private readonly formularioRepository: Repository<Formulario>
+    
   ){}
   
   
   
   async create(createPeriodoEvaluacionDto: CreatePeriodoEvaluacionDto, user: User) {
     try {
-      const { idPeriodo } = createPeriodoEvaluacionDto;
+      const { idFormulario, idPeriodo } = createPeriodoEvaluacionDto;
   
       if (!isUUID(idPeriodo)) {
         throw new BadRequestException('El periodo ingresado no existe o no es válido');
       }
+
+      const formulario = await this.formularioRepository.findOne({ where: { idFormulario: idFormulario } });
+      if (!formulario) {
+        throw new NotFoundException('El formulario con id ${idFormulario} no fue encontrado.');
+      }
   
       const periodoEva = this.periodoEvaRepository.create({
+        formulario: { idFormulario },
         periodo: { idPeriodo }, 
         user,      
       });

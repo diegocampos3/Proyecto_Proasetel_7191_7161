@@ -10,7 +10,7 @@ export class FormularioController {
   constructor(private readonly formularioService: FormularioService) {}
 
   @Post()
-  @Auth(ValidRoles.admin, ValidRoles.supervisor)
+  @Auth(ValidRoles.admin)
   create(@Body() createFormularioDto: CreateFormularioDto) {
     return this.formularioService.create(createFormularioDto);
   }
@@ -26,13 +26,13 @@ export class FormularioController {
   }
 
   @Patch(':id')
-  @Auth(ValidRoles.admin, ValidRoles.supervisor)
+  @Auth(ValidRoles.admin)
   update(@Param('id', ParseUUIDPipe) id: string, @Body() updateFormularioDto: UpdateFormularioDto) {
     return this.formularioService.update(id, updateFormularioDto);
   }
 
   @Delete(':id')
-  @Auth(ValidRoles.admin, ValidRoles.supervisor)
+  @Auth(ValidRoles.admin)
   remove(@Param('id', ParseUUIDPipe) id: string) {
     return this.formularioService.remove(id);
   }
