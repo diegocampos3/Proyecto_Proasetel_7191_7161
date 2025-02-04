@@ -199,7 +199,18 @@ const StaffGoalsEditPersonalObjProp = Loadable(lazy(() => import('views/evaluate
 const AcceptObjPersProp = Loadable(lazy(() => import('views/management/departmentObj/acceptObjPersProp') ));
 
 // Roles
-const RolesUser = Loadable(lazy(() => import('views/roles')))
+const RolesUser = Loadable(lazy(() => import('views/roles')));
+
+// DASHBOARD
+const DashboardManager = Loadable(lazy(() => import('views/dashboard/Manager')));
+const DashboardSupervisor = Loadable(lazy(() => import('views/dashboard/Supervisor')));
+const DashboardEmployee = Loadable(lazy(() => import('views/dashboard/employee')));
+
+
+// FEEDBACK
+const StaffGoalsFeedback = Loadable(lazy(() =>  import('views/evaluated-staff/feedback')))
+const StaffGoalsAddFeedback  = Loadable(lazy(() => import('views/evaluated-staff/feedback/addFeedback')))
+
 
 //management routing
 const ManagFormularios = Loadable(lazy(() => import('views/management/formularios')));
@@ -315,7 +326,28 @@ const MainRoutes = {
         },
         {
             path: '/management/formularios',
-            element: <ManagFormularios />
+            element: <ManagFormularios />,
+            path: '/dashboard/manager',
+            element: <DashboardManager/>
+
+        }, 
+        {
+            path: '/dashboard/supervisor',
+            element: <DashboardSupervisor/>
+
+        },
+        {
+            path: '/dashboard/employee',
+            element: <DashboardEmployee/>
+
+        },
+        {
+            path: '/evaluated-staff/feedback',
+            element: <StaffGoalsFeedback />
+        },
+        {
+            path: '/evaluated-staff/feedback/addFeedback',
+            element: <StaffGoalsAddFeedback/>
         },
         {
             path: '/widget/statistics',

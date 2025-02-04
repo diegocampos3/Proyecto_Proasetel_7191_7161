@@ -1,6 +1,7 @@
 
 
 // ---MENU PROSASETEL
+import dashboard from './dashboard';
 import management from './management';
 import manager from './manager';
 import supervisor from './supervisor';
@@ -14,7 +15,7 @@ import management from './management';
 
 
 const menuItems = {
-    items: [ manager, supervisor, employee, management ]
+    items: [ manager, supervisor, employee]
     //items: [ management, dashboard, application, forms, elements, samplePage, pages, utilities, support, other]
 
 };

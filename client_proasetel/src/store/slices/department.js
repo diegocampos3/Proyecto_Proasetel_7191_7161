@@ -6,7 +6,8 @@ import { dispatch } from "../index";
 const initialState = {
     error: null,
     departments: [],
-    departmentDetails: null // Detalles específicos de un departamento
+    departmentDetails: null,
+    supervisor: null
 };
 
 const slice = createSlice({
@@ -45,6 +46,11 @@ const slice = createSlice({
         getDetailsUsersDepSuccess(state, action){
             console.log("Imprimiendo desde Redux:", action.payload)
             state.departmentDetails = action.payload;
+        },
+
+        // GET SUPERVISOR
+        getSupervisorSuccess(state, action){
+            state.supervisor = action.payload
         }
 
     }
@@ -70,12 +76,24 @@ export function getDepartments(){
 export function getDetailsUsersDep(departmentId){
     return async () => {
         try {
+            console.log('Entrando a redux de departmnet')
             const response = await axios.get(`/departamentos/details/${departmentId}`);
             console.log('Datos del departamento _Redux:', response.data); // Verifica los datos antes de despacharlos
 
             dispatch(slice.actions.getDetailsUsersDepSuccess(response.data));
         } catch (error) {
             dispatch(slice.actions.hasError(error));
+        }
+    }
+}
+
+export function getSupervisor(idUser){
+    return async () => {
+        try {
+            const response = await axios.get(`/auth/supervisor/${idUser}`);
+            dispatch(slice.actions.getSupervisorSuccess(response.data))
+        } catch (error) {
+            dispatch(slice.actions.hasError(error))
         }
     }
 }

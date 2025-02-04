@@ -39,6 +39,7 @@ export class DepartamentosController {
     return this.departamentosService.details(id)
   }
 
+
   @Delete(':id')
   @Auth(ValidRoles.admin)
   remove(@Param('id', ParseUUIDPipe) id: string) {

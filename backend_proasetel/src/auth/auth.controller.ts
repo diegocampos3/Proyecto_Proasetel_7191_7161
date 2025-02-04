@@ -37,6 +37,11 @@ export class AuthController {
     };
   }
 
+  @Get('supervisor/:id')
+  getSupervisor(@Param('id') id: string){
+    return this.authService.getSupervisor(id);
+  }
+
   @Get(':term')
   findOne(@Param('term') term: string){
     return this.authService.findOne(term)
