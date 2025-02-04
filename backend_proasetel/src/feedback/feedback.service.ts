@@ -9,6 +9,7 @@ import { PeriodoEvaluacion } from '../data-access/entities/periodoEvaluacion.ent
 import { User } from 'src/data-access/entities/usuario.entity';
 import axios from 'axios';
 import { AnalisisSentimientos } from 'src/data-access/entities/analisis-sentimiento.entity';
+import { VerificarUserFeedbackDto } from './dto/verificarUser-feedback.dto';
 
 @Injectable()
 export class FeedbackService {
@@ -145,6 +146,23 @@ async findAll() {
      }
 
   }
+
+
+  async verificarUser(verificarUserFeedbackDto: VerificarUserFeedbackDto): Promise<boolean> {
+    const { peridoEvaId, userId } = verificarUserFeedbackDto;
+  
+    // Verifica si el periodo de evaluación y el usuario ya tienen un registro de feedback
+    const existingFeedback = await this.feedbackRepository.findOne({
+      where: {
+        periodoEva: { idPeriodoEva: peridoEvaId },  // Relacionamos el periodo de evaluación
+        user: { id: userId }                 // Relacionamos el usuario
+      },
+    });
+  
+    // Retorna true si el feedback ya existe, de lo contrario false
+    return !!existingFeedback;
+  }
+  
 
  async remove(id: string) {
    

@@ -24,6 +24,10 @@ import staffObjReducer from './slices/staffobj'
 import formularioReducer from './slices/formulario';
 import formularioPreguntasReducer from './slices/formularioPregunta';
 import respuestasPreguntasReducer from './slices/respuestasPreguntas';
+import staffObjReducer from './slices/staffobj';
+import periodsEvaReducer from './slices/periodsEva'
+import feedbackReducer from './slices/feedback'
+
 
 
 // ==============================|| COMBINE REDUCER ||============================== //
@@ -55,6 +59,9 @@ const reducer = combineReducers({
     formulario: formularioReducer,
     formularioPregunta: formularioPreguntasReducer,
     respuestasPreguntas: respuestasPreguntasReducer,
+    periodsEva: periodsEvaReducer,
+    feedback: feedbackReducer
+
 });
 
 export default reducer;

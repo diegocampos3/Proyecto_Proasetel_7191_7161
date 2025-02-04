@@ -5,6 +5,7 @@ import { UpdateFeedbackDto } from './dto/update-feedback.dto';
 import { Auth, GetUser } from 'src/auth/decorators';
 import { User } from 'src/data-access/entities/usuario.entity';
 import { ValidRoles } from 'src/auth/interfaces';
+import { VerificarUserFeedbackDto } from './dto/verificarUser-feedback.dto';
 
 @Controller('feedback')
 export class FeedbackController {
@@ -24,9 +25,14 @@ export class FeedbackController {
     return this.feedbackService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.feedbackService.findOne(id);
+  // @Get(':id')
+  // findOne(@Param('id') id: string) {
+  //   return this.feedbackService.findOne(id);
+  // }
+
+  @Post('/verificarUser')
+  verificarUser(@Body() verificarUserFeedbackDto: VerificarUserFeedbackDto){
+    return this.feedbackService.verificarUser(verificarUserFeedbackDto)
   }
 
   @Patch(':id')

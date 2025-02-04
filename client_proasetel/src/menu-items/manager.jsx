@@ -1,7 +1,7 @@
 import  { FormattedMessage}  from 'react-intl';
 
 // assets
-import { IconUserCheck, IconCalendar, IconBuilding, IconTarget} from '@tabler/icons-react';
+import { IconUserCheck, IconCalendar, IconBuilding, IconTarget, IconDeviceAnalytics} from '@tabler/icons-react';
 import { title } from 'process';
 
 
@@ -10,7 +10,8 @@ const icons = {
     IconUserCheck,
     IconCalendar,
     IconBuilding,
-    IconTarget
+    IconTarget,
+    IconDeviceAnalytics
 
 }
 
@@ -52,6 +53,28 @@ const manager = {
                 icon: icons.IconTarget
                 
             },
+            {
+                id: 'dashboarManager',
+                title: <FormattedMessage id="Analítica" />,
+                type: 'item',
+                url: '/dashboard/manager',
+                icon: icons.IconDeviceAnalytics,
+            },
+            {
+                id: 'dashboarSupervisor',
+                title: <FormattedMessage id="Analítica" />,
+                type: 'item',
+                url: '/dashboard/supervisor',
+                icon: icons.IconDeviceAnalytics,
+            },
+            {
+                id: 'dashboarEmployee',
+                title: <FormattedMessage id="Analítica" />,
+                type: 'item',
+                url: '/dashboard/employee',
+                icon: icons.IconDeviceAnalytics,
+            }
+
             
 
         ]

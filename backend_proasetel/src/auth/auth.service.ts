@@ -88,7 +88,7 @@ export class AuthService {
 
     const user = await this.userRepository.findOne({ 
       where: { email},
-      select: { email: true, password: true, id: true, rol:true}
+      select: { email: true, password: true, id: true, rol:true},
     });
 
     if (!user)
@@ -206,6 +206,48 @@ export class AuthService {
   //     this.handleDBErrors(error);
   //   }
   // }
+
+
+  // Obtener supervisor de usuario
+
+  async getSupervisor(id: string) {
+    // 1. Buscar el usuario por ID y cargar su departamento
+    const user = await this.userRepository.findOne({
+      where: { id },
+      relations: ['departamento'],
+    });
+  
+    if (!user) {
+      throw new NotFoundException(`Usuario con ID ${id} no encontrado`);
+    }
+  
+    if (!user.departamento) {
+      throw new NotFoundException(`El usuario no está asignado a ningún departamento`);
+    }
+  
+    // 2. Obtener el departamento del usuario
+    const departamentoId = user.departamento.id;
+  
+    // 3. Buscar al supervisor dentro de ese departamento
+    const supervisor = await this.userRepository.findOne({
+      where: { departamento: { id: departamentoId }, rol: 'supervisor' },
+      relations: ['departamento'],
+    });
+  
+    if (!supervisor) {
+      throw new NotFoundException(`No se encontró un supervisor en el departamento ${user.departamento.nombre}`);
+    }
+  
+    // 4. Retornar el supervisor encontrado
+    return {
+      id: supervisor.id,
+      nombres: supervisor.nombres,
+      apellidos: supervisor.apellidos,
+      email: supervisor.email,
+      departamento: supervisor.departamento.nombre,
+    };
+  }
+  
 
   async findAll() {
     return this.userRepository.find({

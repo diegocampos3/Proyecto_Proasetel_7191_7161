@@ -1,8 +1,14 @@
 import  { FormattedMessage}  from 'react-intl';
 
 // assets
-import { IconUserCheck, IconCalendar, IconBuilding, IconTarget, IconCheck, IconListDetails, IconFlag} from '@tabler/icons-react';
-import { title } from 'process';
+import { 
+    IconUserCheck, IconCalendar, 
+    IconBuilding, IconTarget, 
+    IconCheck, IconListDetails, 
+    IconFlag, IconDeviceAnalytics,
+    IconMessage2
+
+} from '@tabler/icons-react';
 
 
 // constant
@@ -13,7 +19,9 @@ const icons = {
     IconTarget,
     IconCheck,
     IconListDetails,
-    IconFlag
+    IconFlag,
+    IconDeviceAnalytics,
+    IconMessage2
 
 
 }
@@ -51,7 +59,23 @@ const employee = {
                 type: "item",
                 url: '/evaluated-staff/staff-goals/personalobjprop',
                 icon: icons.IconFlag
-            },    
+            },
+            {
+                id: 'dashboarEmployee',
+                title: <FormattedMessage id="Analítica" />,
+                type: 'item',
+                url: '/dashboard/employee',
+                icon: icons.IconDeviceAnalytics,
+            },
+            {
+                id: 'feedback',
+                title: <FormattedMessage id="Feedback" />,
+                type: 'item',
+                url: '/evaluated-staff/feedback',
+                icon: icons.IconMessage2,
+            } 
+            
+            
 
         ]
 }

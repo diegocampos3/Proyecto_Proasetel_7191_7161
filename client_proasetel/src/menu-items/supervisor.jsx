@@ -55,9 +55,14 @@ const supervisor = {
                 type: "item",
                 url: '/management/departmentObj/acceptObjPersProp',
                 icon: icons.IconListDetails
+            },
+            {
+                id: 'dashboarSupervisor',
+                title: <FormattedMessage id="Analítica" />,
+                type: 'item',
+                url: '/dashboard/supervisor',
+                icon: icons.IconDeviceAnalytics,
             }
-
-            
 
         ]
 }
