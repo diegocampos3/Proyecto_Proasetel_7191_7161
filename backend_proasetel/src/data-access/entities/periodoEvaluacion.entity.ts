@@ -3,6 +3,7 @@ import { User } from "src/data-access/entities/usuario.entity";
 import { Periodo } from "src/data-access/entities/periodo.entity";
 import { Feedback } from './feedback.entity';
 import { EvaluacionPers } from "./evaluacionPers.entity";
+import { Formulario } from "./formulario.entity";
 
 
 
@@ -12,7 +13,7 @@ export class PeriodoEvaluacion {
     @PrimaryGeneratedColumn('uuid')
     idPeriodoEva: string;
 
-     @ManyToOne(
+    @ManyToOne(
         () => Periodo, 
         (periodo) => periodo.periodoEvaluacion)
         @JoinColumn({ name: 'periodoId' })
@@ -22,6 +23,12 @@ export class PeriodoEvaluacion {
         () => User, 
         (user) => user.periodoeEvaluacion)
     user: User;
+
+    @ManyToOne(
+        () => Formulario, 
+        (formulario) => formulario.periodoEvaluacion)
+        @JoinColumn({ name: 'idFormulario' })
+    formulario: Formulario;
 
     @OneToMany(
         () => Feedback,

@@ -28,7 +28,7 @@ const BusinessObjFilter = ({rows, setRows }) => {
         if (newString) {
             const newRows = rows?.filter((row) => {
                 let matches = true;
-                const properties = ['id', 'titulo', 'descripcion'];
+                const properties = ['titulo', 'descripcion'];
                 let containsQuery = false;
 
                 properties.forEach((property) => {

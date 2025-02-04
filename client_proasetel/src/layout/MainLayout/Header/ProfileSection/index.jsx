@@ -53,6 +53,7 @@ const ProfileSection = () => {
     const { logout, user } = useAuth();
     const [open, setOpen] = useState(false);
 
+    console.log('Imprimiendo logout', user)
     /**
      * anchorRef is used on different components and specifying one type leads to other components throwing an error
      * */

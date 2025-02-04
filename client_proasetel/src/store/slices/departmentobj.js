@@ -66,7 +66,7 @@ const apiUrl = import.meta.env.VITE_APP_API_URL2;
 export function getBusinessObjDep() {
     return async () => {
         try {
-            const response = await axios.get(`${apiUrl}/objtivos-emp-dep`);
+            const response = await axios.get(`/objtivos-emp-dep`);
             console.log('datos desde axios:', response)
             dispatch(slice.actions.getBusinessObjDepSuccess(response.data));
         } catch (error) {
@@ -79,7 +79,7 @@ export function getBusinessObjDep() {
 export function addBusinessObjDep(data) {
     return async () => {
         try {
-            const response = await axios.post(`${apiUrl}/objtivos-emp-dep`, data);
+            const response = await axios.post(`/objtivos-emp-dep`, data);
             dispatch(slice.actions.addBusinessObjDepSuccess(response.data))
             return {success: true}
         } catch (error) {
@@ -92,7 +92,7 @@ export function addBusinessObjDep(data) {
 export function removeBusinessObjDep(id) {
     return async () => {
         try {
-            const response = await axios.delete(`${apiUrl}/objtivos-emp-dep/businessObj/${id}`);
+            const response = await axios.delete(`/objtivos-emp-dep/businessObj/${id}`);
             dispatch(slice.actions.removeBusinessObjDepSuccess(response.data));
             return {success: true}
         } catch (error) {
@@ -105,7 +105,7 @@ export function removeBusinessObjDep(id) {
 export function getObjDep(id) {
     return async () => {
         try {
-            const response = await axios.get(`${apiUrl}/objetivosDep/${id}`);
+            const response = await axios.get(`/objetivosDep/${id}`);
             dispatch(slice.actions.getObjDepSuccess(response.data));
         } catch (error) {
             dispatch(slice.actions.hasError(error));
@@ -116,8 +116,7 @@ export function getObjDep(id) {
 export function addObjDep(departmentObj){
     return async () => {
         try {
-            console.log("Anadir nuevo objetivo axios:", departmentObj)
-            const response = await axios.post(`${apiUrl}/objetivosDep`, departmentObj);
+            const response = await axios.post(`/objetivosDep`, departmentObj);
             dispatch(slice.actions.addObjDepSuccess(response.data));
             return {success: true}
         } catch (error) {
@@ -130,7 +129,7 @@ export function addObjDep(departmentObj){
 export function updateObjDep(id, departmentObj){
     return async () => {
         try {
-            const response = await axios.patch(`${apiUrl}/objetivosDep/${id}`, departmentObj );
+            const response = await axios.patch(`/objetivosDep/${id}`, departmentObj );
             dispatch(slice.actions.updateObjDepSuccess(response.data));
             return {success: true}
         } catch (error) {
@@ -143,7 +142,7 @@ export function updateObjDep(id, departmentObj){
 export function removeObjDep(departmentObj) {
     return async () => {
         try {
-            const response = await axios.delete(`${apiUrl}/objetivosDep`, {
+            const response = await axios.delete(`/objetivosDep`, {
                 data: departmentObj
             });
             dispatch(slice.actions.removeObjDepSuccess(response.data));

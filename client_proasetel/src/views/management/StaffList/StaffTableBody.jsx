@@ -20,7 +20,6 @@ import { Chance } from 'chance';
 
 // project imports
 import AddStaffDialog from './AddStaffDialog';
-import NewMessage from './NewMessage';
 import useConfig from 'hooks/useConfig';
 import { ImagePath, getImageUrl } from 'utils/getImageUrl';
 import { ThemeMode } from 'config';
@@ -85,17 +84,9 @@ const StaffTableBody = ({ row, selected, handleClick }) => {
     return (
         <>
             <TableRow hover role="checkbox" aria-checked={isItemSelected} tabIndex={-1} selected={isItemSelected}>
-                <TableCell sx={{ pl: 3 }} onClick={() => handleClick(row.nombres)}>
-                    <Checkbox color="primary" checked={isItemSelected} />
-                </TableCell>
-                <TableCell sx={{ cursor: 'pointer' }}>
-                    <Typography variant="h5">
-                        {row.id.slice(0,6)}
-                    </Typography>
-                </TableCell>
+
                 <TableCell>
                     {capitalizeFirstLetters(row.nombres)}
-
                 </TableCell>
                 <TableCell>
                     {capitalizeFirstLetters(row.apellidos)}
@@ -119,7 +110,6 @@ const StaffTableBody = ({ row, selected, handleClick }) => {
                         sx={{
                             bgcolor: mode === ThemeMode.DARK ? 'dark.main' : chipcolor,
                             color: color,
-                            cursor: 'pointer'
                         }}
                     />
                 </TableCell>
@@ -143,15 +133,13 @@ const StaffTableBody = ({ row, selected, handleClick }) => {
                             <Box sx={{ p: 2 }}>
                                 <Stack spacing={2} direction="row" alignItems="center" justifyContent="space-between">
                                     <Stack alignItems="center" direction="row" spacing={1}>
-                                        <Avatar
-                                            alt="User 1"
-                                            src={getImageUrl(`avatar-${Math.floor(Math.random() * 5) + 1}.png`, ImagePath.USERS)}
-                                        />
+                                        
                                         <Stack>
-                                            <Typography variant="subtitle2">Nombre Registrado</Typography>
-                                            <Typography variant="h5">{row.nombres} {row.apellidos}</Typography>
+                                            <Typography variant="subtitle2"></Typography>
+                                            <Typography variant="h5"></Typography>
                                         </Stack>
                                     </Stack>
+
                                     <Stack justifyContent="center">
                                         <Typography variant="subtitle2">Departamento</Typography>
                                         <Typography variant="h5">{capitalizeFirstLetters(row.departamento ? row.departamento : 'Ninguno')}
@@ -161,6 +149,17 @@ const StaffTableBody = ({ row, selected, handleClick }) => {
                                         <Typography variant="subtitle2">Rol</Typography>
                                         <Typography variant="h5">{capitalizeFirstLetters(row.rol)}</Typography>
                                     </Stack>
+                                    <TableCell>
+                                        <Chip
+                                            label={label}
+                                            size="small"
+                                            sx={{
+                                                bgcolor: mode === ThemeMode.DARK ? 'dark.main' : chipcolor,
+                                                color: color,
+                                            }}
+                                        />
+                                    </TableCell>
+                                    
                                     <Stack direction="row" spacing={1.25} justifyContent="center">
                                         <IconButton
                                             color="primary"

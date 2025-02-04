@@ -1,71 +1,73 @@
-import { useEffect, useRef, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useEffect, useRef, useState, useReducer, useContext  } from 'react';
 
-// material-ui
-import { useTheme } from '@mui/material/styles';
+import { Manager } from 'socket.io-client';
 import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
-import CardActions from '@mui/material/CardActions';
-import Chip from '@mui/material/Chip';
-import ClickAwayListener from '@mui/material/ClickAwayListener';
-import Divider from '@mui/material/Divider';
-import Grid from '@mui/material/Grid';
-import Paper from '@mui/material/Paper';
+import Badge from '@mui/material/Badge';
 import Popper from '@mui/material/Popper';
-import Stack from '@mui/material/Stack';
-import TextField from '@mui/material/TextField';
+import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
-import useMediaQuery from '@mui/material/useMediaQuery';
-
-// third-party
-import PerfectScrollbar from 'react-perfect-scrollbar';
-
-// project imports
-import MainCard from 'ui-component/cards/MainCard';
-import Transitions from 'ui-component/extended/Transitions';
-import NotificationList from './NotificationList';
-import { ThemeMode } from 'config';
-
-// assets
+import Grid from '@mui/material/Grid';
+import Snackbar from '@mui/material/Snackbar';
+import Alert from '@mui/material/Alert';
 import { IconBell } from '@tabler/icons-react';
+import axios from 'axios';
+import { useTheme } from '@mui/material/styles';
+import { ThemeMode } from 'config';
+import useMediaQuery from '@mui/material/useMediaQuery';
+import ClickAwayListener from '@mui/material/ClickAwayListener';
+import Transitions from 'ui-component/extended/Transitions';
+import MainCard from 'ui-component/cards/MainCard';
+import Stack from '@mui/material/Stack';
+import Chip from '@mui/material/Chip';
+import PerfectScrollbar from 'react-perfect-scrollbar';
+import Divider from '@mui/material/Divider';
+import { useSelector } from 'store';
+import accountReducer from 'store/accountReducer';
 
-// notification status options
-const status = [
-    {
-        value: 'all',
-        label: 'All Notification'
-    },
-    {
-        value: 'new',
-        label: 'New'
-    },
-    {
-        value: 'unread',
-        label: 'Unread'
-    },
-    {
-        value: 'other',
-        label: 'Other'
-    }
-];
-
-// ==============================|| NOTIFICATION ||============================== //
 
 const NotificationSection = () => {
     const theme = useTheme();
     const downMD = useMediaQuery(theme.breakpoints.down('md'));
-
     const [open, setOpen] = useState(false);
-    const [value, setValue] = useState('');
+    const [receivedMessages, setReceivedMessages] = useState([]);
+    const [notificationCount, setNotificationCount] = useState(0);
+    const [alertOpen, setAlertOpen] = useState(false);
+    const [alertMessage, setAlertMessage] = useState('');
+    const [events, setEvents] = useState([]);
 
-    /**
-     * anchorRef is used on different componets and specifying one type leads to other components throwing an error
-     * */
+
+    // Obtener eventos desde la API
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const response = await axios.get('http://localhost:3000/api/periodo');
+                const fetchedEvents = response.data;
+                const formattedEvents = fetchedEvents.map(event => ({
+                    id: event.idPeriodo,
+                    title: event.titulo,
+                    description: event.descripcion,
+                    start: event.fecha_ini,
+                    end: event.fecha_fin,
+                }));
+                setEvents(formattedEvents);
+                setNotificationCount(formattedEvents.length); // Actualiza el contador de notificaciones
+            } catch (error) {
+                console.error('Error al obtener los periodos:', error);
+            }
+        };
+
+        fetchData();
+    }, []);
+
     const anchorRef = useRef(null);
+    const socketRef = useRef(null);
 
     const handleToggle = () => {
         setOpen((prevOpen) => !prevOpen);
+        // if (!open) {
+        //     setNotificationCount(0); // Resetea el contador al abrir el menú
+        // }
     };
 
     const handleClose = (event) => {
@@ -75,43 +77,63 @@ const NotificationSection = () => {
         setOpen(false);
     };
 
-    const prevOpen = useRef(open);
-    useEffect(() => {
-        if (prevOpen.current === true && open === false) {
-            anchorRef.current.focus();
-        }
-        prevOpen.current = open;
-    }, [open]);
-
-    const handleChange = (event) => {
-        event?.target.value && setValue(event?.target.value);
+    const handleCloseAlert = () => {
+        setAlertOpen(false);
     };
+
+    const connectToServer = (token) => {
+        const manager = new Manager('http://localhost:3000/socket.io/socket.io.js', {
+            extraHeaders: { authentication: token },
+        });
+
+        const socket = manager.socket('/');
+        socketRef.current = socket;
+
+        socket.on('connect', () => console.log('Conectado al servidor'));
+        socket.on('disconnect', () => console.log('Desconectado del servidor'));
+
+        socket.on('message-form-server', (payload) => {
+            setAlertMessage(`Nuevo mensaje de ${payload.fullName}: ${payload.message}`);
+            setAlertOpen(true);
+        });
+    };
+
+    useEffect(() => {
+        const token = localStorage.getItem('serviceToken');
+        if (token) connectToServer(token);
+        return () => socketRef.current?.disconnect();
+    }, []);
 
     return (
         <>
-        {/*
             <Box sx={{ ml: 2 }}>
-                <Avatar
-                    variant="rounded"
-                    sx={{
-                        ...theme.typography.commonAvatar,
-                        ...theme.typography.mediumAvatar,
-                        transition: 'all .2s ease-in-out',
-                        bgcolor: theme.palette.mode === ThemeMode.DARK ? 'dark.main' : 'secondary.light',
-                        color: theme.palette.mode === ThemeMode.DARK ? 'warning.dark' : 'secondary.dark',
-                        '&[aria-controls="menu-list-grow"],&:hover': {
-                            bgcolor: theme.palette.mode === ThemeMode.DARK ? 'warning.dark' : 'secondary.dark',
-                            color: theme.palette.mode === ThemeMode.DARK ? 'grey.800' : 'secondary.light'
-                        }
-                    }}
-                    ref={anchorRef}
-                    aria-controls={open ? 'menu-list-grow' : undefined}
-                    aria-haspopup="true"
-                    onClick={handleToggle}
-                    color="inherit"
+                <Badge
+                    badgeContent={notificationCount} // Contador de notificaciones
+                    color="error" // Color del badge, puedes usar 'error' para que sea rojo
+                    invisible={notificationCount === 0} // Solo mostrar el badge si hay notificaciones
                 >
-                    <IconBell stroke={1.5} size="20px" />
-                </Avatar>
+                    <Avatar
+                        variant="rounded"
+                        sx={{
+                            ...theme.typography.commonAvatar,
+                            ...theme.typography.mediumAvatar,
+                            transition: 'all .2s ease-in-out',
+                            bgcolor: theme.palette.mode === ThemeMode.DARK ? 'dark.main' : 'secondary.light',
+                            color: theme.palette.mode === ThemeMode.DARK ? 'warning.dark' : 'secondary.dark',
+                            '&[aria-controls="menu-list-grow"],&:hover': {
+                                bgcolor: theme.palette.mode === ThemeMode.DARK ? 'warning.dark' : 'secondary.dark',
+                                color: theme.palette.mode === ThemeMode.DARK ? 'grey.800' : 'secondary.light',
+                            }
+                        }}
+                        ref={anchorRef}
+                        aria-controls={open ? 'menu-list-grow' : undefined}
+                        aria-haspopup="true"
+                        onClick={handleToggle}
+                        color="inherit"
+                    >
+                        <IconBell stroke={1.5} size="20px" />
+                    </Avatar>
+                </Badge>
             </Box>
 
             <Popper
@@ -121,15 +143,7 @@ const NotificationSection = () => {
                 role={undefined}
                 transition
                 disablePortal
-                modifiers={[
-                    {
-                        name: 'offset',
-                        options: {
-                            offset: [downMD ? 5 : 0, 20]
-                        }
-                    }
-                ]}
-            >
+                modifiers={[{ name: 'offset', options: { offset: [downMD ? 5 : 0, 20] } }]}>
                 {({ TransitionProps }) => (
                     <ClickAwayListener onClickAway={handleClose}>
                         <Transitions position={downMD ? 'top' : 'top-right'} in={open} {...TransitionProps}>
@@ -141,59 +155,47 @@ const NotificationSection = () => {
                                                 <Grid container alignItems="center" justifyContent="space-between" sx={{ pt: 2, px: 2 }}>
                                                     <Grid item>
                                                         <Stack direction="row" spacing={2}>
-                                                            <Typography variant="subtitle1">All Notification</Typography>
-                                                            <Chip
+                                                            <Typography variant="subtitle1">Todos los avisos</Typography>
+                                                            {/* <Chip
                                                                 size="small"
-                                                                label="01"
+                                                                label={notificationCount}
                                                                 sx={{ color: 'background.default', bgcolor: 'warning.dark' }}
-                                                            />
+                                                            /> */}
                                                         </Stack>
-                                                    </Grid>
-                                                    <Grid item>
-                                                        <Typography component={Link} to="#" variant="subtitle2" color="primary">
-                                                            Mark as all read
-                                                        </Typography>
                                                     </Grid>
                                                 </Grid>
                                             </Grid>
                                             <Grid item xs={12}>
+                                                {/* Usar PerfectScrollbar para el desplazamiento */}
                                                 <PerfectScrollbar
-                                                    style={{ height: '100%', maxHeight: 'calc(100vh - 205px)', overflowX: 'hidden' }}
-                                                >
+                                                    style={{
+                                                        height: 'calc(100vh - 250px)', // Ajusta la altura según tus necesidades
+                                                        overflowX: 'hidden',
+                                                        maxHeight: '400px', // Limita la altura máxima
+                                                    }}>
                                                     <Grid container direction="column" spacing={2}>
-                                                        <Grid item xs={12}>
-                                                            <Box sx={{ px: 2, pt: 0.25 }}>
-                                                                <TextField
-                                                                    id="outlined-select-currency-native"
-                                                                    select
-                                                                    fullWidth
-                                                                    value={value}
-                                                                    onChange={handleChange}
-                                                                    SelectProps={{
-                                                                        native: true
-                                                                    }}
-                                                                >
-                                                                    {status.map((option) => (
-                                                                        <option key={option.value} value={option.value}>
-                                                                            {option.label}
-                                                                        </option>
-                                                                    ))}
-                                                                </TextField>
-                                                            </Box>
-                                                        </Grid>
+                                                        {events.map((event) => (
+                                                            <Grid item key={event.id}>
+                                                                <Box sx={{ padding: 2, borderBottom: '1px solid #ccc' }}>
+                                                                    <Typography variant="h6" sx={{ fontWeight: 'bold', color: theme.palette.primary.main }}>
+                                                                        {event.title}
+                                                                    </Typography>
+                                                                    <Typography variant="body2" sx={{ color: theme.palette.text.secondary }}>
+                                                                        {event.description}
+                                                                    </Typography>
+                                                                    <Typography variant="caption" sx={{ color: theme.palette.text.disabled }}>
+                                                                        {new Date(event.start).toLocaleString()} - {new Date(event.end).toLocaleString()}
+                                                                    </Typography>
+                                                                </Box>
+                                                            </Grid>
+                                                        ))}
                                                         <Grid item xs={12} p={0}>
                                                             <Divider sx={{ my: 0 }} />
                                                         </Grid>
                                                     </Grid>
-                                                    <NotificationList />
                                                 </PerfectScrollbar>
                                             </Grid>
                                         </Grid>
-                                        <CardActions sx={{ p: 1.25, justifyContent: 'center' }}>
-                                            <Button size="small" disableElevation>
-                                                View All
-                                            </Button>
-                                        </CardActions>
                                     </MainCard>
                                 )}
                             </Paper>
@@ -201,9 +203,16 @@ const NotificationSection = () => {
                     </ClickAwayListener>
                 )}
             </Popper>
-        */}
+
+
+            <Snackbar open={alertOpen} onClose={handleCloseAlert} anchorOrigin={{ vertical: 'top', horizontal: 'center' }}>
+                <Alert onClose={handleCloseAlert} severity="info" sx={{ width: '100%' }}>
+                    {alertMessage}
+                </Alert>
+            </Snackbar>
         </>
     );
 };
 
 export default NotificationSection;
+

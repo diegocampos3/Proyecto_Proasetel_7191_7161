@@ -14,17 +14,20 @@ import userReducer from './slices/user';
 import cartReducer from './slices/cart';
 import kanbanReducer from './slices/kanban';
 
-
 // project imports PROASETEL
 import personalReducer from './slices/personal';
 import calendarReducer from './slices/calendar';
 import departmentReducer from './slices/department';
 import businessObjReducer from './slices/businessobj';
 import departmentObjReducer from './slices/departmentobj'
-
+import staffObjReducer from './slices/staffobj'
+import formularioReducer from './slices/formulario';
+import formularioPreguntasReducer from './slices/formularioPregunta';
+import respuestasPreguntasReducer from './slices/respuestasPreguntas';
 
 
 // ==============================|| COMBINE REDUCER ||============================== //
+
 
 const reducer = combineReducers({
     snackbar: snackbarReducer,
@@ -47,7 +50,11 @@ const reducer = combineReducers({
     personal: personalReducer,
     department: departmentReducer,
     businessObj: businessObjReducer,
-    departmentObj: departmentObjReducer
+    departmentObj: departmentObjReducer,
+    staffObj: staffObjReducer,
+    formulario: formularioReducer,
+    formularioPregunta: formularioPreguntasReducer,
+    respuestasPreguntas: respuestasPreguntasReducer,
 });
 
 export default reducer;

@@ -20,6 +20,7 @@ import Switch from '@mui/material/Switch';
 import TextField from '@mui/material/TextField';
 import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
+import { es } from 'date-fns/locale';
 
 import { LocalizationProvider, MobileDateTimePicker } from '@mui/x-date-pickers';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
@@ -238,9 +239,9 @@ const AddEventFrom = ({ event, range, handleDelete, handleCreate, handleUpdate, 
     
     return (
         <FormikProvider value={formik}>
-            <LocalizationProvider dateAdapter={AdapterDateFns}>
+            <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={es}>
                 <Form autoComplete="off" noValidate onSubmit={handleSubmit}>
-                    <DialogTitle>{event ? 'Edit Event' : 'Añadir Evento de Evaluación'}</DialogTitle>
+                    <DialogTitle>{event ? 'Editar Evento' : 'Añadir Evento '}</DialogTitle>
                     <Divider />
                     <DialogContent sx={{ p: 3 }}>
                         <Grid container spacing={gridSpacing}>
@@ -268,9 +269,10 @@ const AddEventFrom = ({ event, range, handleDelete, handleCreate, handleUpdate, 
                                 <MobileDateTimePicker
                                     label="Fecha Inicio"
                                     value={new Date(values.start)}
-                                    format="dd/MM/yyyy hh:mm a"
+                                    format="dd/MM/yyyy hh:mm aa"
                                     onChange={(date) => setFieldValue('start', date)}
                                     minDate={new Date()}
+                                    locale={es}
                                     slotProps={{
                                         textField: {
                                             InputProps: {
@@ -289,9 +291,10 @@ const AddEventFrom = ({ event, range, handleDelete, handleCreate, handleUpdate, 
                                 <MobileDateTimePicker
                                     label="Fecha Fin"
                                     value={new Date(values.end)}
-                                    format="dd/MM/yyyy hh:mm a"
+                                    format="dd/MM/yyyy hh:mm aa"
                                     onChange={(date) => setFieldValue('end', date)}
                                     minDate={new Date()}
+                                    locale={es}
                                     slotProps={{
                                         textField: {
                                             InputProps: {
@@ -347,7 +350,7 @@ const AddEventFrom = ({ event, range, handleDelete, handleCreate, handleUpdate, 
                                                 <FormControlLabel
                                                     value=""
                                                     control={<Radio color="default" />}
-                                                    label="Default"
+                                                    label="Por Defecto"
                                                     sx={{ pr: 1 }}
                                                 />
                                                 {textColor.map((item, index) => (

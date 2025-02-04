@@ -3,6 +3,8 @@ import { BeforeInsert, BeforeUpdate, Column, Entity, ManyToOne, OneToMany, Prima
 import { PeriodoEvaluacion } from "src/data-access/entities/periodoEvaluacion.entity";
 import { Feedback } from "./feedback.entity";
 import { EvaluacionPers } from "./evaluacionPers.entity";
+import { ObjetivosPers } from "./objetivosPers.entity";
+import { ObjetivosPersProp } from "./objetivos-pers-prop.entity";
 
 
 @Entity('usuarios')
@@ -72,6 +74,18 @@ export class User  {
 
     @OneToMany(() => EvaluacionPers, (evaluacionPers) => evaluacionPers.user)
     evaluacionPers: EvaluacionPers;
+
+    @OneToMany(
+        () => ObjetivosPers,
+        (objpers) => objpers.user
+    )
+    objpers: ObjetivosPers
+
+    @OneToMany(
+        () => ObjetivosPersProp,
+        (objetivosPersProp) => objetivosPersProp.user
+    )
+    objetivosPersProp: ObjetivosPersProp
 
     @BeforeInsert()
     checkFieldsBeforeInsert(){

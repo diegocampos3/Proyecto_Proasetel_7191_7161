@@ -6,8 +6,8 @@ import { Repository } from 'typeorm';
 import { CreateObjetivosDepDto } from './dto/create-objetivos-dep.dto';
 import { UpdateObjetivosDepDto } from './dto/update-objetivos-dep.dto';
 import { ObjetivosDep } from 'src/data-access/entities/objetivosDep.entity';
-import { Departamento } from 'src/data-access/entities/departamento.entity';
-import { ObjetivosEmpr } from 'src/data-access/entities/objetivosEmpr.entity';
+import { ObjtivosEmpDep } from 'src/data-access/entities/objtivos-emp-dep.entity';
+import { RemoveObjetivosDepDto } from './dto/remove-objectivos-dep.dto';
 
 @Injectable()
 export class ObjetivosDepService {
@@ -19,11 +19,8 @@ export class ObjetivosDepService {
     @InjectRepository(ObjetivosDep)
     private readonly objetivosDepRepository: Repository<ObjetivosDep>,
 
-    @InjectRepository(Departamento)
-    private readonly departamentoRepository: Repository<Departamento>,
-
-    @InjectRepository(ObjetivosEmpr)
-    private readonly objetivosEmprRepository: Repository<ObjetivosEmpr>
+    @InjectRepository(ObjtivosEmpDep)
+    private readonly objtivosEmpDepRepository: Repository<ObjtivosEmpDep>
 
   ){}
 
@@ -31,55 +28,35 @@ export class ObjetivosDepService {
 async create(createObjetivosDepDto: CreateObjetivosDepDto) {
     
     
-      const { departamento: departamentoNombre, objetivoEmpr: tituloObj, ...objDepData } = createObjetivosDepDto;
+      const { objtivoEmpDep: objId, ...data } = createObjetivosDepDto;
 
-      let departamento: Departamento | undefined = undefined;
-      let objetivoEmpr: ObjetivosEmpr| undefined = undefined;
+      const objtivoEmpDep = await this.objtivosEmpDepRepository.findOne({
+        where: {id: objId}
+      })
 
-      if(departamentoNombre){
-        departamento = await this.departamentoRepository.findOne({
-          where: { nombre: departamentoNombre.toLocaleLowerCase()}
-        })
-    
-        if( !departamento){
-          throw new NotFoundException(`El departamento ${departamentoNombre} no fue encontrado`);
-        }
-    
-      }
-    
-      if(tituloObj){
-        objetivoEmpr = await this.objetivosEmprRepository.findOne({
-          where: { titulo: tituloObj.toLocaleLowerCase()}
-        })
-    
-        if( !objetivoEmpr){
-          throw new NotFoundException(`El objetivo empresarial ${tituloObj} no fue encontrado`);
-        }
-        
-      }
-      
       try{
 
       // Preparar para la inserción
       const objDep = this.objetivosDepRepository.create( {
-        ...objDepData,
-        departamento,
-        objetivoEmpr
+        ...data,
+        objtivoEmpDep
 
       });
 
       await this.objetivosDepRepository.save(objDep);
 
-      return objDep
-
+      return this.findAll(objId);
 
     } catch (error) {
+
       this.handleDBExceptions(error)
     }
   }
 
-  findAll() {
-    return this.objetivosDepRepository.find({})
+  findAll(id: string) {
+    return this.objetivosDepRepository.find({
+      where: {objtivoEmpDep: {id}}
+    })
   }
 
   async findOne(term: string) {
@@ -120,67 +97,89 @@ async create(createObjetivosDepDto: CreateObjetivosDepDto) {
 
 async update(id: string, updateObjetivosDepDto: UpdateObjetivosDepDto) {
   
-  const { departamento: departamentoNombre, objetivoEmpr: tituloObj, ...restoDatos } = updateObjetivosDepDto;
 
-  let departamento: Departamento | undefined = undefined;
-  let objtivoEmpr: ObjetivosEmpr| undefined = undefined;
+    const {objtivoEmpDep: objId, ...data} = updateObjetivosDepDto;
+
+    const objDep = await this.objetivosDepRepository.preload({
+      idObjDep: id,
+      ...data
+    })
+
+    if(!objDep) throw new NotFoundException('El objetivo no due encontrado');
+
+    try {
+      await this.objetivosDepRepository.save(objDep);
+      return this.findAll(objId)
+
+    } catch (error) {
+
+      this.handleDBExceptions(error)
+    }
+  
+  
+  // const { departamento: departamentoNombre, objetivoEmpr: tituloObj, ...restoDatos } = updateObjetivosDepDto;
+
+  // let departamento: Departamento | undefined = undefined;
+  // let objtivoEmpr: ObjetivosEmpr| undefined = undefined;
   
 
 
-  if(departamentoNombre){
-    departamento = await this.departamentoRepository.findOne({
-      where: { nombre: departamentoNombre.toLocaleLowerCase()}
-    })
+  // if(departamentoNombre){
+  //   departamento = await this.departamentoRepository.findOne({
+  //     where: { nombre: departamentoNombre.toLocaleLowerCase()}
+  //   })
 
-    if( !departamento){
-      throw new NotFoundException(`El departamento ${departamentoNombre} no fue encontrado`);
-    }
+  //   if( !departamento){
+  //     throw new NotFoundException(`El departamento ${departamentoNombre} no fue encontrado`);
+  //   }
 
-  }
+  // }
 
-  if(tituloObj){
-    objtivoEmpr = await this.objetivosEmprRepository.findOne({
-      where: { titulo: tituloObj.toLocaleLowerCase()}
-    })
+  // if(tituloObj){
+  //   objtivoEmpr = await this.objetivosEmprRepository.findOne({
+  //     where: { titulo: tituloObj.toLocaleLowerCase()}
+  //   })
 
-    if( !objtivoEmpr){
-      throw new NotFoundException(`El objetivo empresarial ${tituloObj} no fue encontrado`);
-    }
+  //   if( !objtivoEmpr){
+  //     throw new NotFoundException(`El objetivo empresarial ${tituloObj} no fue encontrado`);
+  //   }
     
-  }
+  // }
 
-  const objToUpdate = await this.objetivosDepRepository.findOne({ where: { idObjDep: id}});
+  // const objToUpdate = await this.objetivosDepRepository.findOne({ where: { idObjDep: id}});
 
-  if( !objToUpdate)
-    throw new NotFoundException(`El objetivo con id ${id} no fue encontrado`);
+  // if( !objToUpdate)
+  //   throw new NotFoundException(`El objetivo con id ${id} no fue encontrado`);
 
-  try {
-    const updateObjDep = await this.objetivosDepRepository.save({
-      ...restoDatos,
-      departamento,
-      objtivoEmpr
-    });
+  // try {
+  //   const updateObjDep = await this.objetivosDepRepository.save({
+  //     ...restoDatos,
+  //     departamento,
+  //     objtivoEmpr
+  //   });
 
-    return updateObjDep;
+  //   return updateObjDep;
 
-  } catch (error) {
-    this.handleDBExceptions(error);
-  }
+  // } catch (error) {
+  //   this.handleDBExceptions(error);
+  // }
 
 }
 
-async  remove(id: string) {
+async  remove(removeObjetivosDepDto: RemoveObjetivosDepDto) {
     
-    const objetivoDep = await this.findOne( id );
+   const {id, objtivoEmpDep} = removeObjetivosDepDto; 
+   const objetivoDep = await this.findOne( id );
     
-    await this.objetivosDepRepository.remove( objetivoDep)
+    await this.objetivosDepRepository.remove( objetivoDep);
 
+    return this.findAll(objtivoEmpDep)
 }
 
   private handleDBExceptions( error: any): never{
     if( error.code === '23505')
-      throw new BadRequestException(error.detail)
-    
+      throw new BadRequestException('Ya existe un objetivo con ese título.');
+
     this.logger.error(error);
 
     throw new InternalServerErrorException('Unexpected error, check server logs')

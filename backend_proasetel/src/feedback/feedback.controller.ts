@@ -11,7 +11,7 @@ export class FeedbackController {
   constructor(private readonly feedbackService: FeedbackService) {}
 
   @Post()
-  @Auth( ValidRoles.empleado)
+  @Auth()
   create(
     @Body() createFeedbackDto: CreateFeedbackDto,
     @GetUser() user: User

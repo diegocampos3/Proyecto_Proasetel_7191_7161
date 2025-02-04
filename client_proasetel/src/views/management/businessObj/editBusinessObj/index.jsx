@@ -116,9 +116,6 @@ const EditBusinessObj = () => {
         <MainCard title={
             <>
                 Editar Objetivo Empresarial    
-                <Typography variant="h3"component="span" sx={{ color: 'grey', fontWeight: 'normal', ml: 2 }}>
-                    {initialData.id}
-                </Typography>
             </>
         }>
             {isInProgress && (

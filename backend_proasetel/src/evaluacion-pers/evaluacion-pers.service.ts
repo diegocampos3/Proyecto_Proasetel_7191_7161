@@ -18,17 +18,14 @@ export class EvaluacionPersService {
     @InjectRepository(EvaluacionPers)
     private readonly evaluacionPersRepository: Repository<EvaluacionPers>,
 
-    @InjectRepository(Formulario)
-    private readonly formularioRepository: Repository<Formulario>,
-
     @InjectRepository(PeriodoEvaluacion)
     private readonly periodoEvaRepository: Repository<PeriodoEvaluacion>,
 
-) {}
+){}
  
   async create(createEvaluacionPerDto: CreateEvaluacionPerDto, user: User): Promise<EvaluacionPers> {
-    const {  idFormulario, idPeriodoEva  } = createEvaluacionPerDto;
-    
+    const { idPeriodoEva  } = createEvaluacionPerDto;
+    try {
     //   Verificar si ya existe una evaluación activa para el mismo usuario y un formulario distinto
     //   const existingEvaluation = await this.evaluacionPersRepository.findOne({
     //     where: {
@@ -45,29 +42,19 @@ export class EvaluacionPersService {
     //     );
     //   } 
 
-      const formulario = await this.formularioRepository.findOne({ where: { idFormulario: idFormulario } });
-      if (!formulario) {
-        throw new NotFoundException('El formulario con id ${idFormulario} no fue encontrado.');
+      // Validar existencia de Periodo de Evaluación
+      const periodoEva = await this.periodoEvaRepository.findOne({ where: { idPeriodoEva } });
+      if (!periodoEva) {
+      throw new NotFoundException(`El periodo de evaluación con id ${idPeriodoEva} no fue encontrado.`);
       }
 
-          // Validar existencia de Periodo de Evaluación
-        const periodoEva = await this.periodoEvaRepository.findOne({ where: { idPeriodoEva } });
-        if (!periodoEva) {
-        throw new NotFoundException(`El periodo de evaluación con id ${idPeriodoEva} no fue encontrado.`);
-        }
-
-    
-    
-    try{
-
-    // Crear nueva evaluación
-    const newEvaluacionPers = this.evaluacionPersRepository.create({
-        formulario,        // Relación ManyToOne con Formulario
-        periodoEva,           // Relación ManyToOne con PeriodoEvaluacion (antes idPeriodoEva)
-        estado: createEvaluacionPerDto.estado,
-        user,              // Relación ManyToOne con User
+      // Crear nueva evaluación
+      const newEvaluacionPers = this.evaluacionPersRepository.create({
+      periodoEva,           // Relación ManyToOne con PeriodoEvaluacion (antes idPeriodoEva)
+      estado: createEvaluacionPerDto.estado,
+      user,              // Relación ManyToOne con User
       });
- 
+
       await this.evaluacionPersRepository.save(newEvaluacionPers);
       return newEvaluacionPers
     } catch (error) {
@@ -136,16 +123,8 @@ export class EvaluacionPersService {
 
   async update(id: string, updateEvaluacionPerDto: UpdateEvaluacionPerDto, user: User): Promise<EvaluacionPers> {
     try {
-      let formulario = null;
+
       let periodoEva = null;
-  
-      // Solo buscar formulario si se proporciona el idFormulario
-      if (updateEvaluacionPerDto.idFormulario) {
-        formulario = await this.formularioRepository.findOne({ where: { idFormulario: updateEvaluacionPerDto.idFormulario } });
-        if (!formulario) {
-          throw new NotFoundException(`El formulario con id ${updateEvaluacionPerDto.idFormulario} no fue encontrado.`);
-        }
-      }
   
       // Solo buscar periodo de evaluación si se proporciona el idPeriodoEva
       if (updateEvaluacionPerDto.idPeriodoEva) {
@@ -158,7 +137,6 @@ export class EvaluacionPersService {
       // Preload de la entidad EvaluacionPers con los cambios
       const evaluacion = await this.evaluacionPersRepository.preload({
         idEvaPer: id,
-        formulario: formulario || undefined,
         periodoEva: periodoEva || undefined,
         estado: updateEvaluacionPerDto.estado,  // Actualización de estado
         user,  // Mantener la relación con el usuario

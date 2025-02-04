@@ -2,22 +2,30 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { ObjetivosPersService } from './objetivos-pers.service';
 import { CreateObjetivosPerDto } from './dto/create-objetivos-per.dto';
 import { UpdateObjetivosPerDto } from './dto/update-objetivos-per.dto';
-import { Auth } from 'src/auth/decorators';
+import { Auth, GetUser } from 'src/auth/decorators';
 import { ValidRoles } from 'src/auth/interfaces';
+import { User } from 'src/data-access/entities/usuario.entity';
 
 @Controller('objetivosPers')
 export class ObjetivosPersController {
   constructor(private readonly objetivosPersService: ObjetivosPersService) {}
 
   @Post()
-  @Auth(ValidRoles.supervisor, ValidRoles.empleado)
-  create(@Body() createObjetivosPerDto: CreateObjetivosPerDto) {
-    return this.objetivosPersService.create(createObjetivosPerDto);
+  @Auth(ValidRoles.supervisor, ValidRoles.empleado, ValidRoles.admin)
+  create(
+    @Body() createObjetivosPerDto: CreateObjetivosPerDto,
+    @GetUser() user: User
+  
+  ) {
+    return this.objetivosPersService.create(createObjetivosPerDto, user);
   }
 
   @Get()
-  findAll() {
-    return this.objetivosPersService.findAll();
+  @Auth(ValidRoles.supervisor, ValidRoles.empleado, ValidRoles.admin)
+  findAll(
+    @GetUser() user: User
+  ) {
+    return this.objetivosPersService.findAll(user);
   }
 
   @Get(':id')
@@ -32,8 +40,11 @@ export class ObjetivosPersController {
   }
 
   @Delete(':id')
-  @Auth(ValidRoles.supervisor)
-  remove(@Param('id') id: string) {
-    return this.objetivosPersService.remove(id);
+  @Auth(ValidRoles.supervisor, ValidRoles.admin, ValidRoles.empleado)
+  remove(
+    @Param('id') id: string,
+    @GetUser() user: User
+  ) {
+    return this.objetivosPersService.remove(id, user);
   }
 }

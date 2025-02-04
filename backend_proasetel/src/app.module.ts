@@ -17,6 +17,9 @@ import { MailsModule } from './mails/mails.module';
 import { ConfigModule } from '@nestjs/config';
 
 import { EvaluacionObjetivoPersModule } from './evaluacion_objetivo_pers/evaluacion_objetivo_pers.module';
+import { ObjtivosEmpDepModule } from './objtivos-emp-dep/objtivos-emp-dep.module';
+import { ObjetivosPersPropModule } from './objetivos-pers-prop/objetivos-pers-prop.module';
+import { RespuestasPreguntasModule } from './respuestas_preguntas/respuestas_preguntas.module';
 
 @Module({
   imports: [
@@ -39,6 +42,9 @@ import { EvaluacionObjetivoPersModule } from './evaluacion_objetivo_pers/evaluac
     MessagesWsModule,
     MailsModule,
     EvaluacionObjetivoPersModule,
+    ObjtivosEmpDepModule,
+    ObjetivosPersPropModule,
+    RespuestasPreguntasModule,
   ],
   
 })

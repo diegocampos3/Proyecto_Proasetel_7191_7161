@@ -1,6 +1,6 @@
 import { BeforeInsert, BeforeUpdate, Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { User } from "./usuario.entity";
-import { ObjetivosDep } from "./objetivosDep.entity";
+import { ObjtivosEmpDep } from "./objtivos-emp-dep.entity";
 
 
 @Entity()
@@ -33,10 +33,10 @@ export class Departamento {
 
 
     @OneToMany(
-        () => ObjetivosDep,
+        () => ObjtivosEmpDep,
         ( objetivoDep ) => objetivoDep.departamento
     )
-    objetivoDep: ObjetivosDep;
+    objetivoDep: ObjtivosEmpDep;
 
 
     // Verificar antes de insertar

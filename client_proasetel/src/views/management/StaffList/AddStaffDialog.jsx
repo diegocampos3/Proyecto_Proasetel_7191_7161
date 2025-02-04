@@ -97,9 +97,6 @@ const AddStaffDialog = ({ open, handleToggleAddDialog, row }) => {
                                 ) : (
                                     <Stack direction="row" alignItems="center" spacing={1}>
                                         <Typography variant="h4">Editar Personal</Typography>
-                                        <Typography variant="h4" sx={{ color: 'grey.400' }}>
-                                            #{row.id}
-                                        </Typography>
                                     </Stack>
                                 )}
                                 <IconButton sx={{ p: 0 }} size="medium" onClick={handleToggleAddDialog}>

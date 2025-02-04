@@ -69,9 +69,10 @@ export class AuthService {
 
       delete user.password;
 
+
       return {
         ...user,
-        token: this.getJwtToken( {id: user.id })
+        token: this.getJwtToken( {id: user.id , rol: user.rol})
       }
 
     } catch (error) {
@@ -87,7 +88,7 @@ export class AuthService {
 
     const user = await this.userRepository.findOne({ 
       where: { email},
-      select: { email: true, password: true, id: true}
+      select: { email: true, password: true, id: true, rol:true}
     });
 
     if (!user)
@@ -96,9 +97,11 @@ export class AuthService {
     if ( !bcrypt.compareSync( password, user.password))
       throw new UnauthorizedException('Su correo o contraseña no es correcto');
 
+    console.log(`Imprimiento Dep: ${user.departamento}`)
+
     return {
       ...user,
-      token: this.getJwtToken( {id: user.id })
+      token: this.getJwtToken( {id: user.id, rol: user.rol })
     }
 
   }
@@ -208,6 +211,9 @@ export class AuthService {
     return this.userRepository.find({
       select: ['id', 'nombres', 'apellidos', 'email', 'rol', 'isActive'],
       relations: ['departamento'],
+      order: {
+        nombres: 'ASC',
+      }
     }).then(users => 
       users.map(user => ({
         ...user,

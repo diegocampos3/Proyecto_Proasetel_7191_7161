@@ -7,53 +7,80 @@ import { Feedback } from 'src/data-access/entities/feedback.entity';
 import { isUUID } from 'class-validator';
 import { PeriodoEvaluacion } from '../data-access/entities/periodoEvaluacion.entity';
 import { User } from 'src/data-access/entities/usuario.entity';
+import axios from 'axios';
+import { AnalisisSentimientos } from 'src/data-access/entities/analisis-sentimiento.entity';
 
 @Injectable()
 export class FeedbackService {
 
   private readonly logger = new Logger('Feedback');
+  analisisSentimientosRepository: any;
   constructor(
     @InjectRepository(Feedback)
     private readonly feedbackRepository: Repository<Feedback>,
 
     @InjectRepository(PeriodoEvaluacion)
-    private readonly periodoEvaRepository: Repository<PeriodoEvaluacion>
+    private readonly periodoEvaRepository: Repository<PeriodoEvaluacion>,
+
+    @InjectRepository(AnalisisSentimientos)
+    private readonly analisisSentRepository: Repository<AnalisisSentimientos>
   ){}
 
- async  create(createFeedbackDto: CreateFeedbackDto, user: User) {
-    
-    const { peridoEvaId, descripcion} = createFeedbackDto;
+  async create(createFeedbackDto: CreateFeedbackDto, user: User) {
+    const { peridoEvaId, descripcion } = createFeedbackDto;
 
     if (!isUUID(peridoEvaId))
       throw new BadRequestException('El ID del periodo evaluación no es válido');
 
     const periodoEva = await this.periodoEvaRepository.findOne({
-      where: {idPeriodoEva: peridoEvaId}
-    })
+      where: { idPeriodoEva: peridoEvaId },
+    });
 
-   if(!periodoEva)
-    throw new BadRequestException('El periodo evaluación no existe');
+    if (!periodoEva)
+      throw new BadRequestException('El periodo evaluación no existe');
 
+    try{
+      
+      const feedback = this.feedbackRepository.create({
+        periodoEva,
+        descripcion,
+        user,
+      });
 
-   try {
-    const feedback = this.feedbackRepository.create({
-      periodoEva,
-      descripcion,
-      user
+      await this.feedbackRepository.save(feedback);
 
-    })
+      const apiResponse = await axios.post('http://127.0.0.1:5000/analyze', {
+        comment: descripcion,
+      });
 
-    await this.feedbackRepository.save(feedback);
+      console.log(apiResponse.data);
 
-    return feedback;
+      const prediction = apiResponse.data.prediction;
 
-   } catch (error) {
-    console.error('Error al crear el feedback:', error.message);
-    throw new InternalServerErrorException('Error al crear el feedback');
-   }
+      let resultado = true;
+
+      if (prediction === 'negativo')
+        resultado = false
+
+      console.log('Resultado', resultado);
     
+      const analisis = this.analisisSentRepository.create({
+        idFeedback: feedback, // Relación con el feedback recién creado
+        resultado,
+      });
+
+      await this.analisisSentRepository.save(analisis);
+      
+    
+
+      return feedback;
+
+    } catch (error) {
+      console.error('Error al crear el feedback o análisis:', error.message);
+      throw new InternalServerErrorException('Error al crear el feedback o análisis de sentimientos');
+    }
   }
- 
+
 
 async findAll() {
     
@@ -71,6 +98,7 @@ async findAll() {
       throw new BadRequestException('Error al obtener las evaluaciones');
     }
   }
+
 
  async findOne(id: string) {
     

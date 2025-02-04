@@ -6,6 +6,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { fromZonedTime } from 'date-fns-tz';
 import { Not, Repository } from 'typeorm';
 import { validate as isUUID } from 'uuid'
+import { MessagesWsGateway } from 'src/messages-ws/messages-ws.gateway';
 
 
 @Injectable()
@@ -16,7 +17,10 @@ export class PeriodoService {
   constructor(
     
     @InjectRepository(Periodo)
-    private readonly periodoRepository: Repository<Periodo>
+    private readonly periodoRepository: Repository<Periodo>,
+    
+    private readonly messagesWsGateway: MessagesWsGateway  // Inyectamos el servicio de WebSocket
+
 
   ){}
  
@@ -55,6 +59,9 @@ async   create(createPeriodoDto: CreatePeriodoDto) {
 
       const periodo = this.periodoRepository.create(createPeriodoDto);
       await this.periodoRepository.save(periodo);
+    // Emitir la notificación de un nuevo período
+    this.messagesWsGateway.sendNewPeriodoNotification(`Se ha creado un nuevo periodo: ${periodo.titulo}`);
+
       return this.findAll();
         
     } catch (error) {
