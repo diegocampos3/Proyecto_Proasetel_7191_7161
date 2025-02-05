@@ -6,7 +6,8 @@ import { dispatch } from "store";
 const initialState ={
     error: null,
     feedback: [],
-    verificarUser: null
+    verificarUser: null,
+    satisfaction: {}
 }
 
 const slice = createSlice({
@@ -27,6 +28,11 @@ const slice = createSlice({
 
         verificarUserSuccess(state, action){
             state.verificarUser = action.payload
+        },
+
+        // GET SATISFACTION
+        getSatisfactionSuccess(state, action){
+            state.satisfaction = action.payload
         }
 
 
@@ -58,6 +64,19 @@ export function verificarUser(data) {
         try {
             const response = await axios.post('feedback/verificarUser', data);
             return response.data
+        } catch (error) {
+            dispatch(slice.actions.hasError(error))
+        }
+    }
+}
+
+
+export function getSatisfaction(){
+    return async () => {
+        try {
+            const response = await axios.get('analisis-sentimientos/satisfaction-data');
+            console.log('Analisis sentimientos data_axios:', response.data)
+            dispatch(slice.actions.getSatisfactionSuccess(response.data))
         } catch (error) {
             dispatch(slice.actions.hasError(error))
         }

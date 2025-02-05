@@ -10,7 +10,6 @@ export class Periodo {
     @Column()
     titulo: string;
 
-
     @Column()
     descripcion: string
 
@@ -19,6 +18,21 @@ export class Periodo {
 
     @Column({ type: 'timestamptz', nullable: true })
     fecha_fin: Date;
+
+    @Column({ type: 'timestamptz', nullable: true })
+    fecha_ini_config: Date;
+
+    @Column({ type: 'timestamptz', nullable: true })
+    fecha_fin_config: Date;
+
+    @Column({ type: 'timestamptz', nullable: true })
+    fecha_ini_eval: Date;
+
+    @Column({ type: 'timestamptz', nullable: true })
+    fecha_fin_eval: Date;
+
+    @Column({nullable: true})
+    estado: number;
 
     @Column()
     color: string;

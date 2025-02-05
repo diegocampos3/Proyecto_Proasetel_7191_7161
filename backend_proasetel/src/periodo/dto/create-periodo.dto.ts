@@ -17,6 +17,22 @@ export class CreatePeriodoDto {
     @IsDate()
     fecha_fin: Date;
 
+    @Type(() => Date)
+    @IsDate()
+    fecha_ini_config: Date;
+
+    @Type(() => Date)
+    @IsDate()
+    fecha_fin_config: Date;
+
+    @Type(() => Date)
+    @IsDate()
+    fecha_ini_eval: Date;
+
+    @Type(() => Date)
+    @IsDate()
+    fecha_fin_eval: Date;
+
     @IsString()
     color: string;
 

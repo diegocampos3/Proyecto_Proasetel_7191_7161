@@ -139,7 +139,7 @@ const ProgressDepartment = ({ isLoading }) => {
                                 <Typography variant="body2" color="textSecondary" sx={{ mt: 0.5 }}>
                                     {obj.progress}%
                                 </Typography>
-                                {selectedObjective && (
+                                {selectedObjective && selectedPeriod && (
                                     <>
                                         <Typography variant="h5" color="textSecondary" sx={{ mt: 1 }}>
                                             Personas asociadas:
@@ -179,6 +179,5 @@ ProgressDepartment.propTypes = {
 };
 
 export default ProgressDepartment;
-
 
 
