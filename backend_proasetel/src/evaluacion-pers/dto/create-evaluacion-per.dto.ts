@@ -1,13 +1,13 @@
-import { IsUUID, IsBoolean, IsOptional, IsNotEmpty, IsArray } from 'class-validator';
+// import { IsUUID, IsBoolean, IsOptional, IsNotEmpty, IsArray } from 'class-validator';
 
-export class CreateEvaluacionPerDto {
+// export class CreateEvaluacionPerDto {
 
-  @IsUUID()
-  @IsNotEmpty()
-  idPeriodoEva: string;
+//   @IsUUID()
+//   @IsNotEmpty()
+//   idPeriodoEva: string;
 
-  @IsBoolean()
-  @IsNotEmpty()
-  estado: boolean;
+//   @IsBoolean()
+//   @IsNotEmpty()
+//   estado: boolean;
 
-}
+// }

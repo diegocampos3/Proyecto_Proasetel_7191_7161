@@ -1,4 +1,5 @@
-import { IsString, IsNotEmpty, IsOptional, IsBoolean } from 'class-validator';
+import { IsString, IsNotEmpty, IsOptional, IsBoolean, IsNumber } from 'class-validator';
+import { Transform } from 'class-transformer';
 
 export class CreateFormularioDto {
     @IsString()
@@ -10,6 +11,7 @@ export class CreateFormularioDto {
     descripcion: string;
 
     @IsOptional()
-    @IsBoolean()
-    estado: boolean;
+    @IsNumber()
+    @Transform(({ value }) => (value === false ? 1 : value))
+    estado: number;
 }

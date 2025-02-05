@@ -1,4 +1,4 @@
-import { PartialType } from '@nestjs/mapped-types';
-import { CreateEvaluacionPerDto } from './create-evaluacion-per.dto';
+// import { PartialType } from '@nestjs/mapped-types';
+// import { CreateEvaluacionPerDto } from './create-evaluacion-per.dto';
 
-export class UpdateEvaluacionPerDto extends PartialType(CreateEvaluacionPerDto) {}
+// export class UpdateEvaluacionPerDto extends PartialType(CreateEvaluacionPerDto) {}

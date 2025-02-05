@@ -1,7 +1,7 @@
 import  { FormattedMessage}  from 'react-intl';
 
 // assets
-import { IconUserCheck, IconCalendar, IconBuilding, IconTarget, IconMouse, IconCheck, IconListDetails } from '@tabler/icons-react';
+import { IconUserCheck, IconCalendar, IconBuilding, IconTarget, IconMouse, IconCheck, IconListDetails, IconFileCheck } from '@tabler/icons-react';
 
 
 // constant
@@ -12,7 +12,8 @@ const icons = {
     IconTarget,
     IconMouse,
     IconCheck,
-    IconListDetails
+    IconListDetails,
+    IconFileCheck
 
 }
 
@@ -28,14 +29,20 @@ const supervisor = {
         children: [
             {
                 id: 'personal',
-                title: <FormattedMessage id="Personal" />,
+                title: 
+                <span style={{ whiteSpace: 'normal', wordBreak: 'break-word' }}>
+                    <FormattedMessage id="Personal" />
+                </span>,
                 type: 'item',
                 url: '/management/stafflist',
                 icon: icons.IconUserCheck,
             },
             {
                 id: 'selectbusinessObj',
-                title: <FormattedMessage id="Selección Objetivos Empresariales" />,
+                title: 
+                <span style={{ whiteSpace: 'normal', wordBreak: 'break-word' }}>
+                    <FormattedMessage id="Selección Objetivos Empresariales" />
+                </span>,
                 type: 'item',
                 url: '/management/departmentobj/selectBusinessObj',
                 icon: icons.IconCheck
@@ -43,7 +50,10 @@ const supervisor = {
             },
             {
                 id: 'businessObjDep',
-                title: <FormattedMessage id="Objetivos empresariales a cumplir" />,
+                title: 
+                <span style={{ whiteSpace: 'normal', wordBreak: 'break-word' }}>
+                    <FormattedMessage id="Objetivos empresariales a cumplir" />
+                </span>,
                 type: 'item',
                 url: '/management/departmentobj/businessObjDep',
                 icon: icons.IconBuilding
@@ -51,7 +61,10 @@ const supervisor = {
             },
             {
                 id: 'selectobjpersprop',
-                title: <FormattedMessage id="Lista de objetivos personales propuestos"/>,
+                title: 
+                <span style={{ whiteSpace: 'normal', wordBreak: 'break-word' }}>
+                    <FormattedMessage id="Lista de objetivos personales propuestos"/>
+                </span>,
                 type: "item",
                 url: '/management/departmentObj/acceptObjPersProp',
                 icon: icons.IconListDetails
@@ -62,7 +75,18 @@ const supervisor = {
                 type: 'item',
                 url: '/dashboard/supervisor',
                 icon: icons.IconDeviceAnalytics,
-            }
+            },
+            {
+                id: 'evaluacion_desempeno_laboral_supervisor',
+                title: (
+                <span style={{ whiteSpace: 'normal', wordBreak: 'break-word' }}>
+                    <FormattedMessage id="Evaluación de Desempeño Laboral"/>
+                </span>
+                ),
+                type: "item",
+                url: '/management/evaluacion_desempeno_laboral_supervisor',
+                icon: icons.IconFileCheck
+            }, 
 
         ]
 }

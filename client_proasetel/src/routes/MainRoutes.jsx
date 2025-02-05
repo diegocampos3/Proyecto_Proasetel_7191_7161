@@ -163,6 +163,7 @@ const AdvanceUITreeview = Loadable(lazy(() => import('views/ui-elements/advance/
 // pricing page routing
 const PagesPrice1 = Loadable(lazy(() => import('views/pages/pricing/Price1')));
 const PagesPrice2 = Loadable(lazy(() => import('views/pages/pricing/Price2')));
+const UnderConstruction = Loadable(lazy(() => import('views/pages/maintenance/UnderConstruction')));
 
 // utilities routing
 const UtilsTypography = Loadable(lazy(() => import('views/utilities/Typography')));
@@ -186,14 +187,19 @@ const ManagBusinessObjDep = Loadable(lazy(() => import('views/management/departm
 const ManagDeparmentObj = Loadable(lazy(() => import ('views/management/departmentObj/manageDepartObjs')))
 const ManagAddDepartmentObj = Loadable(lazy(() => import ('views/management/departmentObj/manageDepartObjs/addDepObj')));
 const ManagEditDepartmentObj = Loadable(lazy(() => import ('views/management/departmentObj/manageDepartObjs/editDepObj')));
+const EvaluacionDesempenoLaboralSupervisor = Loadable(lazy(() => import ('views/management/evaluacion_desempeno_laboral_supervisor')));
+const EvaluacionListObjSupervisor = Loadable(lazy(() => import ('views/management/evaluacion_desempeno_laboral_supervisor/evaluacion_list_obj/evaluacion_desempeno_laboral')));
+const EvaluacionPreguntasSupervisor = Loadable(lazy(() => import ('views/management/evaluacion_desempeno_laboral_supervisor/evaluacion_list_obj/evaluacion_preguntas/evaluacion_preg')));
 
 // staff - routing
 const StaffGoalsBusinessObj = Loadable(lazy(() => import ('views/evaluated-staff/staff-goals/businessobj')));
 const StaffGoalsDepartmentObj = Loadable(lazy(() => import('views/evaluated-staff/staff-goals/departmentobj')));
 const StaffGoalsPersonalObj = Loadable(lazy(() => import ('views/evaluated-staff/staff-goals/personalobj')));
 const StaffGoalsPersonalObjProp = Loadable(lazy(() => import('views/evaluated-staff/staff-goals/personalobjprop')));
-const StaffGoalsAddPersonalObjProp = Loadable(lazy(() => import('views/evaluated-staff/staff-goals/personalobjprop/addPerPropObj')))
-const StaffGoalsEditPersonalObjProp = Loadable(lazy(() => import('views/evaluated-staff/staff-goals/personalobjprop/editPerPropObj')))
+const StaffGoalsAddPersonalObjProp = Loadable(lazy(() => import('views/evaluated-staff/staff-goals/personalobjprop/addPerPropObj')));
+const StaffGoalsEditPersonalObjProp = Loadable(lazy(() => import('views/evaluated-staff/staff-goals/personalobjprop/editPerPropObj')));
+const EvaluacionDesempenoLaboral = Loadable(lazy(() => import('views/evaluated-staff/evaluacion_desempeno_laboral')));
+const EvaluacionPreguntas = Loadable(lazy(() => import('views/evaluated-staff/evaluacion_preguntas/evaluacion_preg')));
 
 // Aceptar objetivos personales propuestos
 const AcceptObjPersProp = Loadable(lazy(() => import('views/management/departmentObj/acceptObjPersProp') ));
@@ -229,6 +235,31 @@ const MainRoutes = {
         </AuthGuard>
     ),
     children: [
+        
+        {
+            path: '/views/pages/maintenance/UnderConstruction',
+            element: <UnderConstruction/>
+        },
+        {
+            path: '/management/evaluacion_desempeno_laboral_supervisor/evaluacion_list_obj/evaluacion_preguntas/evaluacion_preg/:idObjEvaluar',
+            element: <EvaluacionPreguntasSupervisor/>
+        },
+        {
+            path: '/management/evaluacion_desempeno_laboral_supervisor/evaluacion_list_obj/evaluacion_desempeno_laboral/:id',
+            element: <EvaluacionListObjSupervisor/>
+        },
+        {
+            path: '/management/evaluacion_desempeno_laboral_supervisor',
+            element: <EvaluacionDesempenoLaboralSupervisor/>
+        },
+        {
+            path: '/evaluated-staff/evaluacion_preguntas/evaluacion_preg/:idObjEvaluar',
+            element: <EvaluacionPreguntas/>
+        },
+        {
+            path: '/evaluated-staff/evaluacion_desempeno_laboral',
+            element: <EvaluacionDesempenoLaboral/>
+        },
         {
             path: '/roles',
             element: <RolesUser/>

@@ -108,8 +108,8 @@ const ItemFilter = ({ rows, setRows, idFormulario }) => {
 };
 
 ItemFilter.propTypes = {
-    setListPreguntasFormulario: PropTypes.func,
-    setListPreguntasFormulario: PropTypes.array
+    // setListPreguntasFormulario: PropTypes.func,
+    // setListPreguntasFormulario: PropTypes.array
 };
 
 export default ItemFilter;

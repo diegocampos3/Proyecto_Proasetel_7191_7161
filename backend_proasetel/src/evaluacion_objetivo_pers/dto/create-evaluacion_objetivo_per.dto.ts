@@ -1,12 +1,12 @@
-import { IsUUID, IsNumber} from 'class-validator';
+// import { IsUUID, IsNumber} from 'class-validator';
 
-export class CreateEvaluacionObjetivoPerDto {
-    @IsUUID()
-    idEvaPer: string;
+// export class CreateEvaluacionObjetivoPerDto {
+//     @IsUUID()
+//     idEvaPer: string;
 
-    @IsUUID()
-    idObjPer: string;
+//     @IsUUID()
+//     idObjPer: string;
 
-    @IsNumber()
-    nivelLogro: number;
-}
+//     @IsNumber()
+//     nivelLogro: number;
+// }

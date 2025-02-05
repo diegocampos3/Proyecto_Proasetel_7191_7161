@@ -193,9 +193,9 @@ const UsuariosListado = () => {
                     }}
                 >
                     <Chip
-                        label={value ? 'Usado' : 'Nuevo'} 
+                        label={value === 1 ? 'Nuevo' : value === 2 ? 'En uso' : 'Histórico'} 
                         size="small" 
-                        chipcolor={value ? 'success' : 'primary'} 
+                        chipcolor={value === 1 ? 'primary' : value === 2 ? 'success' : 'secondary'} 
                         sx={{
                             whiteSpace: 'normal', // Permite varias líneas
                             overflow: 'visible', // Evita truncamiento
@@ -216,7 +216,7 @@ const UsuariosListado = () => {
             minWidth: 100,
             flex: 0.5,
             renderCell: (params) => {
-                if (params.row.estado === false) {
+                if (params.row.estado === 1) {
                     return (
                         <>
                             <Tooltip title="Editar Formulario">

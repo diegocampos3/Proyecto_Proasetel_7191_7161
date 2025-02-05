@@ -5,6 +5,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ObjetivosPers } from 'src/data-access/entities/objetivosPers.entity';
 import { ObjetivosDepModule } from 'src/objetivos-dep/objetivos-dep.module';
 import { AuthModule } from 'src/auth/auth.module';
+import { ResultadoEvaluacionModule } from 'src/resultado_evaluacion/resultado_evaluacion.module';
 
 @Module({
   controllers: [ObjetivosPersController],
@@ -12,6 +13,7 @@ import { AuthModule } from 'src/auth/auth.module';
   imports:[
     TypeOrmModule.forFeature([ObjetivosPers]),
     ObjetivosDepModule,
+    // ResultadoEvaluacionModule,
     AuthModule
 
   ],

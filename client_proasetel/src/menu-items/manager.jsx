@@ -1,7 +1,7 @@
 import  { FormattedMessage}  from 'react-intl';
 
 // assets
-import { IconUserCheck, IconCalendar, IconBuilding, IconTarget, IconDeviceAnalytics} from '@tabler/icons-react';
+import { IconUserCheck, IconCalendar, IconBuilding, IconTarget, IconDeviceAnalytics, IconClipboardCheck, IconFileSettings} from '@tabler/icons-react';
 import { title } from 'process';
 
 
@@ -11,7 +11,9 @@ const icons = {
     IconCalendar,
     IconBuilding,
     IconTarget,
-    IconDeviceAnalytics
+    IconDeviceAnalytics,
+    IconClipboardCheck,
+    IconFileSettings
 
 }
 
@@ -24,6 +26,28 @@ const manager = {
         icon: icons.IconUserCheck,
         type: 'group',
         children: [
+            {
+                id: 'formularios',
+                title: <FormattedMessage id="Formularios" />,
+                type: 'item',
+                url: '/management/formularios',
+                icon: icons.IconClipboardCheck,
+                breadcrumbs: false,
+                roles: ['admin']
+            },
+            {
+                id: 'config_evaluacion',
+                title: (
+                    <span style={{ whiteSpace: 'normal', wordBreak: 'break-word' }}>
+                        <FormattedMessage id="Configuración - Evaluación" />
+                    </span>
+                    ),
+                type: 'item',
+                url: '/management/config_evaluacion',
+                icon: icons.IconFileSettings,
+                breadcrumbs: false,
+                roles: ['admin']
+            },
             {
                 id: 'personal',
                 title: <FormattedMessage id="Personal" />,

@@ -7,7 +7,12 @@ const initialState = {
     error: null,
     staffObjs: [],
     staffObjsProp: [],
-    staffObjsPropDep: []
+    staffObjsPropDep: [],
+
+
+    staffObjsbyUser: [],
+    staffObjsPropbyUser: [],
+
 }
 
 
@@ -20,6 +25,17 @@ const slice = createSlice({
             state.error = action.payload
         },
 
+        //by user
+        getStaffObjByUserSuccess(state, action){
+            state.staffObjsbyUser = action.payload
+        },
+
+        getStaffObjPropAceptadosByUserSuccess(state, action){
+            state.staffObjsPropbyUser = action.payload
+        },
+
+        //
+
         addStaffObjSuccess(state, action){
             state.staffObjs = action.payload
         },
@@ -31,8 +47,16 @@ const slice = createSlice({
         removeStaffObjSuccess(state, action){
             state.staffObjs = action.payload
         },
+        
+        existeStaffObjSuccess(state, action){
+            state.staffObjs = action.payload
+        },
 
         getStaffObjPropSuccess(state, action){
+            state.staffObjsProp = action.payload
+        },
+
+        getStaffObjPropAceptadosSuccess(state, action){
             state.staffObjsProp = action.payload
         },
 
@@ -49,6 +73,10 @@ const slice = createSlice({
         },
         
         removeStaffObjPropSuccess(state, action){
+            state.staffObjsProp = action.payload
+        },
+        
+        existeStaffObjPropSuccess(state, action){
             state.staffObjsProp = action.payload
         }
     }
@@ -77,12 +105,48 @@ export function getStaffObj(){
     return async () =>{
         try {
             const response = await axios.get(`/objetivosPers`);
-            console.log('Objetivos personales, axios', response.data)
+            // console.log('Objetivos personales, AXIOS', response.data)
             dispatch(slice.actions.getStaffObjSuccess(response.data));
         } catch (error) {
             dispatch(slice.actions.hasError(error));
         }
     }
+}
+
+export function getStaffObjByUser(id){
+    return async () =>{
+        try {
+            const response = await axios.get(`/objetivosPers/byUser/${id}`);
+            // console.log('Objetivos personales por Usuario, AXIOS', response.data)
+            dispatch(slice.actions.getStaffObjByUserSuccess(response.data));
+        } catch (error) {
+            dispatch(slice.actions.hasError(error));
+        }
+    }
+}
+
+// export function getStaffObjSupervisor(){
+//     return async () =>{
+//         try {
+//             const response = await axios.get(`/objetivosPers`);
+//             console.log('bjetivos personales, axios', response.data)
+//             dispatch(slice.actions.getStaffObjSupervisorSuccess(response.data));
+//         } catch (error) {
+//             dispatch(slice.actions.hasError(error));
+//         }
+//     }
+// }
+
+export function existeStaffObj(id) {
+    return async (dispatch) => {
+        try {
+            const response = await axios.get(`/objetivosPers/${id}`);
+            return !!response.data; // Devuelve true si hay datos, false si no
+        } catch (error) {
+            console.error('Error al verificar existencia del objetivo:', error);
+            return false; // Retorna false si hay error (por ejemplo, 404 Not Found)
+        }
+    };
 }
 
 
@@ -103,13 +167,83 @@ export function getStaffObjProp(){
     return async () => {
         try {
             const response = await axios.get(`/objetivos-pers-prop/user`);
-            console.log('respuesta ObjProp axios', response.data)
+            console.log('rspuesta ObjProp axios', response.data)
             dispatch(slice.actions.getStaffObjPropSuccess(response.data));
         } catch (error) {
             dispatch(slice.actions.hasError(error))
         }
     }
 }
+
+export function existeStaffObjProp(id) {
+    return async (dispatch) => {
+        try {
+            const response = await axios.get(`/objetivos-pers-prop/${id}`);
+            return !!response.data; // Devuelve true si hay datos, false si no
+        } catch (error) {
+            console.error('Error al verificar existencia del objetivo:', error);
+            return false; // Retorna false si hay error (por ejemplo, 404 Not Found)
+        }
+    };
+}
+
+export function getStaffObjPropAceptados() {
+    return async (dispatch) => {
+        try {
+            // Hacer la solicitud a la API
+            const response = await axios.get(`/objetivos-pers-prop/user`);
+            // console.log('AAAAAAAAAAArespuesta ObjProp axios', response.data);
+
+            // Filtrar los datos para incluir solo aquellos con aceptacion === true
+            const filteredData = response.data.filter(item => item.aceptacion === true);
+
+            // Despachar la acción con los datos filtrados
+            dispatch(slice.actions.getStaffObjPropAceptadosSuccess(filteredData));
+        } catch (error) {
+            // Manejar errores
+            dispatch(slice.actions.hasError(error));
+        }
+    };
+}
+
+export function getStaffObjPropAceptadosByUser(id) {
+    return async (dispatch) => {
+        try {
+            // Hacer la solicitud a la API
+            const response = await axios.get(`/objetivos-pers-prop/byUser/${id}`);
+            // console.log('AAAAAAAAAAArespuesta ObjProp axios', response.data);
+
+            // Filtrar los datos para incluir solo aquellos con aceptacion === true
+            const filteredData = response.data.filter(item => item.aceptacion === true);
+            // console.log('Objetivos personales PROPUESTOS por Usuario, AXIOS', filteredData)
+
+            // Despachar la acción con los datos filtrados
+            dispatch(slice.actions.getStaffObjPropAceptadosByUserSuccess(filteredData));
+        } catch (error) {
+            // Manejar errores
+            dispatch(slice.actions.hasError(error));
+        }
+    };
+}
+
+// export function getStaffObjPropAceptadosSupervisor() {
+//     return async (dispatch) => {
+//         try {
+//             // Hacer la solicitud a la API
+//             const response = await axios.get(`/objetivos-pers-prop/user`);
+//             console.log('respuesta ObjProp axios', response.data);
+
+//             // Filtrar los datos para incluir solo aquellos con aceptacion === true
+//             const filteredData = response.data.filter(item => item.aceptacion === true);
+
+//             // Despachar la acción con los datos filtrados
+//             dispatch(slice.actions.getStaffObjPropAceptadosSupervisorSuccess(filteredData));
+//         } catch (error) {
+//             // Manejar errores
+//             dispatch(slice.actions.hasError(error));
+//         }
+//     };
+// }
 
 export function addStaffObjProp(data) {
     return async () => {

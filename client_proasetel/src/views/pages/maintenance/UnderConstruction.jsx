@@ -83,11 +83,11 @@ const UnderConstruction = () => {
                         <PageContentWrapper>
                             <Grid container spacing={gridSpacing}>
                                 <Grid item xs={12}>
-                                    <Typography variant="h1">Under Construction</Typography>
+                                    <Typography variant="h1">Estamos trabajando en ello </Typography>
                                 </Grid>
                                 <Grid item xs={12}>
                                     <Typography variant="body2">
-                                        This site is on under construction!! Please check after some time
+                                        Este sitio está bajo construcción, Por favor revíselo más tarde ♥
                                     </Typography>
                                 </Grid>
                                 <Grid item xs={12}>

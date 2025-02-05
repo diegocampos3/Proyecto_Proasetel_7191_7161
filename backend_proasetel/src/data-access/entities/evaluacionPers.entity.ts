@@ -1,29 +1,29 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, ManyToMany, JoinColumn, OneToMany } from "typeorm";
-import { User } from "./usuario.entity";
-import { Formulario } from "./formulario.entity";
-import { ObjetivosPers } from "./objetivosPers.entity";
-import { PeriodoEvaluacion } from "./periodoEvaluacion.entity";
-import { EvaluacionObjetivoPers } from "./evaluacion-Obj-Pers.entity";
+// import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, ManyToMany, JoinColumn, OneToMany } from "typeorm";
+// import { User } from "./usuario.entity";
+// import { Formulario } from "./formulario.entity";
+// import { ObjetivosPers } from "./objetivosPers.entity";
+// import { PeriodoEvaluacion } from "./periodoEvaluacion.entity";
+// // import { EvaluacionObjetivoPers } from "./evaluacion-Obj-Pers.entity";
 
-@Entity()
-export class EvaluacionPers {
+// @Entity()
+// export class EvaluacionPers {
 
-    @PrimaryGeneratedColumn('uuid')
-    idEvaPer: string;
+//     @PrimaryGeneratedColumn('uuid')
+//     idEvaPer: string;
 
-    @ManyToOne(() => PeriodoEvaluacion, (periodoEva) => periodoEva.evaluacionPers)
-    @JoinColumn({ name: 'idPeriodoEva' })
-    periodoEva: PeriodoEvaluacion;
+//     @ManyToOne(() => PeriodoEvaluacion, (periodoEva) => periodoEva.evaluacionPers)
+//     @JoinColumn({ name: 'idPeriodoEva' })
+//     periodoEva: PeriodoEvaluacion;
 
-    @ManyToOne(() => User, (user) => user.evaluacionPers)
-    user: User;
+//     @ManyToOne(() => User, (user) => user.evaluacionPers)
+//     user: User;
 
-    @Column({ type: 'boolean', nullable: false, default: true })
-    estado: boolean;
+//     @Column({ type: 'boolean', nullable: false, default: true })
+//     estado: boolean;
 
-    @OneToMany(
-        () => EvaluacionObjetivoPers,
-        (evaluacionObjetivoPers) => evaluacionObjetivoPers.evaluacion,
-    )
-    evaluacionObjetivoPers: EvaluacionObjetivoPers[];
-}
+//     // @OneToMany(
+//     //     () => EvaluacionObjetivoPers,
+//     //     (evaluacionObjetivoPers) => evaluacionObjetivoPers.evaluacion,
+//     // )
+//     // evaluacionObjetivoPers: EvaluacionObjetivoPers[];
+// }

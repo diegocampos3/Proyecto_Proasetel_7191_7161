@@ -6,9 +6,10 @@ import {
     IconBuilding, IconTarget, 
     IconCheck, IconListDetails, 
     IconFlag, IconDeviceAnalytics,
-    IconMessage2
+    IconMessage2, IconFileCheck
 
 } from '@tabler/icons-react';
+import { title } from 'process';
 
 
 // constant
@@ -21,7 +22,8 @@ const icons = {
     IconListDetails,
     IconFlag,
     IconDeviceAnalytics,
-    IconMessage2
+    IconMessage2,
+    IconFileCheck
 
 
 }
@@ -36,18 +38,24 @@ const employee = {
         icon: icons.IconUserCheck,
         type: 'group',
         children: [
-            
-        
             {
                 id: 'staffgoals',
-                title: <FormattedMessage id="Selección Objetivos Personales" />,
+                title: (
+                <span style={{ whiteSpace: 'normal', wordBreak: 'break-word' }}>
+                    <FormattedMessage id="Selección Objetivos Personales" />
+                </span>
+                ),
                 type: "item",
                 url: '/evaluated-staff/staff-goals/businessobj',
                 icon: icons.IconCheck
             },
             {
                 id: 'staffgoalsper',
-                title: <FormattedMessage id="Objetivos Personales"/>,
+                title:(
+                <span style={{ whiteSpace: 'normal', wordBreak: 'break-word' }}>
+                    <FormattedMessage id="Objetivos Personales"/>
+                </span>
+                ),
                 type:"item",
                 url: '/evaluated-staff/staff-goals/personalobj',
                 icon: icons.IconListDetails
@@ -55,7 +63,11 @@ const employee = {
             },
             {
                 id: 'staffgoalperprop',
-                title: <FormattedMessage id="Objetivos Personales propuestos"/>,
+                title: (
+                <span style={{ whiteSpace: 'normal', wordBreak: 'break-word' }}>
+                    <FormattedMessage id="Objetivos Personales propuestos"/>
+                </span>
+                ),
                 type: "item",
                 url: '/evaluated-staff/staff-goals/personalobjprop',
                 icon: icons.IconFlag
@@ -73,9 +85,19 @@ const employee = {
                 type: 'item',
                 url: '/evaluated-staff/feedback',
                 icon: icons.IconMessage2,
-            } 
-            
-            
+            }, 
+            //Evaluacion desempeno laboral
+            {
+                id: 'evaluacion_desempeno_laboral',
+                title: (
+                <span style={{ whiteSpace: 'normal', wordBreak: 'break-word' }}>
+                    <FormattedMessage id="Evaluación de Desempeño Laboral"/>
+                </span>
+                ),
+                type: "item",
+                url: '/evaluated-staff/evaluacion_desempeno_laboral',
+                icon: icons.IconFileCheck
+            },   
 
         ]
 }
