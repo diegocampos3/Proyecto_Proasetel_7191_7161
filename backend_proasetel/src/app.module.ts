@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { DepartamentosModule } from './departamentos/departamentos.module';
 import { AuthModule } from './auth/auth.module';
 import { ObjetivosDepModule } from './objetivos-dep/objetivos-dep.module';
-import { EvaluacionPersModule } from './evaluacion-pers/evaluacion-pers.module';
+// import { EvaluacionPersModule } from './evaluacion-pers/evaluacion-pers.module';
 import { FeedbackModule } from './feedback/feedback.module';
 import { ObjetivosEmprModule } from './objetivos-empr/objetivos-empr.module';
 import { ObjetivosPersModule } from './objetivos-pers/objetivos-pers.module';
@@ -16,10 +16,12 @@ import { MessagesWsModule } from './messages-ws/messages-ws.module';
 import { MailsModule } from './mails/mails.module';
 import { ConfigModule } from '@nestjs/config';
 
-import { EvaluacionObjetivoPersModule } from './evaluacion_objetivo_pers/evaluacion_objetivo_pers.module';
+// import { EvaluacionObjetivoPersModule } from './evaluacion_objetivo_pers/evaluacion_objetivo_pers.module';
 import { ObjtivosEmpDepModule } from './objtivos-emp-dep/objtivos-emp-dep.module';
 import { ObjetivosPersPropModule } from './objetivos-pers-prop/objetivos-pers-prop.module';
 import { RespuestasPreguntasModule } from './respuestas_preguntas/respuestas_preguntas.module';
+import { ResultadoEvaluacionModule } from './resultado_evaluacion/resultado_evaluacion.module';
+import { EvaluacionFinalObjPersModule } from './evaluacion-final-obj-pers/evaluacion-final-obj-pers.module';
 
 @Module({
   imports: [
@@ -30,7 +32,7 @@ import { RespuestasPreguntasModule } from './respuestas_preguntas/respuestas_pre
     DepartamentosModule, // Módulo de conexión
     AuthModule,
     ObjetivosDepModule,
-    EvaluacionPersModule,
+    // EvaluacionPersModule,
     FeedbackModule,
     ObjetivosEmprModule,
     ObjetivosPersModule,
@@ -41,10 +43,12 @@ import { RespuestasPreguntasModule } from './respuestas_preguntas/respuestas_pre
     AnalisisSentimientosModule,
     MessagesWsModule,
     MailsModule,
-    EvaluacionObjetivoPersModule,
+    // EvaluacionObjetivoPersModule,
     ObjtivosEmpDepModule,
     ObjetivosPersPropModule,
     RespuestasPreguntasModule,
+    ResultadoEvaluacionModule,
+    EvaluacionFinalObjPersModule,
   ],
   
 })

@@ -24,7 +24,7 @@ export class ObjetivosPersPropController {
   }
 
   @Get('/user')
-  @Auth(ValidRoles.admin, ValidRoles.empleado)
+  @Auth(ValidRoles.admin, ValidRoles.empleado, ValidRoles.supervisor)
   findAll(@GetUser() user: User) {
     return this.objetivosPersPropService.findAll(user);
   }
@@ -36,8 +36,14 @@ export class ObjetivosPersPropController {
   }
 
   @Get(':id')
+  @Auth(ValidRoles.admin, ValidRoles.empleado, ValidRoles.supervisor)
   findOne(@Param('id') id: string) {
     return this.objetivosPersPropService.findOne(+id);
+  }
+
+  @Get('byUser/:id')
+  findAllByUser(@Param('id') id: string) {
+    return this.objetivosPersPropService.findAllByUser(id);
   }
 
   @Patch(':id')

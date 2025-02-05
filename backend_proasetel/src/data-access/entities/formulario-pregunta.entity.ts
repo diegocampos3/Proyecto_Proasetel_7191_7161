@@ -1,5 +1,6 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, OneToMany } from "typeorm";
 import { Formulario } from "./formulario.entity";
+import { ResultadoEvaluacion } from "./resultado_evaluacion.entity";
 
 @Entity()
 export class FormulariosPreg {
@@ -13,4 +14,10 @@ export class FormulariosPreg {
 
     @Column({ type: 'text', nullable: false })
     pregunta: string;
+
+    @OneToMany(
+        () => ResultadoEvaluacion,
+        (resultadoEvaluacion) => resultadoEvaluacion.pregunta
+    )
+    resultadoEvaluacion: ResultadoEvaluacion
 }

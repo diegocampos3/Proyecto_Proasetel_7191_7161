@@ -28,6 +28,12 @@ export class ObjetivosPersController {
     return this.objetivosPersService.findAll(user);
   }
 
+  @Get('byUser/:id')
+  findAllByUser(@Param('id') id: string) {
+    return this.objetivosPersService.findAllByUser(id);
+  }
+
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.objetivosPersService.findOne(id);

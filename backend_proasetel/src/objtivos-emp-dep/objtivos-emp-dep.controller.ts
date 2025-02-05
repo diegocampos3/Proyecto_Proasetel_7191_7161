@@ -11,7 +11,7 @@ export class ObjtivosEmpDepController {
   constructor(private readonly objtivosEmpDepService: ObjtivosEmpDepService) {}
 
   @Post()
-  @Auth(ValidRoles.admin)
+  @Auth(ValidRoles.admin, ValidRoles.supervisor)
   create
   (@Body() createObjtivosEmpDepDto: CreateObjtivosEmpDepDto,
   @GetUser() user: User

@@ -6,6 +6,7 @@ import { ObjetivosPersProp } from 'src/data-access/entities/objetivos-pers-prop.
 import { Repository } from 'typeorm';
 import { ObjtivosEmpDep } from 'src/data-access/entities/objtivos-emp-dep.entity';
 import { User } from 'src/data-access/entities/usuario.entity';
+import { ResultadoEvaluacion } from 'src/data-access/entities/resultado_evaluacion.entity';
 
 @Injectable()
 export class ObjetivosPersPropService {
@@ -23,6 +24,9 @@ export class ObjetivosPersPropService {
 
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
+
+    // @InjectRepository(ResultadoEvaluacion)
+    // private readonly resultadoEvaluacionRepository: Repository<ResultadoEvaluacion>,
 
   ){}
 
@@ -51,11 +55,33 @@ export class ObjetivosPersPropService {
     }
   }
 
-  findAll(user: User) {
-    return this.objetivosPersPropRepository.find({
+  // async findAll(user: User) {
+  //   return this.objetivosPersPropRepository.find({
+  //     where: {user: user},
+  //     relations: ['objtivoEmpDep']
+  //   });
+  // }
+
+  async findAllByUser(id:string) {
+    const user = await this.userRepository.findOne({
+      where: {id:id}
+    })
+    const resultados = await this.objetivosPersPropRepository.find({
       where: {user: user},
       relations: ['objtivoEmpDep']
-    })
+    });
+
+    return resultados ?? [];
+  }
+
+  
+  async findAll(user: User) {
+    const resultados = await this.objetivosPersPropRepository.find({
+      where: { user: user },
+      relations: ['objtivoEmpDep'],
+    });
+  
+    return resultados ?? [];
   }
 
 

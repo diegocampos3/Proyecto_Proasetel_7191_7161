@@ -97,7 +97,7 @@ export class AuthService {
     if ( !bcrypt.compareSync( password, user.password))
       throw new UnauthorizedException('Su correo o contraseña no es correcto');
 
-    console.log(`Imprimiento Dep: ${user.departamento}`)
+    // console.log(`Imprimiento Dep: ${user.departamento}`)
 
     return {
       ...user,

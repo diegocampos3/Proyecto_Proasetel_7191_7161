@@ -1,5 +1,5 @@
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from "typeorm";
-import { EvaluacionPers } from "./evaluacionPers.entity";
+// import { EvaluacionPers } from "./evaluacionPers.entity";
 import { FormulariosPreg } from "./formulario-pregunta.entity";
 import { PeriodoEvaluacion } from "./periodoEvaluacion.entity";
 
@@ -15,8 +15,8 @@ export class Formulario {
     @Column({ type: 'text', nullable: false })
     descripcion: string;
 
-    @Column({ type: 'boolean', nullable: false, default: false })
-    estado: boolean;
+    @Column({ type: 'int', nullable: false, default: 1})
+    estado: number;
 
     @OneToMany(
         () => PeriodoEvaluacion,

@@ -2,7 +2,7 @@ import { Departamento } from "src/data-access/entities/departamento.entity";
 import { BeforeInsert, BeforeUpdate, Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { PeriodoEvaluacion } from "src/data-access/entities/periodoEvaluacion.entity";
 import { Feedback } from "./feedback.entity";
-import { EvaluacionPers } from "./evaluacionPers.entity";
+// import { EvaluacionPers } from "./evaluacionPers.entity";
 import { ObjetivosPers } from "./objetivosPers.entity";
 import { ObjetivosPersProp } from "./objetivos-pers-prop.entity";
 
@@ -72,8 +72,8 @@ export class User  {
     )
     feedback: Feedback
 
-    @OneToMany(() => EvaluacionPers, (evaluacionPers) => evaluacionPers.user)
-    evaluacionPers: EvaluacionPers;
+    // @OneToMany(() => EvaluacionPers, (evaluacionPers) => evaluacionPers.user)
+    // evaluacionPers: EvaluacionPers;
 
     @OneToMany(
         () => ObjetivosPers,

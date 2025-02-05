@@ -2,7 +2,7 @@ import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, OneToMan
 import { User } from "src/data-access/entities/usuario.entity";
 import { Periodo } from "src/data-access/entities/periodo.entity";
 import { Feedback } from './feedback.entity';
-import { EvaluacionPers } from "./evaluacionPers.entity";
+// import { EvaluacionPers } from "./evaluacionPers.entity";
 import { Formulario } from "./formulario.entity";
 
 
@@ -39,9 +39,9 @@ export class PeriodoEvaluacion {
     @Column({ type: 'boolean', nullable: false, default: false })
     estado: boolean;
 
-    @OneToMany(
-        () => EvaluacionPers,
-        (evaluacionPers) => evaluacionPers.periodoEva
-    )
-    evaluacionPers: EvaluacionPers
+    // @OneToMany(
+    //     () => EvaluacionPers,
+    //     (evaluacionPers) => evaluacionPers.periodoEva
+    // )
+    // evaluacionPers: EvaluacionPers
 }

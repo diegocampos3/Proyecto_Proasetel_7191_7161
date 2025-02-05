@@ -1,7 +1,10 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, ManyToMany, JoinColumn, JoinTable, OneToMany } from "typeorm";
 import { ObjetivosDep } from "./objetivosDep.entity";
-import { EvaluacionObjetivoPers } from "./evaluacion-Obj-Pers.entity";
+// import { EvaluacionObjetivoPers } from "./evaluacion-Obj-Pers.entity";
 import { User } from "./usuario.entity";
+import { ResultadoEvaluacion } from "./resultado_evaluacion.entity";
+import { EvaluacionFinalObjPers} from "./evaluacion-final-obj-pers.entity";
+
 
 
 @Entity()
@@ -23,10 +26,22 @@ export class ObjetivosPers {
     )
     user: User
 
+    // @OneToMany(
+    //     () => EvaluacionObjetivoPers,
+    //     (evaluacionObjetivoPers) => evaluacionObjetivoPers.objetivo,
+    // )
+    // evaluacionObjetivoPers: EvaluacionObjetivoPers[];
+
     @OneToMany(
-        () => EvaluacionObjetivoPers,
-        (evaluacionObjetivoPers) => evaluacionObjetivoPers.objetivo,
+        () => ResultadoEvaluacion,
+        (resultadoEvaluacion) => resultadoEvaluacion.objetivoPersonal
     )
-    evaluacionObjetivoPers: EvaluacionObjetivoPers[];
+    resultadoEvaluacion: ResultadoEvaluacion
+
+    @OneToMany(
+        () => EvaluacionFinalObjPers,
+        (evaluacionesFinales) => evaluacionesFinales.objetivoPersonal
+    )
+    evaluacionesFinales: EvaluacionFinalObjPers
     
 }

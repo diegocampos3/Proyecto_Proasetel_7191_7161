@@ -1,6 +1,8 @@
-import { BeforeInsert, BeforeUpdate, Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { BeforeInsert, BeforeUpdate, Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { ObjtivosEmpDep } from "./objtivos-emp-dep.entity";
 import { User } from "./usuario.entity";
+import { ResultadoEvaluacion } from "./resultado_evaluacion.entity";
+import { EvaluacionFinalObjPers } from "./evaluacion-final-obj-pers.entity";
 
 @Entity()
 export class ObjetivosPersProp {
@@ -41,6 +43,18 @@ export class ObjetivosPersProp {
         () => User,
         (user) => user.objetivosPersProp)
     user: User
+
+    @OneToMany(
+        () => ResultadoEvaluacion,
+        (resultadoEvaluacion) => resultadoEvaluacion.objetivoPersonalPropuesto
+    )
+    resultadoEvaluacion: ResultadoEvaluacion
+
+    @OneToMany(
+        () => EvaluacionFinalObjPers,
+        (evaluacionesFinales) => evaluacionesFinales.objetivoPersonalPropuesto
+    )
+    evaluacionesFinales: EvaluacionFinalObjPers
 
     @BeforeInsert()
     checkFieldsBeforeInsert(){

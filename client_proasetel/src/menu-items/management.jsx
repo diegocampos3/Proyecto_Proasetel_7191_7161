@@ -5,14 +5,17 @@ import useAuth from 'hooks/useAuth';
 
 
 // assets
-import { IconUserCheck, IconCalendar, IconBuilding, IconTarget } from '@tabler/icons-react';
+import { IconUserCheck, IconCalendar, IconBuilding, IconTarget, IconClipboardCheck, IconFileSettings, IconFileCheck } from '@tabler/icons-react';
 
 // Mapeo de iconos
 const icons = {
     IconUserCheck,
     IconCalendar,
     IconBuilding,
-    IconTarget
+    IconTarget,
+    IconClipboardCheck,
+    IconFileSettings,
+    IconFileCheck
 };
 
 
@@ -138,7 +141,32 @@ const managementList = {
             url: '/management/departmentObj/acceptObjPersProp',
             icon: icons.IconTarget,
             roles: ['empleado']
-        }
+        },
+        //ruta para la evaluacion de desempeno personal
+        {
+            id: 'evaluacion_desempeno_laboral',
+            title: (
+            <span style={{ whiteSpace: 'normal', wordBreak: 'break-word' }}>
+                <FormattedMessage id="Evaluación de Desempeño Laboral"/>
+            </span>
+            ),
+            type: "item",
+            url: '/evaluated-staff/evaluacion_desempeno_laboral',
+            icon: icons.IconFileCheck,
+            roles: ['empleado']
+        },
+        {
+            id: 'evaluacion_desempeno_laboral_supervisor',
+            title: (
+            <span style={{ whiteSpace: 'normal', wordBreak: 'break-word' }}>
+                <FormattedMessage id="Evaluación de Desempeño Laboral"/>
+            </span>
+            ),
+            type: "item",
+            url: '/management/evaluacion_desempeno_laboral_supervisor',
+            icon: icons.IconFileCheck,
+            roles: ['supervisor']
+        }, 
     ]
 };
 

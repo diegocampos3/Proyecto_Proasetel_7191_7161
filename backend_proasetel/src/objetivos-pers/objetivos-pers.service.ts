@@ -7,6 +7,7 @@ import { Repository } from 'typeorm';
 import { ObjetivosDep } from 'src/data-access/entities/objetivosDep.entity';
 import { validate as isUUID } from 'uuid'
 import { User } from 'src/data-access/entities/usuario.entity';
+import { ResultadoEvaluacion } from 'src/data-access/entities/resultado_evaluacion.entity';
 
 @Injectable()
 export class ObjetivosPersService {
@@ -19,7 +20,13 @@ export class ObjetivosPersService {
     private readonly objetivosPersRepository: Repository<ObjetivosPers>,
 
     @InjectRepository(ObjetivosDep)
-    private readonly objetivosDepRepository: Repository<ObjetivosDep>
+    private readonly objetivosDepRepository: Repository<ObjetivosDep>,
+
+    // @InjectRepository(ResultadoEvaluacion)
+    // private readonly resultadoEvaluacionRepository: Repository<ResultadoEvaluacion>,
+
+    @InjectRepository(User)
+    private readonly userRepository: Repository<User>,
 
   ){}
 
@@ -68,6 +75,30 @@ export class ObjetivosPersService {
       return []
     }
   }
+
+
+  async findAllByUser(id: string) {
+    const user = await this.userRepository.findOne({
+      where: {id:id}
+    })
+
+    const objPers =  await this.objetivosPersRepository.find({
+      where: {user: user},
+      relations: ['objetivoDep'],
+    });
+
+    if(objPers.length > 0){
+      return objPers.map(item => ({
+        idObjPer: item.idObjPer,
+        idObjDep: item.objetivoDep.idObjDep,
+        titulo: item.objetivoDep.titulo,
+        descripcion: item.objetivoDep.descripcion
+      }))
+    }else{
+      return []
+    }
+  }
+
 
  async findOne(term: string) {
 

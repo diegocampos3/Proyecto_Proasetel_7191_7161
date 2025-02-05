@@ -6,9 +6,7 @@ import manager from './manager';
 import supervisor from './supervisor';
 import employee from './employee';
 
-// MENU PROASETEL 
 
-import management from './management';
 
 // ==============================|| MENU ITEMS ||============================== //
 
