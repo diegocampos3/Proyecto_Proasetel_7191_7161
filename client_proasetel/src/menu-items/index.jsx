@@ -2,7 +2,6 @@
 
 // ---MENU PROSASETEL
 import dashboard from './dashboard';
-import management from './management';
 import manager from './manager';
 import supervisor from './supervisor';
 import employee from './employee';

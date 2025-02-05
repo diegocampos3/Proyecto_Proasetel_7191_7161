@@ -38,7 +38,7 @@ import { gridSpacing } from 'store/constant';
 import DateRangeIcon from '@mui/icons-material/DateRange';
 import DeleteIcon from '@mui/icons-material/Delete';
 
-// constant
+// Función para asignar los valores iniciales (se agregan los nuevos campos)
 const getInitialValues = (event, range) => {
     const newEvent = {
         title: '',
@@ -47,7 +47,11 @@ const getInitialValues = (event, range) => {
         textColor: '',
         allDay: false,
         start: range ? new Date(range.start) : new Date(),
-        end: range ? new Date(range.end) : new Date()
+        end: range ? new Date(range.end) : new Date(),
+        startConfig: event?.startConfig ? new Date(event.startConfig) : new Date(),
+        endConfig: event?.endConfig ? new Date(event.endConfig) : new Date(),
+        startEval: event?.startEval ? new Date(event.startEval) : new Date(),
+        endEval: event?.endEval ? new Date(event.endEval) : new Date()
     };
 
     if (event || range) {
@@ -59,7 +63,7 @@ const getInitialValues = (event, range) => {
 
 // ==============================|| CALENDAR EVENT ADD / EDIT / DELETE ||============================== //
 
-const AddEventFrom = ({ event, range, handleDelete, handleCreate, handleUpdate, onCancel }) => {
+const AddEventForm = ({ event, range, handleDelete, handleCreate, handleUpdate, onCancel }) => {
     const theme = useTheme();
     const isCreating = !event;
 
@@ -187,13 +191,50 @@ const AddEventFrom = ({ event, range, handleDelete, handleCreate, handleUpdate, 
         }
     ];
 
+    // Se extiende el esquema de validación para incluir los nuevos campos.
     const EventSchema = Yup.object().shape({
         title: Yup.string().max(255).required('El titulo es requerido'),
         description: Yup.string().max(5000).required('La descripción es obligatoria'),
-        end: Yup.date().when('start', (start, schema) => start && schema.min(start, 'La fecha de finalización debe ser posterior a la fecha de inicio')),
-        start: Yup.date(),
+        start: Yup.date().required('La fecha de inicio es requerida'),
+        end: Yup.date()
+            .required('La fecha de fin es requerida')
+            .min(Yup.ref('start'), 'La fecha de finalización debe ser posterior a la fecha de inicio'),
         color: Yup.string().max(255),
-        textColor: Yup.string().max(255)
+        textColor: Yup.string().max(255),
+        startConfig: Yup.date()
+            .required('La fecha de inicio de configuración es requerida')
+            .test(
+                'startConfig-before-end',
+                'La fecha de inicio de configuración debe ser menor a la fecha fin del periodo',
+                function (value) {
+                    const { end } = this.parent;
+                    return value && end ? new Date(value) < new Date(end) : true;
+                }
+            ),
+        endConfig: Yup.date()
+            .required('La fecha fin de configuración es requerida')
+            .min(Yup.ref('startConfig'), 'La fecha fin de configuración debe ser posterior a la fecha de inicio de configuración'),
+        startEval: Yup.date()
+            .required('La fecha de inicio de evaluación es requerida')
+            .test(
+                'startEval-after-endConfig',
+                'La fecha de inicio de evaluación debe ser mayor a la fecha fin de configuración',
+                function (value) {
+                    const { endConfig } = this.parent;
+                    return value && endConfig ? new Date(value) > new Date(endConfig) : true;
+                }
+            ),
+        endEval: Yup.date()
+            .required('La fecha fin de evaluación es requerida')
+            .min(Yup.ref('startEval'), 'La fecha fin de evaluación debe ser posterior a la fecha de inicio de evaluación')
+            .test(
+                'endEval-before-end',
+                'La fecha fin de evaluación debe ser menor a la fecha fin del periodo',
+                function (value) {
+                    const { end } = this.parent;
+                    return value && end ? new Date(value) < new Date(end) : true;
+                }
+            )
     });
 
     const formik = useFormik({
@@ -206,16 +247,19 @@ const AddEventFrom = ({ event, range, handleDelete, handleCreate, handleUpdate, 
                     descripcion: values.description,
                     fecha_ini: formatToIso(values.start),
                     fecha_fin: formatToIso(values.end),
+                    fecha_ini_config: formatToIso(values.startConfig),
+                    fecha_fin_config: formatToIso(values.endConfig),
+                    fecha_ini_eval: formatToIso(values.startEval),
+                    fecha_fin_eval: formatToIso(values.endEval),
                     color: values.color,
                     textColor: values.textColor
-
                 };
 
                 if (event) {
                     handleUpdate(event.id, data);
                 } else {
                     handleCreate(data);
-                    console.log("Data enviado:", data )
+                    console.log("Data enviado:", data);
                 }
 
                 resetForm();
@@ -229,22 +273,23 @@ const AddEventFrom = ({ event, range, handleDelete, handleCreate, handleUpdate, 
 
     const { values, errors, touched, handleSubmit, isSubmitting, getFieldProps, setFieldValue } = formik;
 
-    // Formatear datos
-    function formatToIso(dateValue){
+    // Función para formatear la fecha a ISO
+    function formatToIso(dateValue) {
         if (typeof dateValue === 'string' && dateValue.includes('T')) {
             return dateValue;
         }
         return new Date(dateValue).toISOString();
     }
-    
+
     return (
         <FormikProvider value={formik}>
             <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={es}>
                 <Form autoComplete="off" noValidate onSubmit={handleSubmit}>
-                    <DialogTitle>{event ? 'Editar Evento' : 'Añadir Evento '}</DialogTitle>
+                    <DialogTitle>{event ? 'Editar Periodo' : 'Añadir Periodo'}</DialogTitle>
                     <Divider />
                     <DialogContent sx={{ p: 3 }}>
                         <Grid container spacing={gridSpacing}>
+                            {/* Datos generales */}
                             <Grid item xs={12}>
                                 <TextField
                                     fullWidth
@@ -265,6 +310,8 @@ const AddEventFrom = ({ event, range, handleDelete, handleCreate, handleUpdate, 
                                     helperText={touched.description && errors.description}
                                 />
                             </Grid>
+
+                            {/* Periodo del Evento */}
                             <Grid item xs={12} md={6}>
                                 <MobileDateTimePicker
                                     label="Fecha Inicio"
@@ -285,7 +332,7 @@ const AddEventFrom = ({ event, range, handleDelete, handleCreate, handleUpdate, 
                                         }
                                     }}
                                 />
-                                {touched.start && errors.start && <FormHelperText error={true}>{errors.start}</FormHelperText>}
+                                {touched.start && errors.start && <FormHelperText error>{errors.start}</FormHelperText>}
                             </Grid>
                             <Grid item xs={12} md={6}>
                                 <MobileDateTimePicker
@@ -307,8 +354,120 @@ const AddEventFrom = ({ event, range, handleDelete, handleCreate, handleUpdate, 
                                         }
                                     }}
                                 />
-                                {touched.end && errors.end && <FormHelperText error={true}>{errors.end}</FormHelperText>}
+                                {touched.end && errors.end && <FormHelperText error>{errors.end}</FormHelperText>}
                             </Grid>
+
+                            {/* Configuración de Objetivos */}
+                            <Grid item xs={12}>
+                                <Typography variant="h6" gutterBottom>
+                                    Configuración de Objetivos
+                                </Typography>
+                            </Grid>
+                            <Grid item xs={12} md={6}>
+                                <MobileDateTimePicker
+                                    label="Fecha Inicio Configuración"
+                                    value={new Date(values.startConfig)}
+                                    format="dd/MM/yyyy hh:mm aa"
+                                    onChange={(date) => setFieldValue('startConfig', date)}
+                                    minDate={new Date()}
+                                    locale={es}
+                                    slotProps={{
+                                        textField: {
+                                            InputProps: {
+                                                endAdornment: (
+                                                    <InputAdornment position="end" sx={{ cursor: 'pointer' }}>
+                                                        <DateRangeIcon />
+                                                    </InputAdornment>
+                                                )
+                                            }
+                                        }
+                                    }}
+                                />
+                                {touched.startConfig && errors.startConfig && (
+                                    <FormHelperText error>{errors.startConfig}</FormHelperText>
+                                )}
+                            </Grid>
+                            <Grid item xs={12} md={6}>
+                                <MobileDateTimePicker
+                                    label="Fecha Fin Configuración"
+                                    value={new Date(values.endConfig)}
+                                    format="dd/MM/yyyy hh:mm aa"
+                                    onChange={(date) => setFieldValue('endConfig', date)}
+                                    minDate={new Date()}
+                                    locale={es}
+                                    slotProps={{
+                                        textField: {
+                                            InputProps: {
+                                                endAdornment: (
+                                                    <InputAdornment position="end" sx={{ cursor: 'pointer' }}>
+                                                        <DateRangeIcon />
+                                                    </InputAdornment>
+                                                )
+                                            }
+                                        }
+                                    }}
+                                />
+                                {touched.endConfig && errors.endConfig && (
+                                    <FormHelperText error>{errors.endConfig}</FormHelperText>
+                                )}
+                            </Grid>
+
+                            {/* Evaluación */}
+                            <Grid item xs={12}>
+                                <Typography variant="h6" gutterBottom>
+                                    Evaluación
+                                </Typography>
+                            </Grid>
+                            <Grid item xs={12} md={6}>
+                                <MobileDateTimePicker
+                                    label="Fecha Inicio Evaluación"
+                                    value={new Date(values.startEval)}
+                                    format="dd/MM/yyyy hh:mm aa"
+                                    onChange={(date) => setFieldValue('startEval', date)}
+                                    minDate={new Date()}
+                                    locale={es}
+                                    slotProps={{
+                                        textField: {
+                                            InputProps: {
+                                                endAdornment: (
+                                                    <InputAdornment position="end" sx={{ cursor: 'pointer' }}>
+                                                        <DateRangeIcon />
+                                                    </InputAdornment>
+                                                )
+                                            }
+                                        }
+                                    }}
+                                />
+                                {touched.startEval && errors.startEval && (
+                                    <FormHelperText error>{errors.startEval}</FormHelperText>
+                                )}
+                            </Grid>
+                            <Grid item xs={12} md={6}>
+                                <MobileDateTimePicker
+                                    label="Fecha Fin Evaluación"
+                                    value={new Date(values.endEval)}
+                                    format="dd/MM/yyyy hh:mm aa"
+                                    onChange={(date) => setFieldValue('endEval', date)}
+                                    minDate={new Date()}
+                                    locale={es}
+                                    slotProps={{
+                                        textField: {
+                                            InputProps: {
+                                                endAdornment: (
+                                                    <InputAdornment position="end" sx={{ cursor: 'pointer' }}>
+                                                        <DateRangeIcon />
+                                                    </InputAdornment>
+                                                )
+                                            }
+                                        }
+                                    }}
+                                />
+                                {touched.endEval && errors.endEval && (
+                                    <FormHelperText error>{errors.endEval}</FormHelperText>
+                                )}
+                            </Grid>
+
+                            {/* Selección de colores */}
                             <Grid item xs={12}>
                                 <Grid container spacing={2}>
                                     <Grid item xs={12}>
@@ -370,7 +529,6 @@ const AddEventFrom = ({ event, range, handleDelete, handleCreate, handleUpdate, 
                                 {!isCreating && (
                                     <Tooltip title="Eliminar">
                                         <IconButton onClick={() => handleDelete(event?.id)} size="large">
-                                            {console.log(event.id)}
                                             <DeleteIcon color="error" />
                                         </IconButton>
                                     </Tooltip>
@@ -382,7 +540,7 @@ const AddEventFrom = ({ event, range, handleDelete, handleCreate, handleUpdate, 
                                         Cancelar
                                     </Button>
                                     <Button type="submit" variant="contained" disabled={isSubmitting}>
-                                        {event ? 'Edit' : 'Añadir'}
+                                        {event ? 'Editar' : 'Añadir'}
                                     </Button>
                                 </Stack>
                             </Grid>
@@ -394,7 +552,7 @@ const AddEventFrom = ({ event, range, handleDelete, handleCreate, handleUpdate, 
     );
 };
 
-AddEventFrom.propTypes = {
+AddEventForm.propTypes = {
     event: PropTypes.object,
     range: PropTypes.object,
     handleDelete: PropTypes.func,
@@ -403,4 +561,4 @@ AddEventFrom.propTypes = {
     onCancel: PropTypes.func
 };
 
-export default AddEventFrom;
+export default AddEventForm;

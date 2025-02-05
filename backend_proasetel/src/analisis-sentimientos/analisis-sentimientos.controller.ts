@@ -17,9 +17,14 @@ export class AnalisisSentimientosController {
     return this.analisisSentimientosService.findAll();
   }
 
+  @Get('satisfaction-data')
+  getSatisfactionData() {
+    return this.analisisSentimientosService.getSatisfactionData();
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.analisisSentimientosService.findOne(+id);
+    return this.analisisSentimientosService.findOne(id);
   }
 
   @Patch(':id')

@@ -47,6 +47,9 @@ const ProgressDepartment = ({ isLoading }) => {
         return isDepartmentMatch && isPeriodMatch;
     });
 
+    // Condición para mostrar detalles (si se selecciona un departamento y un periodo específico)
+    const showDetails = selectedDepartment && selectedPeriod;
+
     return (
         <MainCard content={false}>
             <CardContent>
@@ -95,10 +98,11 @@ const ProgressDepartment = ({ isLoading }) => {
                                 <Typography variant="body2" color="textSecondary" sx={{ mt: 0.5 }}>
                                     {dept.progress}%
                                 </Typography>
-                                {selectedDepartment && (
+                                {/* Si se ha seleccionado un departamento y periodo específico, mostramos los detalles */}
+                                {showDetails && (
                                     <>
                                         <Typography variant="h5" color="textSecondary" sx={{ mt: 0.5 }}>
-                                            Objetivos Departamentales por Empresarial:
+                                            Objetivos Departamentales:
                                         </Typography>
                                         {dept.achieved.map((num, index) => {
                                             const maxAchieved = Math.max(...dept.achieved);
@@ -124,6 +128,12 @@ const ProgressDepartment = ({ isLoading }) => {
                                             );
                                         })}
                                     </>
+                                )}
+                                {/* Si no se ha seleccionado un periodo específico, solo mostramos el avance */}
+                                {!showDetails && selectedDepartment && (
+                                    <Typography variant="body2" color="textSecondary" sx={{ mt: 2 }}>
+                                        Avance General de {dept.name}: {dept.progress}%
+                                    </Typography>
                                 )}
                                 <Divider sx={{ my: 0.5 }} />
                             </Grid>

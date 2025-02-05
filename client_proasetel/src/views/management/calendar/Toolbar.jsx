@@ -15,11 +15,10 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 
+// assets: asegúrate de tener los íconos necesarios importados
+import { IconChevronLeft, IconChevronRight, IconLayoutGrid, IconLayoutList, IconListNumbers } from '@tabler/icons-react';
 
-// assets
-import { IconChevronLeft, IconChevronRight, IconLayoutGrid, IconTemplate, IconLayoutList, IconListNumbers } from '@tabler/icons-react';
-
-// constant
+// Se agregan las opciones de vista. Se añadió la opción "Todos"
 const viewOptions = [
     {
         label: 'Mes',
@@ -30,10 +29,13 @@ const viewOptions = [
         label: 'Agenda',
         value: 'listWeek',
         icon: IconListNumbers
+    },
+    {
+        label: 'Todos',
+        value: 'listAll', // Debe coincidir con la vista personalizada de FullCalendar
+        icon: IconLayoutList
     }
 ];
-
-// ==============================|| CALENDAR TOOLBAR ||============================== //
 
 const Toolbar = ({ date, view, onClickNext, onClickPrev, onClickToday, onChangeView, ...others }) => {
     const matchSm = useMediaQuery((theme) => theme.breakpoints.down('md'));
@@ -42,6 +44,7 @@ const Toolbar = ({ date, view, onClickNext, onClickPrev, onClickToday, onChangeV
     useEffect(() => {
         let newOption = viewOptions;
         if (matchSm) {
+            // Filtramos las vistas que no sean compatibles en pantallas pequeñas, si fuera necesario
             newOption = viewOptions.filter((options) => options.value !== 'dayGridMonth' && options.value !== 'timeGridWeek');
         }
         setNewViewOption(newOption);
@@ -56,19 +59,19 @@ const Toolbar = ({ date, view, onClickNext, onClickPrev, onClickToday, onChangeV
             </Grid>
             <Grid item>
                 <Stack direction="row" alignItems="center" spacing={3}>
-                    <IconButton onClick={onClickPrev} size="large">
+                    <IconButton onClick={onClickPrev} size="large" aria-label="Mes anterior">
                         <IconChevronLeft />
                     </IconButton>
                     <Typography variant="h3" color="textPrimary">
-                    {format(date, 'MMMM yyyy', { locale: es })}
+                        {format(date, 'MMMM yyyy', { locale: es })}
                     </Typography>
-                    <IconButton onClick={onClickNext} size="large">
+                    <IconButton onClick={onClickNext} size="large" aria-label="Mes siguiente">
                         <IconChevronRight />
                     </IconButton>
                 </Stack>
             </Grid>
-            <Grid item>
-                <ButtonGroup variant="outlined" aria-label="outlined button group">
+            {/* <Grid item>
+                <ButtonGroup variant="outlined" aria-label="Opciones de vista del calendario">
                     {newViewOption.map((viewOption) => {
                         const Icon = viewOption.icon;
                         return (
@@ -84,12 +87,13 @@ const Toolbar = ({ date, view, onClickNext, onClickPrev, onClickToday, onChangeV
                         );
                     })}
                 </ButtonGroup>
-            </Grid>
+            </Grid> */}
         </Grid>
     );
 };
+
 Toolbar.propTypes = {
-    date: PropTypes.object,
+    date: PropTypes.instanceOf(Date),
     view: PropTypes.string,
     onClickNext: PropTypes.func,
     onClickPrev: PropTypes.func,
