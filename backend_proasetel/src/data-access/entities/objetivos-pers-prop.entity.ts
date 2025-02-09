@@ -44,6 +44,20 @@ export class ObjetivosPersProp {
         (user) => user.objetivosPersProp)
     user: User
 
+    @Column({
+        type: 'boolean',
+        nullable: true,
+        default: null
+    })
+    evaluado_empleado: boolean;
+
+    @Column({
+        type: 'boolean',
+        nullable: true,
+        default: null
+    })
+    evaluado_supervisor: boolean;
+
     @OneToMany(
         () => ResultadoEvaluacion,
         (resultadoEvaluacion) => resultadoEvaluacion.objetivoPersonalPropuesto

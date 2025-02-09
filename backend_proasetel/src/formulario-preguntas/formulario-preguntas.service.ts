@@ -164,7 +164,7 @@ async update(id: string, updateFormularioPregDto: UpdateFormularioPreguntaDto) {
   
     // Manejo genérico para errores de base de datos inesperados
     if (error.code === '23505') { // Código de error para conflictos únicos en Postgres
-      throw new BadRequestException('Datos duplicados detectados en la base de datos');
+      throw new BadRequestException('Esta pregunta ya existe en este formulario');
     }
   
     console.error(error); // Logs para inspección

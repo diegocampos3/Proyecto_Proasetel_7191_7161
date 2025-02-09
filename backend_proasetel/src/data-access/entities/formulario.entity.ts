@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany, BeforeInsert, BeforeUpdate } from "typeorm";
 // import { EvaluacionPers } from "./evaluacionPers.entity";
 import { FormulariosPreg } from "./formulario-pregunta.entity";
 import { PeriodoEvaluacion } from "./periodoEvaluacion.entity";
@@ -9,7 +9,7 @@ export class Formulario {
     @PrimaryGeneratedColumn('uuid')
     idFormulario: string;
 
-    @Column({ type: 'text', nullable: false })
+    @Column({ type: 'text', nullable: false, unique: true })
     nombre: string;
 
     @Column({ type: 'text', nullable: false })
@@ -29,4 +29,14 @@ export class Formulario {
         (formularioPreg) => formularioPreg.formulario
     )
     formularioPreg: FormulariosPreg
+
+    @BeforeInsert()
+    checkFieldsBeforeInsert(){
+        this.nombre = this.nombre.toLocaleLowerCase()
+    }
+
+    @BeforeUpdate()
+    checkFielsBeforeUpdate(){
+        this.checkFieldsBeforeInsert();
+    }
 }

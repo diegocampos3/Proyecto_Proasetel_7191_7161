@@ -42,6 +42,7 @@ const ObjDepList = () => {
                 idObjEvaluar:obj.idObjPer,
                 titulo: obj.titulo,
                 descripcion: obj.descripcion,
+                evaluado_supervisor:obj.evaluado_supervisor
             }));
 
             // Normalizar los datos de staffObjsPropAceptados
@@ -51,6 +52,7 @@ const ObjDepList = () => {
                 idObjEvaluar:obj.id,
                 titulo: obj.titulo,
                 descripcion: obj.descripcion,
+                evaluado_supervisor:obj.evaluado_supervisor
             }));
 
             // Combinar ambos arrays

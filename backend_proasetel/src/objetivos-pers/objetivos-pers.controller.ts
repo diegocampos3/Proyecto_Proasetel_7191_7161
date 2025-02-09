@@ -39,10 +39,10 @@ export class ObjetivosPersController {
     return this.objetivosPersService.findOne(id);
   }
 
+  @Patch(':id')
   @Auth(ValidRoles.supervisor, ValidRoles.empleado)
-  @Auth(ValidRoles.supervisor)
-  update(@Param('id') id: string, @Body() updateObjetivosPerDto: UpdateObjetivosPerDto) {
-    return this.objetivosPersService.update(id, updateObjetivosPerDto);
+  update(@Param('id') id: string, @Body() updateObjetivosPerDto: UpdateObjetivosPerDto, @GetUser() user: User) {
+    return this.objetivosPersService.update(id, updateObjetivosPerDto, user);
   }
 
   @Delete(':id')

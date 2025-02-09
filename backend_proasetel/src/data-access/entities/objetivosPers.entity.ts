@@ -26,6 +26,20 @@ export class ObjetivosPers {
     )
     user: User
 
+    @Column({
+        type: 'boolean',
+        nullable: true,
+        default: null
+    })
+    evaluado_empleado: boolean;
+
+    @Column({
+        type: 'boolean',
+        nullable: true,
+        default: null
+    })
+    evaluado_supervisor: boolean;
+    
     // @OneToMany(
     //     () => EvaluacionObjetivoPers,
     //     (evaluacionObjetivoPers) => evaluacionObjetivoPers.objetivo,

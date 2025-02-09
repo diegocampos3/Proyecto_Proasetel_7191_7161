@@ -358,6 +358,8 @@ const MainRoutes = {
         {
             path: '/management/formularios',
             element: <ManagFormularios />,
+        },
+        {
             path: '/dashboard/manager',
             element: <DashboardManager/>
 

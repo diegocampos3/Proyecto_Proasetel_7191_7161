@@ -43,6 +43,10 @@ const slice = createSlice({
         getStaffObjSuccess(state, action){
             state.staffObjs = action.payload
         },
+        
+        updateStaffObjSuccess(state, action){
+            state.staffObjs = action.payload
+        },
 
         removeStaffObjSuccess(state, action){
             state.staffObjs = action.payload
@@ -109,6 +113,20 @@ export function getStaffObj(){
             dispatch(slice.actions.getStaffObjSuccess(response.data));
         } catch (error) {
             dispatch(slice.actions.hasError(error));
+        }
+    }
+}
+
+export function updateStaffObj(id, data) {
+    //console.log('iddddddddddddddd', id)
+    return async () => {
+        try {
+            const response = await axios.patch(`/objetivosPers/${id}`, data);
+            dispatch(slice.actions.updateStaffObjSuccess(response.data));
+            return { success: true}
+        } catch (error) {
+            dispatch(slice.actions.hasError(error));
+            return{ success: false, error: error.message}
         }
     }
 }
@@ -243,7 +261,7 @@ export function getStaffObjPropAceptadosByUser(id) {
 //             dispatch(slice.actions.hasError(error));
 //         }
 //     };
-// }
+// } 
 
 export function addStaffObjProp(data) {
     return async () => {

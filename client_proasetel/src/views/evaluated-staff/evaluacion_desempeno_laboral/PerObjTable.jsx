@@ -193,6 +193,7 @@ const PerObjTable = ({ open, setOpen, listPerObj, setRowValue}) => {
     };
 
 
+
     return (
         <>
             <TableContainer>
@@ -249,9 +250,21 @@ const PerObjTable = ({ open, setOpen, listPerObj, setRowValue}) => {
                                         </TableCell> */}
                                         <TableCell align="center" sx={{ pr: 3, ...(open && { display: 'none'})}}>
                                             <Stack direction="row" alignItems="center" spacing={1} justifyContent="center">
-                                                <Button onClick={() => navigate(`/evaluated-staff/evaluacion_preguntas/evaluacion_preg/${row.idObjEvaluar}`)}>
+                                                {/* <Button onClick={() => navigate(`/evaluated-staff/evaluacion_preguntas/evaluacion_preg/${row.idObjEvaluar}`)}>
+                                                    Evaluar
+                                                </Button> */}
+                                                {row.evaluado_empleado ? (
+                                                    <Typography variant="body2" sx={{ color: 'success.main', fontWeight: 'bold' }}>
+                                                        Evaluado
+                                                    </Typography>
+                                                ) : (
+                                                <Button 
+                                                    onClick={() => navigate(`/evaluated-staff/evaluacion_preguntas/evaluacion_preg/${row.idObjEvaluar}`)}
+                                                    disabled={row.evaluado_empleado}
+                                                >
                                                     Evaluar
                                                 </Button>
+                                                )}
                                             </Stack>
                                         </TableCell>
                                     </TableRow>

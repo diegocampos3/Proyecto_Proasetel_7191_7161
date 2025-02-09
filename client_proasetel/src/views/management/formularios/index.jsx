@@ -153,7 +153,7 @@ const UsuariosListado = () => {
                         padding: '0.5rem',
                     }}
                 >
-                    {params.value}
+                    {params.value ? capitalizeFirstLetters(params.value) : ''}
                 </Box>
             )
         },

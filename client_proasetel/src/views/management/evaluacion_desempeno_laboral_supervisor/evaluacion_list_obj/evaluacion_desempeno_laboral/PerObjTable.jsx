@@ -250,9 +250,18 @@ const PerObjTable = ({ open, setOpen, listPerObj, setRowValue}) => {
                                         </TableCell> */}
                                         <TableCell align="center" sx={{ pr: 3, ...(open && { display: 'none'})}}>
                                             <Stack direction="row" alignItems="center" spacing={1} justifyContent="center">
-                                                <Button onClick={() => navigate(`/management/evaluacion_desempeno_laboral_supervisor/evaluacion_list_obj/evaluacion_preguntas/evaluacion_preg/${row.idObjEvaluar}`)}>
+                                                {row.evaluado_supervisor ? (
+                                                    <Typography variant="body2" sx={{ color: 'success.main', fontWeight: 'bold' }}>
+                                                        Evaluado
+                                                    </Typography>
+                                                ) : (
+                                                <Button 
+                                                    onClick={() => navigate(`/management/evaluacion_desempeno_laboral_supervisor/evaluacion_list_obj/evaluacion_preguntas/evaluacion_preg/${row.idObjEvaluar}`)}
+                                                    disabled={row.evaluado_empleado}
+                                                >                                                   
                                                     Evaluar
                                                 </Button>
+                                                )}
                                             </Stack>
                                         </TableCell>
                                     </TableRow>

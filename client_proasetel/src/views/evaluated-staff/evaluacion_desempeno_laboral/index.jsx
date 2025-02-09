@@ -28,7 +28,8 @@ const ObjDepList = () => {
     const { staffObjs, staffObjsProp } = useSelector((state) => state.staffObj);
     const [ rowValue, setRowValue] = useState(null);
 
-    
+    console.log('obj', staffObjs);
+    console.log('obj propp', staffObjsProp);
 
     // useEffect(() => {
     //     setListPerObj(staffObjs);
@@ -37,13 +38,14 @@ const ObjDepList = () => {
     // Normalizar y combinar los datos
     useEffect(() => {
         if (staffObjs && staffObjsProp) {
-            console.log('EVALUADO objPers:', staffObjs)
-            console.log('EVALUADO objPersProp:', staffObjsProp)
+            // console.log('EVALUADO objPers:', staffObjs)
+            // console.log('EVALUADO objPersProp:', staffObjsProp)
             // Normalizar los datos de staffObjs
             const normalizedStaffObjs = staffObjs.map((obj) => ({
                 idObjEvaluar:obj.idObjPer,
                 titulo: obj.titulo,
                 descripcion: obj.descripcion,
+                evaluado_empleado:obj.evaluado_empleado
             }));
 
             // Normalizar los datos de staffObjsPropAceptados
@@ -51,6 +53,7 @@ const ObjDepList = () => {
                 idObjEvaluar:obj.id,
                 titulo: obj.titulo,
                 descripcion: obj.descripcion,
+                evaluado_empleado:obj.evaluado_empleado
             }));
 
             // Combinar ambos arrays
@@ -64,7 +67,7 @@ const ObjDepList = () => {
         dispatch(getStaffObj());
     }, [])
 
-    // console.log('AAAAAAAaaaaaaaaaa', listPerObj)
+    console.log('AAAAAAAaaaaaaaaaa', listPerObj)
 
     //trae tambien los objetivos personales propuestos
     useEffect(() => {

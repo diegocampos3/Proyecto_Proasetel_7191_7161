@@ -72,7 +72,7 @@ const Alert = React.forwardRef((props, ref) => (
 
 // ==============================|| ITEM LIST - TABLE ||============================== //
 
-const ItemTable = ({ open, setOpen, listPreguntasFormulario ,setRowValue }) => {
+const ItemTable = ({ open, setOpen, listPreguntasFormulario , formularioEstado, setRowValue }) => {
     const theme = useTheme();
 
     const [order, setOrder] = React.useState('asc');
@@ -154,10 +154,10 @@ const ItemTable = ({ open, setOpen, listPreguntasFormulario ,setRowValue }) => {
     }, [listPreguntasFormulario]);
 
 
-    // Función para capitalizar la primera letra de cada palabra
-    // const capitalizeFirstLetters = (str) => {
-    //     return str.replace(/\b\w/g, (char) => char.toUpperCase());
-    // };
+    //Función para capitalizar la primera letra de cada palabra
+    const capitalizeFirstLetters = (str) => {
+        return str.replace(/\b\w/g, (char) => char.toUpperCase());
+    };
 
     const handleRequestSort = (event, property) => {
         const isAsc = orderBy === property && order === 'asc';
@@ -205,6 +205,7 @@ const ItemTable = ({ open, setOpen, listPreguntasFormulario ,setRowValue }) => {
                         theme={theme}
                         selected={selected}
                         drawer={open}
+                        formularioEstado={formularioEstado}
                     />
                     <TableBody>
                         {stableSort(
@@ -229,7 +230,7 @@ const ItemTable = ({ open, setOpen, listPreguntasFormulario ,setRowValue }) => {
                                     <Typography variant="h5" >{row.idPregunta.slice(0,6)}</Typography>
                                     </TableCell> */}
                                         
-                                    <TableCell onClick={() => (open ? handleDrawerOpen(row) : '')} sx={{ pl: 7 }} >{row.pregunta}</TableCell>
+                                    <TableCell onClick={() => (open ? handleDrawerOpen(row) : '')} sx={{ pl: 7 }} >{row.pregunta ? capitalizeFirstLetters(row.pregunta) : ''}</TableCell>
                                     {/* <TableCell sx={open ? { display: 'none' } : {}}>{row.pregunta}</TableCell> */}
 
                                     {/* <TableCell style={{ textAlign: 'center' }}>{row.index + 1}</TableCell> */}
@@ -237,6 +238,7 @@ const ItemTable = ({ open, setOpen, listPreguntasFormulario ,setRowValue }) => {
                                     {/* <TableCell>{row.pregunta}</TableCell> */}
 
                                     <TableCell sx={{ pr: 3, ...(open && { display: 'none' }) }}>
+                                    {formularioEstado === 1 && (
                                             <Stack direction="row" alignItems="center" spacing={1} justifyContent="center">
                                                 <Tooltip title="Editar">
                                                     <IconButton color="primary" size="small" aria-label="Edit" onClick={() => handleEditClick(row)}>
@@ -249,6 +251,7 @@ const ItemTable = ({ open, setOpen, listPreguntasFormulario ,setRowValue }) => {
                                                     </IconButton>
                                                 </Tooltip>
                                             </Stack>
+                                    )}
                                     </TableCell>
 
                                 </TableRow>
