@@ -11,6 +11,9 @@ import Grid from '@mui/material/Grid';
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import Button from '@mui/material/Button';
+import Typography from '@mui/material/Typography';
+import Snackbar from '@mui/material/Snackbar';
+import MuiAlert from '@mui/material/Alert';
 
 // project imports
 import SubCard from 'ui-component/cards/SubCard';
@@ -20,8 +23,8 @@ import { gridSpacing } from 'store/constant';
 import { getFormularios } from 'store/slices/formulario';
 import { getPreguntasByFormulario } from 'store/slices/formularioPregunta';
 import {getRespuestas} from 'store/slices/respuestasPreguntas';
-import {existeStaffObj, existeStaffObjProp} from 'store/slices/staffobj';
-import { updateResultadoEvaluacion, getResultadosEvaluacion } from 'store/slices/resultadoEvaluacion';
+import {existeStaffObj, existeStaffObjProp, updateStaffObjProp, updateStaffObj} from 'store/slices/staffobj';
+import { createResultadoEvaluacion, updateResultadoEvaluacion, getResultadosEvaluacion } from 'store/slices/resultadoEvaluacion';
 
 
 
@@ -34,6 +37,18 @@ const UIRadio = () => {
     const [valuePlacement, setValuePlacement] = React.useState('top');
     const [valueSize, setValueSize] = React.useState('md');
     const [valueColor, setValueColor] = React.useState('default');
+
+    // Mensajes de confirmación
+    const [snackbarOpen, setSnackbarOpen] = React.useState(false);
+    const [snackbarMessage, setSnackbarMessage] = React.useState('');
+    const [snackbarSeverity, setSnackbarSeverity] = React.useState('success');
+
+    const showSnackbar = (message, severity = 'success') => {
+        setSnackbarMessage(message);
+        setSnackbarSeverity(severity);
+        setSnackbarOpen(true);
+    };
+
 
     //-------------------- TRAIDA DE FORMULARIO DEFINIDO PARA ESTE PERIODO ----------------
 
@@ -142,6 +157,12 @@ const UIRadio = () => {
     const navigate = useNavigate();
 
     const handleGuardar = async () => {
+        // Validar el formulario antes de continuar
+        if (!validateForm()) {
+            showSnackbar('Por favor, responda todas las preguntas antes de guardar.', 'error');
+            return; // Detener la ejecución si hay errores
+        }
+
         try {
             // Determinar si el idObjEvaluar pertenece a idObjPer o idObjPersProp
             let idObjPer = null;
@@ -151,17 +172,20 @@ const UIRadio = () => {
             const existeStaff = await dispatch(existeStaffObj(idObjEvaluar));
             if (existeStaff) {
                 idObjPer = idObjEvaluar;
+                // await dispatch(updateStaffObj(idObjEvaluar, { evaluado_supervisor: true }));
             } else {
                 // Si no existe en staffobj, verificar en staffobjprop
                 const existeStaffProp = await dispatch(existeStaffObjProp(idObjEvaluar));
                 if (existeStaffProp) {
                     idObjPersProp = idObjEvaluar;
+                    // await dispatch(updateStaffObjProp(idObjEvaluar, { evaluado_supervisor: true }));
+                    
                 }
             }
 
             // Validar que al menos uno de los dos campos tenga valor
             if (!idObjPer && !idObjPersProp) {
-                alert('El objetivo no existe en ninguna tabla');
+                showSnackbar('El objetivo no existe en ninguna tabla');
                 return;
             }
 
@@ -183,7 +207,7 @@ const UIRadio = () => {
                     );
 
                     //console.log('REGISTRO ENCONTRADO', registroEncontrado)
-                    console.log('PREGUNTAAAAA:', pregunta)
+                    // console.log('PREGUNTAAAAA:', pregunta)
                     if (registroEncontrado) {
                         // Extraer el idResultadoEvaluacion del registro encontrado
                         const idResultadoEvaluacion = registroEncontrado.idResultadoEvaluacion;
@@ -194,22 +218,57 @@ const UIRadio = () => {
                             })
                         );
                     }else{
-                        console.error("Registro no encontrado para la pregunta:", pregunta.idPregunta);
+                        await dispatch(
+                            createResultadoEvaluacion({
+                                idObjPer,
+                                idObjPersProp,
+                                idPregunta: pregunta.idPregunta,
+                                puntaje_evaluado: null,
+                                puntaje_supervisor: Number(selectedValues[pregunta.idPregunta])
+                            })
+                        );
                     }
                 }
             }
 
-            alert('Evaluación guardada correctamente');
-            navigate(-1); // Regresar a la página anterior
+            if (idObjPer !== null){
+                await dispatch(updateStaffObj(idObjEvaluar, { evaluado_supervisor: true }));
+            }else{
+                if(idObjPersProp !== null){
+                    await dispatch(updateStaffObjProp(idObjEvaluar, { evaluado_supervisor: true }));
+                }
+            }
+            
+            showSnackbar('Evaluación guardada correctamente', 'success');           
+            setTimeout(() => {
+                navigate(-1); // Regresar a la página anterior después de 2 segundos
+            }, 1800);
+        
+        
         } catch (error) {
             console.error('Error al guardar:', error);
-            alert('Error al guardar la evaluación');
+            showSnackbar('Error al guardar la evaluación', 'error');      
         }
     };
 
 
 //------------------------ fin eleccion de respuesta y almacenamiento en la base ----------------------
 
+
+// ---------------------------------- MANEJO DE ERRORES FORMULARIO ----------------------------------//
+    const [errors, setErrors] = useState({});
+    const validateForm = () => {
+        const newErrors = {};
+        listPreguntasFormulario.forEach((pregunta) => {
+            if (!selectedValues[pregunta.idPregunta]) {
+                newErrors[pregunta.idPregunta] = 'Debe seleccionar una opción';
+            }
+        });
+        setErrors(newErrors);
+        return Object.keys(newErrors).length === 0; // Retorna true si no hay errores
+    };
+
+// ---------------------------------- FIN MANEJO DE ERRORES FORMULARIO ----------------------------------//
 
 
     return (
@@ -233,7 +292,11 @@ const UIRadio = () => {
                                         row
                                         aria-label={`respuestas-${pregunta.idPregunta}`}
                                         value={selectedValues[pregunta.idPregunta] || ''}
-                                        onChange={(e) => setSelectedValues({ ...selectedValues, [pregunta.idPregunta]: e.target.value })}
+                                        onChange={(e) => {
+                                            setSelectedValues({ ...selectedValues, [pregunta.idPregunta]: e.target.value });
+                                            setErrors({ ...errors, [pregunta.idPregunta]: '' }); // Limpiar el error al seleccionar una opción
+                                        }}
+                                        
                                         name={`radio-group-${pregunta.idPregunta}`}
                                     >
                                         {listRespuestas.map((respuesta) => (
@@ -259,6 +322,11 @@ const UIRadio = () => {
                                             />
                                         ))}
                                     </RadioGroup>
+                                    {errors[pregunta.idPregunta] && (
+                                        <Typography color="error" variant="body2">
+                                            {errors[pregunta.idPregunta]}
+                                        </Typography>
+                                    )}
                                 </FormControl>
                             </Grid>
                         </Grid>
@@ -266,6 +334,21 @@ const UIRadio = () => {
                 </Grid>
             ))}
             </Grid>
+            {/* Snackbar para mostrar mensajes */}
+            <Snackbar
+                open={snackbarOpen}
+                autoHideDuration={2800} // Duración en milisegundos
+                onClose={() => setSnackbarOpen(false)}
+            >
+                <MuiAlert
+                    elevation={6}
+                    variant="filled"
+                    onClose={() => setSnackbarOpen(false)}
+                    severity={snackbarSeverity}
+                >
+                    {snackbarMessage}
+                </MuiAlert>
+            </Snackbar>
         </MainCard>
     );
 };

@@ -26,7 +26,7 @@ export class FormularioService {
       if (existingFormulario) {
         // Si existe, lanzar una excepción
         throw new ConflictException(
-          `No se puede crear el formulario porque ya existe uno con el nombre '${createFormularioDto.nombre}'.`,
+          `Ya existe un formulario con el nombre '${createFormularioDto.nombre}'.`,
         );
       }
   
@@ -40,9 +40,10 @@ export class FormularioService {
         throw error;
       }
       // Para cualquier otro error, lanzamos una InternalServerErrorException
-      throw new InternalServerErrorException(
-        'Error inesperado, revisa los logs del servidor',
-      );
+      // throw new InternalServerErrorException(
+      //   'Error inesperado, revisa los logs del servidor',
+      // );
+      this.handleDBExceptions(error);
     }
   }
 
@@ -113,8 +114,9 @@ export class FormularioService {
   }
 
   private handleDBExceptions(error: any) {
-    if (error.code === '23505') throw new BadRequestException(error.detail);
+    if(error.code === '23505')
+      throw new BadRequestException('Ya existe un formulario con ese nombre');
     this.logger.error(error);
-    throw new InternalServerErrorException('Error inesperado, revisa los logs del servidor');
+    throw new InternalServerErrorException('Error inesperado, revise los logs del servidor');
   }
 }

@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, OneToMany } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, OneToMany, BeforeInsert, BeforeUpdate } from "typeorm";
 import { Formulario } from "./formulario.entity";
 import { ResultadoEvaluacion } from "./resultado_evaluacion.entity";
 
@@ -12,7 +12,7 @@ export class FormulariosPreg {
     @JoinColumn({ name: 'idFormulario' })
     formulario: Formulario;
 
-    @Column({ type: 'text', nullable: false })
+    @Column({ type: 'text', nullable: false, unique: true })
     pregunta: string;
 
     @OneToMany(
@@ -20,4 +20,14 @@ export class FormulariosPreg {
         (resultadoEvaluacion) => resultadoEvaluacion.pregunta
     )
     resultadoEvaluacion: ResultadoEvaluacion
+
+    @BeforeInsert()
+    checkFieldsBeforeInsert(){
+        this.pregunta = this.pregunta.toLocaleLowerCase()
+    }
+
+    @BeforeUpdate()
+    checkFielsBeforeUpdate(){
+        this.checkFieldsBeforeInsert();
+    }
 }

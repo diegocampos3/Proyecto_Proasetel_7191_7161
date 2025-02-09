@@ -11,6 +11,10 @@ import Grid from '@mui/material/Grid';
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import Button from '@mui/material/Button';
+import Typography from '@mui/material/Typography';
+import Snackbar from '@mui/material/Snackbar';
+import MuiAlert from '@mui/material/Alert';
+
 
 // project imports
 import SubCard from 'ui-component/cards/SubCard';
@@ -20,8 +24,8 @@ import { gridSpacing } from 'store/constant';
 import { getFormularios } from 'store/slices/formulario';
 import { getPreguntasByFormulario } from 'store/slices/formularioPregunta';
 import {getRespuestas} from 'store/slices/respuestasPreguntas';
-import {existeStaffObj, existeStaffObjProp} from 'store/slices/staffobj';
-import { createResultadoEvaluacion } from 'store/slices/resultadoEvaluacion';
+import {existeStaffObj, existeStaffObjProp, updateStaffObjProp, updateStaffObj} from 'store/slices/staffobj';
+import { createResultadoEvaluacion, updateResultadoEvaluacion, getResultadosEvaluacion } from 'store/slices/resultadoEvaluacion';
 
 
 
@@ -35,6 +39,17 @@ const UIRadio = () => {
     const [valueSize, setValueSize] = React.useState('md');
     const [valueColor, setValueColor] = React.useState('default');
 
+    // Mensajes de confirmación
+    const [snackbarOpen, setSnackbarOpen] = React.useState(false);
+    const [snackbarMessage, setSnackbarMessage] = React.useState('');
+    const [snackbarSeverity, setSnackbarSeverity] = React.useState('success');
+
+    const showSnackbar = (message, severity = 'success') => {
+        setSnackbarMessage(message);
+        setSnackbarSeverity(severity);
+        setSnackbarOpen(true);
+    };
+    
     //-------------------- TRAIDA DE FORMULARIO DEFINIDO PARA ESTE PERIODO ----------------
 
     //traer los formularios
@@ -108,17 +123,41 @@ const UIRadio = () => {
     //--------------------  FIN TRAIDA DE LAS RESPUESTAS  ----------------
 
 
+    //-------------------- TRAIDA DE RESULTADOS EVALUACION  ----------------
+
+    const[listResultadosEvaluacion,setListResultadosEvaluacion]= useState([]) ; //nuevo
+    const {resultados} = useSelector((state) => state.resultadoEvaluacion)
+
+    useEffect(() => {
+        setListResultadosEvaluacion(resultados);
+    }, [resultados]);
+
+    useEffect(() => {
+        dispatch(getResultadosEvaluacion());
+    }, []);
+
+    console.log('RESULTADOS', listResultadosEvaluacion)
+
+    //-------------------- FIN TRAIDA DE RESULTADOS EVALUACION  ----------------
+
+
 
     //------------------------ eleccion de respuesta y almacenamiento en la base ----------------------
     
     const [selectedValues, setSelectedValues] = useState({});
 
-    console.log('RESPUESTASSSS^^^^^', selectedValues)
+    //console.log('RESPUESTASSSS^^^^^', selectedValues)
 
     const { idObjEvaluar } = useParams(); // Obtén el idObjEvaluar de la URL
     const navigate = useNavigate();
 
     const handleGuardar = async () => {
+        // Validar el formulario antes de continuar
+        if (!validateForm()) {
+            showSnackbar('Por favor, responda todas las preguntas antes de guardar.', 'error');
+            return; // Detener la ejecución si hay errores
+        }
+
         try {
             // Determinar si el idObjEvaluar pertenece a idObjPer o idObjPersProp
             let idObjPer = null;
@@ -128,17 +167,20 @@ const UIRadio = () => {
             const existeStaff = await dispatch(existeStaffObj(idObjEvaluar));
             if (existeStaff) {
                 idObjPer = idObjEvaluar;
+                // await dispatch(updateStaffObj(idObjEvaluar, { evaluado_empleado: true }));
+                
             } else {
                 // Si no existe en staffobj, verificar en staffobjprop
                 const existeStaffProp = await dispatch(existeStaffObjProp(idObjEvaluar));
                 if (existeStaffProp) {
                     idObjPersProp = idObjEvaluar;
+                    // await dispatch(updateStaffObjProp(idObjEvaluar, { evaluado_empleado: true }));
                 }
             }
 
             // Validar que al menos uno de los dos campos tenga valor
             if (!idObjPer && !idObjPersProp) {
-                alert('El objetivo no existe en ninguna tabla');
+                showSnackbar('El objetivo no existe en ninguna tabla', 'error');                
                 return;
             }
 
@@ -153,23 +195,51 @@ const UIRadio = () => {
             // Guardar cada pregunta seleccionada
             for (const pregunta of listPreguntasFormulario) {
                 if (selectedValues[pregunta.idPregunta]) {
-                    await dispatch(
-                        createResultadoEvaluacion({
-                            idObjPer,
-                            idObjPersProp,
-                            idPregunta: pregunta.idPregunta,
-                            puntaje_evaluado: Number(selectedValues[pregunta.idPregunta]),
-                            puntaje_supervisor: null
-                        })
+
+                    const registroEncontrado = listResultadosEvaluacion.find((registro) => 
+                        registro.idPregunta === pregunta.idPregunta &&
+                        (registro.idObjPer === idObjEvaluar || registro.idObjPersProp === idObjEvaluar)
                     );
+
+                    //console.log('REGISTRO ENCONTRADO', registroEncontrado)
+                    // console.log('PREGUNTAAAAA:', pregunta)
+                    if (registroEncontrado) {
+                        // Extraer el idResultadoEvaluacion del registro encontrado
+                        const idResultadoEvaluacion = registroEncontrado.idResultadoEvaluacion;
+                        // console.log('IDRESULTADO_EVALUACION', idResultadoEvaluacion)
+                        await dispatch(
+                            updateResultadoEvaluacion(idResultadoEvaluacion,{
+                                puntaje_evaluado: Number(selectedValues[pregunta.idPregunta]),
+                            })
+                        );
+                    }else{
+                        await dispatch(
+                            createResultadoEvaluacion({
+                                idObjPer,
+                                idObjPersProp,
+                                idPregunta: pregunta.idPregunta,
+                                puntaje_evaluado: Number(selectedValues[pregunta.idPregunta]),
+                                puntaje_supervisor: null
+                            })
+                        );
+                    }
                 }
             }
-
-            alert('Evaluación guardada correctamente');
-            navigate(-1); // Regresar a la página anterior
+            if (idObjPer !== null){
+                await dispatch(updateStaffObj(idObjEvaluar, { evaluado_empleado: true }));
+            }else{
+                if(idObjPersProp !== null){
+                    await dispatch(updateStaffObjProp(idObjEvaluar, { evaluado_empleado: true }));
+                }
+            }
+            showSnackbar('Evaluación guardada correctamente', 'success');           
+            setTimeout(() => {
+                navigate(-1); // Regresar a la página anterior después de 2 segundos
+            }, 1800);
+            // showSnackbar('Evaluación guardada correctamente', 'success');           
         } catch (error) {
             console.error('Error al guardar:', error);
-            alert('Error al guardar la evaluación');
+            showSnackbar('Error al guardar la evaluación', 'error');      
         }
     };
 
@@ -177,6 +247,20 @@ const UIRadio = () => {
 
 //------------------------ fin eleccion de respuesta y almacenamiento en la base ----------------------
 
+// ---------------------------------- MANEJO DE ERRORES FORMULARIO ----------------------------------//
+    const [errors, setErrors] = useState({});
+    const validateForm = () => {
+        const newErrors = {};
+        listPreguntasFormulario.forEach((pregunta) => {
+            if (!selectedValues[pregunta.idPregunta]) {
+                newErrors[pregunta.idPregunta] = 'Debe seleccionar una opción';
+            }
+        });
+        setErrors(newErrors);
+        return Object.keys(newErrors).length === 0; // Retorna true si no hay errores
+    };
+
+// ---------------------------------- FIN MANEJO DE ERRORES FORMULARIO ----------------------------------//
 
 
     return (
@@ -196,13 +280,16 @@ const UIRadio = () => {
                         <Grid container spacing={2}>
                             <Grid item>
                                 <FormControl>
-                                    <RadioGroup
-                                        row
-                                        aria-label={`respuestas-${pregunta.idPregunta}`}
-                                        value={selectedValues[pregunta.idPregunta] || ''}
-                                        onChange={(e) => setSelectedValues({ ...selectedValues, [pregunta.idPregunta]: e.target.value })}
-                                        name={`radio-group-${pregunta.idPregunta}`}
-                                    >
+                                <RadioGroup
+                                    row
+                                    aria-label={`respuestas-${pregunta.idPregunta}`}
+                                    value={selectedValues[pregunta.idPregunta] || ''}
+                                    onChange={(e) => {
+                                        setSelectedValues({ ...selectedValues, [pregunta.idPregunta]: e.target.value });
+                                        setErrors({ ...errors, [pregunta.idPregunta]: '' }); // Limpiar el error al seleccionar una opción
+                                    }}
+                                    name={`radio-group-${pregunta.idPregunta}`}
+                                >
                                         {listRespuestas.map((respuesta) => (
                                             <FormControlLabel
                                                 key={respuesta.idRespuestaPregunta} // Asegúrate de usar un identificador único
@@ -226,6 +313,11 @@ const UIRadio = () => {
                                             />
                                         ))}
                                     </RadioGroup>
+                                    {errors[pregunta.idPregunta] && (
+                                        <Typography color="error" variant="body2">
+                                            {errors[pregunta.idPregunta]}
+                                        </Typography>
+                                    )}
                                 </FormControl>
                             </Grid>
                         </Grid>
@@ -233,6 +325,21 @@ const UIRadio = () => {
                 </Grid>
             ))}
             </Grid>
+            {/* Snackbar para mostrar mensajes */}
+            <Snackbar
+                open={snackbarOpen}
+                autoHideDuration={2800} // Duración en milisegundos
+                onClose={() => setSnackbarOpen(false)}
+            >
+                <MuiAlert
+                    elevation={6}
+                    variant="filled"
+                    onClose={() => setSnackbarOpen(false)}
+                    severity={snackbarSeverity}
+                >
+                    {snackbarMessage}
+                </MuiAlert>
+            </Snackbar>
         </MainCard>
     );
 };

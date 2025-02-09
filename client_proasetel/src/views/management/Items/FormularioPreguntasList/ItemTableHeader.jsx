@@ -66,10 +66,18 @@ EnhancedTableToolbar.propTypes = {
 
 // ==============================|| ITEM TABLE - HEADER ||============================== //
 
-const ItemTableHeader = ({ open, order, orderBy, numSelected, onRequestSort, selected }) => {
+const ItemTableHeader = ({ open, order, orderBy, numSelected, onRequestSort, selected, formularioEstado }) => {
     const createSortHandler = (property) => (event) => {
         onRequestSort(event, property);
     };
+
+    const filteredHeadCells = headCells.filter((cell) => {
+        if (cell.id === 'Editar/Eliminar') {
+            return Number(formularioEstado) === 1; // Muestra solo si idFormulario es 1
+        }
+        return true; // Mantén las demás columnas
+    });
+
     return (
         <TableHead>
             <TableRow>
@@ -79,7 +87,7 @@ const ItemTableHeader = ({ open, order, orderBy, numSelected, onRequestSort, sel
                     </TableCell>
                 )}
                 {numSelected <= 0 &&
-                    headCells.map((headCell) => {
+                    filteredHeadCells.map((headCell) => {
                         const isActive = orderBy === headCell.id;
                         return (
                             <TableCell

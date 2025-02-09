@@ -69,7 +69,9 @@ export class ObjetivosPersService {
         idObjPer: item.idObjPer,
         idObjDep: item.objetivoDep.idObjDep,
         titulo: item.objetivoDep.titulo,
-        descripcion: item.objetivoDep.descripcion
+        descripcion: item.objetivoDep.descripcion,
+        evaluado_empleado: item.evaluado_empleado,
+        evaluado_supervisor:item.evaluado_supervisor
       }))
     }else{
       return []
@@ -92,7 +94,9 @@ export class ObjetivosPersService {
         idObjPer: item.idObjPer,
         idObjDep: item.objetivoDep.idObjDep,
         titulo: item.objetivoDep.titulo,
-        descripcion: item.objetivoDep.descripcion
+        descripcion: item.objetivoDep.descripcion,
+        evaluado_empleado: item.evaluado_empleado,
+        evaluado_supervisor:item.evaluado_supervisor
       }))
     }else{
       return []
@@ -136,34 +140,34 @@ export class ObjetivosPersService {
   
 
 
-  async update(id: string, updateObjetivosPerDto: UpdateObjetivosPerDto) {
-    
-    const { objetivoDep: tituloObj, ...restoDatos } = updateObjetivosPerDto;
-
-    let objetivoDep: ObjetivosDep | undefined = undefined;
-
-    if ( tituloObj){
-      objetivoDep = await this.objetivosDepRepository.findOne({
-        where: { titulo: tituloObj.toLocaleLowerCase()}
-      })
-
-      if (!objetivoDep){
-        throw new NotFoundException(`El objetivo departamental ${tituloObj} no fue encontrado`);
-      }
-    }
-
-    const objToUpdate = await this.objetivosPersRepository.findOne({where: {idObjPer:id}});
-
-    if (!objToUpdate)
-      throw new NotFoundException(`El objetivo personal con id ${id} no fue encontrado`);
+  async update(idObjPer: string, updateObjetivosPerDto: UpdateObjetivosPerDto, user: User) {
 
     try {
-      const updateObjPers = await this.objetivosPersRepository.save({
-        ...restoDatos,
-        objetivoDep
-      });
+      // const objToUpdate = await this.objetivosPersRepository.findOne({where: {idObjPer:id}});
+      const objetivo = await this.objetivosPersRepository.findOne({where: { idObjPer }});
+      if (!objetivo){
+        throw new NotFoundException(`El objetivo personal con id ${idObjPer} no fue encontrado`);
+      }
 
-      return updateObjPers;
+      // Guardar la entidad actualizada
+      // await this.objetivosPersRepository.save(objToUpdate);
+      // console.log('objDep', objDep)
+      // console.log('objetivoDep', objetivoDep)
+      // return this.findAll(user)
+      // try {
+      //   const updateObjPers = await this.objetivosPersRepository.save({
+      //     ...restoDatos,
+      //     objetivoDep,
+      //   });
+
+      //   return updateObjPers;
+      // Actualizar los campos permitidos
+      Object.assign(objetivo, updateObjetivosPerDto);
+
+      // Guardar los cambios en la base de datos
+      await this.objetivosPersRepository.save(objetivo);
+      return this.findAll(user)
+
 
     } catch (error) {
       this.handleDBExceptions(error);

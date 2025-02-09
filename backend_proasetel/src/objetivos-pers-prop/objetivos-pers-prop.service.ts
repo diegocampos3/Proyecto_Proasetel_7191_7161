@@ -1,9 +1,9 @@
-import { BadRequestException, Injectable, InternalServerErrorException, Logger } from '@nestjs/common';
+import { BadRequestException, ConflictException, Injectable, InternalServerErrorException, Logger, NotFoundException } from '@nestjs/common';
 import { CreateObjetivosPersPropDto } from './dto/create-objetivos-pers-prop.dto';
 import { UpdateObjetivosPersPropDto } from './dto/update-objetivos-pers-prop.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ObjetivosPersProp } from 'src/data-access/entities/objetivos-pers-prop.entity';
-import { Repository } from 'typeorm';
+import { Not, Repository } from 'typeorm';
 import { ObjtivosEmpDep } from 'src/data-access/entities/objtivos-emp-dep.entity';
 import { User } from 'src/data-access/entities/usuario.entity';
 import { ResultadoEvaluacion } from 'src/data-access/entities/resultado_evaluacion.entity';
@@ -129,29 +129,95 @@ export class ObjetivosPersPropService {
     return `This action returns a #${id} objetivosPersProp`;
   }
 
-  async update(id: string, updateObjetivosPersPropDto: UpdateObjetivosPersPropDto, user: User) {
+  // async update(id: string, updateObjetivosPersPropDto: UpdateObjetivosPersPropDto, user: User) {
     
-    const {objtivoEmpDep, ...data} = updateObjetivosPersPropDto;
+  //   // const {objtivoEmpDep, ...data} = updateObjetivosPersPropDto;
    
-    const objEmpDep = await this.objetivosEmpDepRepository.findOne({
-      where: {id: objtivoEmpDep}
-    })
+  //   // const objEmpDep = await this.objetivosEmpDepRepository.findOne({
+  //   //   where: {id: objtivoEmpDep},
+  //   //   relations:['objtivoEmpDep'],
+  //   // })
 
-    try {
-      const objDepProp = await this.objetivosPersPropRepository.preload({
-        id,
-        objtivoEmpDep: objEmpDep,
-        ...data
-      })
+  //   // const objtivoEmpDep = await this.objetivosEmpDepRepository.findOne({
+  //   //   where: { id: updateObjetivosPersPropDto.objtivoEmpDep },
+  //   // });
 
-      await this.objetivosPersPropRepository.save(objDepProp)
-      
-      return this.findAll(user)
+  //   const objPersProp = await this.objetivosPersPropRepository.preload({
+  //     id: id,
+  //     ...updateObjetivosPersPropDto
+  //   });
 
-    } catch (error) {
-      this.handleDBExceptions(error)
-    }
+  //   // Si el formulario no existe, lanzamos un error
+  //   if (!objtivoEmpDep) {
+  //     throw new NotFoundException(
+  //       `Objetivo Empresa Departamento con id ${updateObjetivosPersPropDto.objtivoEmpDep} no encontrado.`,
+  //     );
+  //   }
+
+  // //  // Verifica si ya existe una pregunta con el mismo texto en la base de datos
+  // //  const existingObjPersProp = await this.objetivosPersPropRepository.findOne({
+  // //    where: {
+  // //      titulo: updateObjetivosPersPropDto.titulo, // Busca por el texto de la pregunta
+  // //      id: Not(id), // Excluye la pregunta que se está actualizando
+  // //    },
+  // //  });
+ 
+  // //  // Si existe una pregunta con el mismo texto, lanzamos un error
+  // //  if (existingObjPersProp) {
+  // //    throw new ConflictException(
+  // //      `Ya existe una pregunta con el texto: "${updateObjetivosPersPropDto.titulo}".`,
+  // //    );
+  // //  }   
+
+  //   // try {
+  //   //   const objDepProp = await this.objetivosPersPropRepository.preload({
+  //   //     id,
+  //   //     objtivoEmpDep: objEmpDep,
+  //   //     ...data
+  //   //   })
+
+  //   try {
+  //     const objDepProp = await this.objetivosPersPropRepository.preload({
+  //       id: idUpdate,
+  //       ...updateObjetivosPersPropDto,
+  //       objtivoEmpDep,
+  //     })
+
+  //     await this.objetivosPersPropRepository.save(objDepProp)
+  //     console.log('AAAA objtivoEmpDep', objtivoEmpDep)
+  //     console.log('EEEE idObjProp', idUpdate)
+  //     //return this.findAll(user)
+  //     return objDepProp;
+
+  //   } catch (error) {
+  //     this.handleDBExceptions(error)
+  //   }
     
+
+  // }
+
+  async update(
+    id: string,
+    updateObjetivosPersPropDto: UpdateObjetivosPersPropDto,
+    user: User,
+  ){
+    // Buscar el objetivo personal propuesto por ID
+    const objetivo = await this.objetivosPersPropRepository.findOne({ where: { id } });
+    if (!objetivo) {
+      throw new NotFoundException(`Objetivo personal propuesto con ID ${id} no encontrado`);
+    }
+
+    // // Verificar que el usuario tenga permisos para actualizar el objetivo
+    // if (user.id !== objetivo.user.id && user.rol !== 'admin') {
+    //   throw new UnauthorizedException('No tiene permisos para actualizar este objetivo');
+    // }
+
+    // Actualizar los campos permitidos
+    Object.assign(objetivo, updateObjetivosPersPropDto);
+
+    // Guardar los cambios en la base de datos
+    await this.objetivosPersPropRepository.save(objetivo);
+    return this.findAll(user)
 
   }
 
@@ -168,7 +234,7 @@ export class ObjetivosPersPropService {
 
     this.logger.error(error);
 
-    throw new InternalServerErrorException('Unexpected error, check server logs')
+    throw new InternalServerErrorException('Error inesperado, revise los logs del servidor')
     
   }
 }

@@ -24,6 +24,11 @@ const slice = createSlice({
       state.error = action.payload;
     },
 
+    // GET FORMULARIO BY ID
+    getFormularioByIdSuccess(state, action) {
+      state.formulario = action.payload;
+    },
+
     getFormulariosSuccess(state, action) {
       state.formularios = action.payload;
     },
@@ -59,6 +64,17 @@ const apiUrl = import.meta.env.VITE_APP_API_URL2;
 
 // ----------------------
 // Actions
+
+export function getFormularioById(idFormulario) {
+  return async () => {
+    try {
+      const response = await axios.get(`${apiUrl}/formulario/${idFormulario}`);
+      dispatch(slice.actions.getFormularioByIdSuccess(response.data));
+    } catch (error) {
+      dispatch(slice.actions.hasError(error));
+    }
+  };
+}
 
 export function getFormularios() {
   return async () => {
