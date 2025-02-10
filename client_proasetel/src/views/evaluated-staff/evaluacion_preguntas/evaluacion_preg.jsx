@@ -56,6 +56,8 @@ const UIRadio = () => {
     const { formularios } = useSelector((state) => state.formulario)
     const [formularioDefinido, setFormularioDefinido] = useState({}) 
 
+    console.log('Formulario definido:', formularioDefinido)
+
     
     // useEffect(() => {
     //     setFormularioDefinido(formularios.filter((formulario) => formulario.estado === 2));
@@ -108,6 +110,8 @@ const UIRadio = () => {
 
     const[listRespuestas,setListRespuestas]= useState([]) ; //nuevo
     const { respuestas } = useSelector((state) => state.respuestasPreguntas)
+
+    console.log('Trayendo las respuestas:', respuestas)
 
     useEffect(() => {
         setListRespuestas(respuestas);
@@ -270,7 +274,7 @@ const UIRadio = () => {
                 color="primary" 
                 onClick={handleGuardar}
             >
-                Guardar
+                Guardar DC
             </Button>
         }>
             <Grid container spacing={gridSpacing}>

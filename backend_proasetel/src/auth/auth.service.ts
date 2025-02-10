@@ -83,28 +83,28 @@ export class AuthService {
   }
 
   async login(loginUserDto: LoginUserDto) {
-
-    const { password, email} = loginUserDto;
-
-    const user = await this.userRepository.findOne({ 
-      where: { email},
-      select: { email: true, password: true, id: true, rol:true},
+    const { password, email } = loginUserDto;
+  
+    const user = await this.userRepository.findOne({
+      where: { email },
+      select: { email: true, id: true, password: true, rol: true },
+      relations: ['departamento'], // Esto incluye la relación de "departamento"
     });
-
-    if (!user)
+  
+    if (!user) {
       throw new UnauthorizedException('No se ha podido encontrar una cuenta con ese correo');
-
-    if ( !bcrypt.compareSync( password, user.password))
+    }
+  
+    if (!bcrypt.compareSync(password, user.password)) {
       throw new UnauthorizedException('Su correo o contraseña no es correcto');
-
-    // console.log(`Imprimiento Dep: ${user.departamento}`)
-
+    }
+  
     return {
       ...user,
-      token: this.getJwtToken( {id: user.id, rol: user.rol })
-    }
-
+      token: this.getJwtToken({ id: user.id, rol: user.rol }),
+    };
   }
+  
 
   // Actualización de usuario 
   async update(id: string, updateUserDto: UpdateUserDto) {
@@ -284,6 +284,23 @@ export class AuthService {
       throw new NotFoundException(`El correo ${term} no se encuentra registrado`);
   
     return user;
+  }
+
+
+  async myProfile(user: User){
+    const userWithDepartment = await this.userRepository.findOne({
+      where: { id: user.id },
+      relations: ['departamento'], // Incluye la relación con Departamento
+    });
+  
+    if (!userWithDepartment) {
+      throw new NotFoundException('Usuario no encontrado');
+    }
+  
+    return {
+      ok: true,
+      user: userWithDepartment, // Devuelve los datos del usuario con el departamento
+    };
   }
 
 

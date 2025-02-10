@@ -66,7 +66,7 @@ const apiUrl = import.meta.env.VITE_APP_API_URL2;
 export function getBusinessObjDep() {
     return async () => {
         try {
-            const response = await axios.get(`/objtivos-emp-dep`);
+            const response = await axios.get(`/objtivos-emp-dep/dep`);
             console.log('datos desde axios:', response)
             dispatch(slice.actions.getBusinessObjDepSuccess(response.data));
         } catch (error) {

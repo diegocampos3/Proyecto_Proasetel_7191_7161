@@ -16,6 +16,7 @@ import { gridSpacing } from 'store/constant';
 import { dispatch, useSelector } from 'store';
 import { getBusinessObj } from 'store/slices/businessobj';
 import { getBusinessObjDep } from 'store/slices/departmentobj';
+import useAuth from 'hooks/useAuth';
 import FilterObjs from './FilterObjs';
 
 // assets
@@ -27,7 +28,11 @@ const DepartmentObj = () => {
     const [listBusinessObj, setListBusinessObj] = React.useState([]);
     const [listBusinessObjDep, setListBusinessObjDep] = React.useState([]);
     const [currentPage, setCurrentPage] = React.useState(1); 
-    const [rowsPerPage, setRowsPerPage] = React.useState(8); 
+    const [rowsPerPage, setRowsPerPage] = React.useState(8);
+    const { user } = useAuth();
+
+    console.log('Imprimiendo idUsuarioDep:', user)
+ 
 
     const { businessObjs } = useSelector((state) => state.businessObj);
     const { businessObjs: newBusinessObjs } = useSelector((state) => state.departmentObj);
@@ -59,12 +64,19 @@ const DepartmentObj = () => {
     const endIndex = startIndex + rowsPerPage;
     const paginatedData = listBusinessObj.slice(startIndex, endIndex);
 
-    const objSelect = listBusinessObjDep.map(item => item.id);
-    console.log('Lista seleccionados:', objSelect);
+    const objSelect = listBusinessObjDep.map(item => ({
+        idemp: item.id,
+        idep: item.idep
 
-    const isSelect = (id) =>{
-        return objSelect.includes(id)
-    }
+    }));
+    console.log('Lista seleccionados:', objSelect);
+    console.log('Lista seleccionados 2', listBusinessObjDep)
+
+    const isSelect = (id) => {
+        console.log('imprimiendo id:', id, 'departamento:', user?.departamento?.id )
+        return objSelect.some(item => item.idemp === id && item.idep === user?.departamento?.id);
+    };
+    
     const departmentObjR = paginatedData.map((obj, index) => (
         <Grid key={index} item xs={12} sm={6} lg={4} xl={3}>
             <BusinnesObjDetailsCard id={obj.id} titulo={obj.titulo} descripcion={obj.descripcion} select={isSelect(obj.id)} />

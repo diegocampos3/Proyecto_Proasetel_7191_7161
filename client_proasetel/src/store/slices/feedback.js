@@ -7,7 +7,8 @@ const initialState ={
     error: null,
     feedback: [],
     verificarUser: null,
-    satisfaction: {}
+    satisfaction: {},
+    satisfactionDepart: {}
 }
 
 const slice = createSlice({
@@ -21,7 +22,7 @@ const slice = createSlice({
 
         // ADD FEEDBACK
         addFeedbackSuccess(state, actions) {
-            state.feedback = actions.payload
+            state.feedback = actions .payload
         },
 
         // VERIFICAR USER
@@ -33,6 +34,10 @@ const slice = createSlice({
         // GET SATISFACTION
         getSatisfactionSuccess(state, action){
             state.satisfaction = action.payload
+        },
+
+        getSatisfactionDepartSucces(state, action){
+            state.satisfactionDepart = action.payload
         }
 
 
@@ -81,4 +86,17 @@ export function getSatisfaction(){
             dispatch(slice.actions.hasError(error))
         }
     }
+}
+
+export function getSatisfactionDepart(idDepart) {
+    return async () => {
+        try {
+            const response = await axios.get(`analisis-sentimientos/satisfaction-data-depart/${idDepart}`);
+            console.log('Imprimiendo satisfaccion desde Context:', response.data)
+            dispatch(slice.actions.getSatisfactionDepartSucces(response.data))
+        } catch (error) {
+            dispatch(slice.actions.hasError(error))
+        }
+    }
+
 }

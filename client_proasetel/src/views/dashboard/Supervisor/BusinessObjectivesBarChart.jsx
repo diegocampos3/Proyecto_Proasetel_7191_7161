@@ -1,23 +1,13 @@
 // BusinessObjectivesBarChart.jsx
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { useTheme } from '@mui/material/styles';
 import { Grid, TextField, MenuItem, Typography } from '@mui/material';
 import Chart from 'react-apexcharts';
 import MainCard from 'ui-component/cards/MainCard';
 import { gridSpacing } from 'store/constant';
-
-const periods = [
-  { value: 'all', label: 'Todos' },
-  { value: '2024-Q1', label: '2024-Q1' },
-  { value: '2024-Q2', label: '2024-Q2' }
-];
-
-const objectives = [
-  { value: 'all', label: 'Todos' },
-  { value: '1', label: 'Objetivo 1' },
-  { value: '2', label: 'Objetivo 2' },
-  { value: '3', label: 'Objetivo 3' }
-];
+import { getAvanceDepartmentId } from 'store/slices/resultadoEvaluacion';
+import { dispatch, useSelector } from 'store';
+import useAuth from 'hooks/useAuth';
 
 const BusinessObjectivesBarChart = ({ isLoading }) => {
   const theme = useTheme();
@@ -25,39 +15,74 @@ const BusinessObjectivesBarChart = ({ isLoading }) => {
   const [objective, setObjective] = useState('all');
   const [chartOptions, setChartOptions] = useState({});
   const [chartSeries, setChartSeries] = useState([]);
+  const [listAvance, setListAvance] = useState({}); // Cambiado a objeto
 
+  const { user } = useAuth();
+  const { avanceDepId } = useSelector((state) => state.resultadoEvaluacion);
+
+  // Obtener datos iniciales
   useEffect(() => {
-    // Simular llamada a API para obtener datos filtrados por periodo y objetivo
-    // Datos simulados: cada objeto tiene el nombre del objetivo y su porcentaje de avance.
-    let data = [
-      { id: '1', name: 'Objetivo 1', progress: 70, periodo: '2024-Q1' },
-      { id: '2', name: 'Objetivo 2', progress: 50, periodo: '2024-Q1' },
-      { id: '3', name: 'Objetivo 3', progress: 85, periodo: '2024-Q2' }
+    dispatch(getAvanceDepartmentId(user?.departamento?.id));
+  }, [dispatch, user?.departamento?.id]); // Añadida dependencia
+
+  // Sincronizar listAvance con Redux
+  useEffect(() => {
+    setListAvance(avanceDepId || {});
+  }, [avanceDepId]);
+
+  // Generar periodos dinámicamente
+  const periods = useMemo(() => {
+    const objetivos = listAvance.objetivosEmpresariales || [];
+    const uniquePeriods = [...new Set(objetivos.map(obj => obj.nombrePeriodo))];
+    return [
+      { value: 'all', label: 'Todos' },
+      ...uniquePeriods.map(period => ({ value: period, label: period }))
     ];
+  }, [listAvance]);
 
-    // Filtro por objetivo (si no es "all")
+  // Generar objetivos dinámicamente
+  const objectives = useMemo(() => {
+    const objetivos = listAvance.objetivosEmpresariales || [];
+    return [
+      { value: 'all', label: 'Todos' },
+      ...objetivos.map(obj => ({
+        value: obj.idemp,
+        label: obj.nombreObjetivoEmpresarial
+      }))
+    ];
+  }, [listAvance]);
+
+  // Actualizar gráfico
+  useEffect(() => {
+    const objetivos = listAvance.objetivosEmpresariales || [];
+    let data = objetivos.map(obj => ({
+      id: obj.idemp,
+      name: obj.nombreObjetivoEmpresarial,
+      progress: obj.avance,
+      periodo: obj.nombrePeriodo
+    }));
+
+    // Aplicar filtros
     if (objective !== 'all') {
-      data = data.filter((item) => item.id === objective);
+      data = data.filter(item => item.id === objective);
     }
-    // Filtro por periodo (si no es "all")
     if (period !== 'all') {
-      data = data.filter((item) => item.periodo === period);
+      data = data.filter(item => item.periodo === period);
     }
 
-    setChartSeries([
-      {
-        data: data.map((item) => item.progress)
-      }
-    ]);
+    setChartSeries([{ 
+      data: data.map(item => item.progress) 
+    }]);
+    
     setChartOptions({
       chart: { type: 'bar', height: 350 },
       xaxis: {
-        categories: data.map((item) => item.name)
+        categories: data.map(item => item.name)
       },
       colors: [theme.palette.primary.main],
       tooltip: { theme: theme.palette.mode }
     });
-  }, [period, objective, theme]);
+  }, [period, objective, theme, listAvance]);
 
   return (
     <MainCard title="Avance de Objetivos Empresariales">

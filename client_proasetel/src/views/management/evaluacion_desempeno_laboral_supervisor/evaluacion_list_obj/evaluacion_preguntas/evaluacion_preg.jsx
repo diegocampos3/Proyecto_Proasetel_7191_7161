@@ -129,7 +129,8 @@ const UIRadio = () => {
     //-------------------- TRAIDA DE RESULTADOS EVALUACION  ----------------
 
     const[listResultadosEvaluacion,setListResultadosEvaluacion]= useState([]) ; //nuevo
-    const {resultados} = useSelector((state) => state.resultadoEvaluacion)
+    const {resultados} = useSelector((state) => state.resultadoEvaluacion);
+    console.log('Imprimiendo resultados:', resultados)
 
     useEffect(() => {
         setListResultadosEvaluacion(resultados);

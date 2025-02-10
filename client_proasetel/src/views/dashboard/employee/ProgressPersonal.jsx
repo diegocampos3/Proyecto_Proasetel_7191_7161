@@ -1,8 +1,6 @@
 import PropTypes from 'prop-types';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
-    Button,
-    CardActions,
     CardContent,
     Divider,
     Grid,
@@ -13,30 +11,9 @@ import {
 } from '@mui/material';
 import MainCard from 'ui-component/cards/MainCard';
 import { gridSpacing } from 'store/constant';
-
-const objectiveData = [
-    {
-        name: 'Objetivo departamental 1',
-        progress: 75,
-        periodo: '2023-Q1',
-        personalResult: 95,
-        supervisorResult: 98
-    },
-    {
-        name: 'Objetivo departamental 2',
-        progress: 50,
-        periodo: '2023-Q2',
-        personalResult: 60,
-        supervisorResult: 70
-    },
-    {
-        name: 'Objetivo departamental 3',
-        progress: 90,
-        periodo: '2023-Q1',
-        personalResult: 85,
-        supervisorResult: 88
-    }
-];
+import { dispatch, useSelector } from 'store';
+import { getAvanceUser } from 'store/slices/resultadoEvaluacion';
+import useAuth from 'hooks/useAuth';
 
 const getColor = (progress) => {
     if (progress < 50) return 'error';
@@ -47,7 +24,40 @@ const getColor = (progress) => {
 const ProgressPersonal = ({ isLoading }) => {
     const [selectedObjective, setSelectedObjective] = useState('');
     const [selectedPeriod, setSelectedPeriod] = useState('');
-    const [selectedCalification, setSelectedCalification] = useState('personal'); // Calificación por defecto en "personal"
+    const [selectedCalification, setSelectedCalification] = useState('personal'); // Valor por defecto: "personal"
+    const [listAvanceUser, setAvanceUser] = useState({});
+    const { user } = useAuth();
+
+    // Extraemos la data de avance desde el state
+    const { avanceUser } = useSelector((state) => state.resultadoEvaluacion);
+
+    useEffect(() => {
+        setAvanceUser(avanceUser);
+    }, [avanceUser]);
+
+    useEffect(() => {
+        if (user?.id) {
+            dispatch(getAvanceUser(user.id));
+        }
+    }, [dispatch, user?.id]);
+
+    console.log('ListAvanceUserProgress:', listAvanceUser);
+
+    // Extraemos los objetivos y períodos únicos a partir de la data
+    const uniqueObjectives = [
+        ...new Set((listAvanceUser?.resultados || []).map((obj) => obj.nombreObj))
+    ];
+    const uniquePeriods = [
+        ...new Set((listAvanceUser?.resultados || []).map((obj) => obj.nombrePeriodo))
+    ];
+
+    // Filtramos la data según el objetivo y el período seleccionados
+    const filteredData = (listAvanceUser?.resultados || []).filter((obj) => {
+        return (
+            (!selectedObjective || obj.nombreObj === selectedObjective) &&
+            (!selectedPeriod || obj.nombrePeriodo === selectedPeriod)
+        );
+    });
 
     const handleObjectiveChange = (event) => {
         setSelectedObjective(event.target.value);
@@ -58,18 +68,8 @@ const ProgressPersonal = ({ isLoading }) => {
     };
 
     const handleCalificationChange = (event) => {
-        setSelectedCalification(event.target.value); // Actualización para la calificación
+        setSelectedCalification(event.target.value);
     };
-
-    const filteredData = objectiveData.filter((obj) => {
-        // Filtramos por objetivo, periodo y calificación (personal o supervisor)
-        return (
-            (!selectedObjective || obj.name === selectedObjective) &&
-            (!selectedPeriod || obj.periodo === selectedPeriod)
-        );
-    });
-
-    const uniquePeriods = [...new Set(objectiveData.map((obj) => obj.periodo))];
 
     return (
         <MainCard content={false}>
@@ -78,7 +78,9 @@ const ProgressPersonal = ({ isLoading }) => {
                     <Grid item xs={12}>
                         <Grid container alignItems="center" justifyContent="space-between">
                             <Grid item>
-                                <Typography variant="h4">Avance de Objetivos Departamentales</Typography>
+                                <Typography variant="h4">
+                                    Avance de Objetivos Personales
+                                </Typography>
                             </Grid>
                             <Grid item>
                                 <Grid container spacing={1}>
@@ -88,10 +90,12 @@ const ProgressPersonal = ({ isLoading }) => {
                                             onChange={handleObjectiveChange}
                                             displayEmpty
                                         >
-                                            <MenuItem value="">Todos los objetivos</MenuItem>
-                                            {objectiveData.map((obj) => (
-                                                <MenuItem key={obj.name} value={obj.name}>
-                                                    {obj.name}
+                                            <MenuItem value="">
+                                                Todos los objetivos
+                                            </MenuItem>
+                                            {uniqueObjectives.map((obj) => (
+                                                <MenuItem key={obj} value={obj}>
+                                                    {obj}
                                                 </MenuItem>
                                             ))}
                                         </Select>
@@ -102,7 +106,9 @@ const ProgressPersonal = ({ isLoading }) => {
                                             onChange={handlePeriodChange}
                                             displayEmpty
                                         >
-                                            <MenuItem value="">Todos los períodos</MenuItem>
+                                            <MenuItem value="">
+                                                Todos los períodos
+                                            </MenuItem>
                                             {uniquePeriods.map((period) => (
                                                 <MenuItem key={period} value={period}>
                                                     {period}
@@ -116,8 +122,12 @@ const ProgressPersonal = ({ isLoading }) => {
                                             onChange={handleCalificationChange}
                                             displayEmpty
                                         >
-                                            <MenuItem value="personal">Calificación personal</MenuItem>
-                                            <MenuItem value="supervisor">Calificación supervisor</MenuItem>
+                                            <MenuItem value="personal">
+                                                Calificación personal
+                                            </MenuItem>
+                                            <MenuItem value="supervisor">
+                                                Calificación supervisor
+                                            </MenuItem>
                                         </Select>
                                     </Grid>
                                 </Grid>
@@ -126,43 +136,37 @@ const ProgressPersonal = ({ isLoading }) => {
                     </Grid>
                     <Grid item xs={12}>
                         {filteredData.map((obj) => (
-                            <Grid key={obj.name} container direction="column" sx={{ mb: 2 }}>
+                            <Grid key={obj.idObj} container direction="column" sx={{ mb: 2 }}>
                                 <Grid item>
                                     <Typography variant="subtitle1" color="inherit">
-                                        {obj.name}
+                                        {obj.nombreObj}
                                     </Typography>
                                 </Grid>
-                                {/* Solo mostramos el progress bar del objetivo si la calificación es "Todos" */}
-                                {selectedCalification === 'personal' || selectedCalification === 'supervisor' ? (
-                                    <Grid item>
-                                        <LinearProgress
-                                            variant="determinate"
-                                            value={obj[selectedCalification + 'Result']}
-                                            color={getColor(obj[selectedCalification + 'Result'])}
-                                            sx={{
-                                                height: 8,
-                                                borderRadius: 5,
-                                                mt: 1,
-                                                width: '80%',
-                                            }}
-                                        />
-                                    </Grid>
-                                ) : (
-                                    <Grid item>
-                                        <LinearProgress
-                                            variant="determinate"
-                                            value={obj.progress}
-                                            color={getColor(obj.progress)}
-                                            sx={{ height: 10, borderRadius: 5, mt: 1 }}
-                                        />
-                                    </Grid>
-                                )}
+                                <Grid item>
+                                    <LinearProgress
+                                        variant="determinate"
+                                        value={
+                                            selectedCalification === 'personal'
+                                                ? obj.puntaje_evaluado
+                                                : obj.puntaje_supervisor
+                                        }
+                                        color={getColor(
+                                            selectedCalification === 'personal'
+                                                ? obj.puntaje_evaluado
+                                                : obj.puntaje_supervisor
+                                        )}
+                                        sx={{
+                                            height: 8,
+                                            borderRadius: 5,
+                                            mt: 1,
+                                            width: '80%',
+                                        }}
+                                    />
+                                </Grid>
                                 <Typography variant="body2" color="textSecondary" sx={{ mt: 0.5 }}>
                                     {selectedCalification === 'personal'
-                                        ? `Resultado personal: ${obj.personalResult}%`
-                                        : selectedCalification === 'supervisor'
-                                        ? `Resultado supervisor: ${obj.supervisorResult}%`
-                                        : `${obj.progress}%`}
+                                        ? `Resultado personal: ${obj.puntaje_evaluado}%`
+                                        : `Resultado supervisor: ${obj.puntaje_supervisor}%`}
                                 </Typography>
                                 <Divider sx={{ my: 2 }} />
                             </Grid>
@@ -179,6 +183,7 @@ ProgressPersonal.propTypes = {
 };
 
 export default ProgressPersonal;
+
 
 
 

@@ -20,12 +20,15 @@ import FilterObjs from './FilterObjs';
 // assets
 import ExpandMoreRoundedIcon from '@mui/icons-material/ExpandMoreRounded';
 import { Divider } from '@mui/material';
+import useAuth from 'hooks/useAuth';
 
 const DepartmentObj = () => {
 
     const [listBusinessObj, setListBusinessObj] = React.useState([]);  // Estado inicial como arreglo vacío
     const [currentPage, setCurrentPage] = React.useState(1); 
-    const [rowsPerPage, setRowsPerPage] = React.useState(8); 
+    const [rowsPerPage, setRowsPerPage] = React.useState(8);
+    const { user } = useAuth();
+ 
 
     // Obtén los datos de businessObjs, asegurándote de que sea un arreglo
     const { businessObjs = [] } = useSelector((state) => state.departmentObj);
@@ -34,12 +37,13 @@ const DepartmentObj = () => {
 
     // Actualiza listBusinessObj cuando businessObjs cambia
     React.useEffect(() => {
-        if (Array.isArray(businessObjs)) {
-            setListBusinessObj(businessObjs);
+        if (Array.isArray(businessObjs) && user?.departamento?.id) {
+            const filteredObjs = businessObjs.filter(obj => obj.idep === user.departamento.id);
+            setListBusinessObj(filteredObjs);
         } else {
-            console.error("businessObjs no es un arreglo:", businessObjs);
+            console.error("businessObjs no es un arreglo o el usuario no tiene departamento:", businessObjs);
         }
-    }, [businessObjs]);
+    }, [businessObjs, user]);
 
     // Dispara el dispatch para obtener los datos
     React.useEffect(() => {

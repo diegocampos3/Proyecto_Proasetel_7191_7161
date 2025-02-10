@@ -6,6 +6,8 @@ import { ResultadoEvaluacion } from '../data-access/entities/resultado_evaluacio
 import { ObjetivosPersModule } from '../objetivos-pers/objetivos-pers.module';
 import { ObjetivosPersPropModule } from '../objetivos-pers-prop/objetivos-pers-prop.module';
 import { FormularioPreguntasModule } from '../formulario-preguntas/formulario-preguntas.module';
+import { ObjetivosEmprModule } from 'src/objetivos-empr/objetivos-empr.module';
+import { ObjetivosDepModule } from 'src/objetivos-dep/objetivos-dep.module';
 
 
 

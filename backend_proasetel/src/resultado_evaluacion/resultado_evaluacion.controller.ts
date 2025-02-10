@@ -17,7 +17,7 @@ export class ResultadoEvaluacionController {
     return this.resultadoEvaluacionService.findAll();
   }
 
-  @Get(':id')
+  @Get('result/:id')
   findOne(@Param('id', ParseUUIDPipe) id: string) {
     return this.resultadoEvaluacionService.findOne(id);
   }
@@ -31,4 +31,53 @@ export class ResultadoEvaluacionController {
   remove(@Param('id', ParseUUIDPipe) id: string) {
     return this.resultadoEvaluacionService.remove(id);
   }
+
+  @Get('promedio-avance')
+  getPromedioAvance() {
+     return this.resultadoEvaluacionService.getPromedioAvance();
+  }
+
+  @Get('promedio-avance-objemp')
+  getPromedioAvanceObjEmp() {
+     return this.resultadoEvaluacionService.getPromedioAvanceObjEmpr();
+  }
+
+
+  @Get('promedio-avance-dep')
+  getPromedioAvanceDep() {
+     return this.resultadoEvaluacionService.getAvancePorDepartamento();
+  }
+
+  @Get('promedio-avance-emprDep/:id')
+  getPromedioAvanceObjEmprDep(@Param('id') idDepartamento: string) {
+    return this.resultadoEvaluacionService.getAvancePorObjEmpDepartamento(idDepartamento);
+  }
+
+  @Get('promedio-avance-emprDepUser/:id')
+  getPromedioAvanceObjEmprDepUser(@Param('id') idDepartamento: string) {
+    return this.resultadoEvaluacionService.getAvancePorDepartamentoUser(idDepartamento);
+  }
+
+  @Get('promedio-avance-user/:id')
+  getAvanceUser(@Param('id') idUser: string) {
+    return this.resultadoEvaluacionService.getAvancePorUsuario(idUser);
+  }
+
+  @Get('totalObjEmpr')
+  getTotalObjEmpr() {
+    return this.resultadoEvaluacionService.getTotalObjetivos();
+  }
+
+
+  @Get('totalObjEmprDep/:id')
+  getTotalObjEmprDep(@Param('id') id:string) {
+    return this.resultadoEvaluacionService.getTotalObjetivosPorDepartamento(id);
+  }
+
+
+  @Get('totalObjUser/:id')
+  getTotalObjUser(@Param('id') id:string) {
+    return this.resultadoEvaluacionService.getTotalObjetivosPorUsuario(id);
+  }
+  
 }

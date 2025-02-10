@@ -363,7 +363,7 @@ const MainRoutes = {
             path: '/dashboard/manager',
             element: <DashboardManager/>
 
-        }, 
+        },
         {
             path: '/dashboard/supervisor',
             element: <DashboardSupervisor/>

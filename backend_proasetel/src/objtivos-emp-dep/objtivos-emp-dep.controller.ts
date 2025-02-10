@@ -24,6 +24,12 @@ export class ObjtivosEmpDepController {
     return this.objtivosEmpDepService.findAll();
   }
 
+  @Get('dep')
+  @Auth(ValidRoles.admin, ValidRoles.supervisor, ValidRoles.empleado) 
+  findAllDep(@GetUser() user: User) { 
+    return this.objtivosEmpDepService.findAllDep(user);
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.objtivosEmpDepService.findOne(id);

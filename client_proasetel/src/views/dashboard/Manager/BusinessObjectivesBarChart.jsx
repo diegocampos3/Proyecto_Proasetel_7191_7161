@@ -1,23 +1,11 @@
-// BusinessObjectivesBarChart.jsx
 import React, { useEffect, useState } from 'react';
 import { useTheme } from '@mui/material/styles';
 import { Grid, TextField, MenuItem, Typography } from '@mui/material';
 import Chart from 'react-apexcharts';
 import MainCard from 'ui-component/cards/MainCard';
 import { gridSpacing } from 'store/constant';
-
-const periods = [
-  { value: 'all', label: 'Todos' },
-  { value: '2024-Q1', label: '2024-Q1' },
-  { value: '2024-Q2', label: '2024-Q2' }
-];
-
-const objectives = [
-  { value: 'all', label: 'Todos' },
-  { value: '1', label: 'Objetivo 1' },
-  { value: '2', label: 'Objetivo 2' },
-  { value: '3', label: 'Objetivo 3' }
-];
+import { dispatch, useSelector } from 'store';
+import { getAvancePromedio } from 'store/slices/resultadoEvaluacion';
 
 const BusinessObjectivesBarChart = ({ isLoading }) => {
   const theme = useTheme();
@@ -25,39 +13,55 @@ const BusinessObjectivesBarChart = ({ isLoading }) => {
   const [objective, setObjective] = useState('all');
   const [chartOptions, setChartOptions] = useState({});
   const [chartSeries, setChartSeries] = useState([]);
+  const [listAvance, setListAvance] = useState([]);
+
+  const { avance } = useSelector((state) => state.resultadoEvaluacion);
+
+  console.log('listAvance:', listAvance)
 
   useEffect(() => {
-    // Simular llamada a API para obtener datos filtrados por periodo y objetivo
-    // Datos simulados: cada objeto tiene el nombre del objetivo y su porcentaje de avance.
-    let data = [
-      { id: '1', name: 'Objetivo 1', progress: 70, periodo: '2024-Q1' },
-      { id: '2', name: 'Objetivo 2', progress: 50, periodo: '2024-Q1' },
-      { id: '3', name: 'Objetivo 3', progress: 85, periodo: '2024-Q2' }
-    ];
+    setListAvance(avance);
+  }, [avance]);
 
-    // Filtro por objetivo (si no es "all")
+  useEffect(() => {
+    dispatch(getAvancePromedio());
+  }, [dispatch]);
+
+  useEffect(() => {
+    let data = listAvance.map((item) => ({
+      id: item.idObjetivoEmpresarial, // Corregido
+      name: item.nombreObjetivoEmpresarial,
+      progress: ((item.promedio_evaluado + item.promedio_supervisor) / 2).toFixed(2), // Corregido
+      periodo: item.nombrePeriodo
+    }));
+
     if (objective !== 'all') {
       data = data.filter((item) => item.id === objective);
     }
-    // Filtro por periodo (si no es "all")
     if (period !== 'all') {
       data = data.filter((item) => item.periodo === period);
     }
 
     setChartSeries([
       {
-        data: data.map((item) => item.progress)
+        data: data.map((item) => parseFloat(item.progress))
       }
     ]);
+
     setChartOptions({
       chart: { type: 'bar', height: 350 },
       xaxis: {
         categories: data.map((item) => item.name)
       },
       colors: [theme.palette.primary.main],
-      tooltip: { theme: theme.palette.mode }
+      tooltip: {
+        theme: theme.palette.mode,
+        y: {
+          formatter: (val) => `${val}%`
+        }
+      }
     });
-  }, [period, objective, theme]);
+  }, [period, objective, theme, listAvance]);
 
   return (
     <MainCard title="Avance de Objetivos Empresariales">
@@ -70,10 +74,9 @@ const BusinessObjectivesBarChart = ({ isLoading }) => {
             value={period}
             onChange={(e) => setPeriod(e.target.value)}
           >
-            {periods.map((option) => (
-              <MenuItem key={option.value} value={option.value}>
-                {option.label}
-              </MenuItem>
+            <MenuItem value="all">Todos</MenuItem>
+            {[...new Set(listAvance.map((item) => item.nombrePeriodo))].map((p) => (
+              <MenuItem key={p} value={p}>{p}</MenuItem>
             ))}
           </TextField>
         </Grid>
@@ -85,9 +88,10 @@ const BusinessObjectivesBarChart = ({ isLoading }) => {
             value={objective}
             onChange={(e) => setObjective(e.target.value)}
           >
-            {objectives.map((option) => (
-              <MenuItem key={option.value} value={option.value}>
-                {option.label}
+            <MenuItem value="all">Todos</MenuItem>
+            {listAvance.map((item) => (
+              <MenuItem key={item.idObjetivoEmpresarial} value={item.idObjetivoEmpresarial}> {/* Corregido */}
+                {item.nombreObjetivoEmpresarial}
               </MenuItem>
             ))}
           </TextField>
