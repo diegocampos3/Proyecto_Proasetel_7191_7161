@@ -22,6 +22,11 @@ export class AnalisisSentimientosController {
     return this.analisisSentimientosService.getSatisfactionData();
   }
 
+  @Get('satisfaction-data-depart/:id')
+  getSatisfactionDataDepart(@Param('id') id:string) {
+    return this.analisisSentimientosService.getSatisfactionDataByDepartment(id);
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.analisisSentimientosService.findOne(id);

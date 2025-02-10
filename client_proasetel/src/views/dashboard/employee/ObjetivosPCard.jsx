@@ -15,27 +15,11 @@ import { ThemeMode } from 'config';
 
 
 
-const ObjetivosPCard = () => {
+
+const ObjetivosPCard = ({totalObj}) => {
     const theme = useTheme();
-    const [totalObjetivos, setTotalObjetivos] = useState(0);
 
-    useEffect(() => {
-        // Simulación de una petición para obtener la cantidad de objetivos empresariales
-        const fetchObjetivos = async () => {
-            try {
-                // Aquí iría la llamada a la API real
-                const response = await new Promise((resolve) =>
-                    setTimeout(() => resolve({ data: { total: 42 } }), 1000)
-                );
-                setTotalObjetivos(response.data.total);
-            } catch (error) {
-                console.error('Error al obtener los objetivos:', error);
-            }
-        };
-
-        fetchObjetivos();
-    }, []);
-
+    
 
     return (
         <MainCard
@@ -99,7 +83,7 @@ const ObjetivosPCard = () => {
                         <Grid container alignItems="center">
                             <Grid item>
                                 <Typography sx={{ fontSize: '2.125rem', fontWeight: 500, mr: 1, mt: 1.75, mb: 0.75 }}>
-                                    {totalObjetivos}
+                                    {totalObj}
                                 </Typography>
                             </Grid>
                         </Grid>
@@ -112,7 +96,7 @@ const ObjetivosPCard = () => {
                                 color: theme.palette.mode === ThemeMode.DARK ? 'text.secondary' : 'secondary.200'
                             }}
                         >
-                            Total de Objetivos Personales
+                            Total de Objetivos Empresariales Vinculados Evaluados
                         </Typography>
                     </Grid>
                 </Grid>

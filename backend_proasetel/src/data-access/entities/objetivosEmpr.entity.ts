@@ -26,6 +26,7 @@ export class ObjetivosEmpr {
         ( objetivoDep ) => objetivoDep.objetivoEmpr
     )
     objetivoDep: ObjtivosEmpDep;
+  objetivosDepartamentales: any;
 
 
     @BeforeInsert()

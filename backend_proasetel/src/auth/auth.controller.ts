@@ -31,10 +31,8 @@ export class AuthController {
   @Get('me')
   @UseGuards(AuthGuard('jwt')) // Asegura que la ruta está protegida
   getMyProfile(@GetUser() user: User) {
-    return {
-      ok: true,
-      user, // Retorna los datos del usuario autenticado
-    };
+    
+    return this.authService.myProfile(user)
   }
 
   @Get('supervisor/:id')

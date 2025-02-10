@@ -1,8 +1,6 @@
 import PropTypes from 'prop-types';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
-    Button,
-    CardActions,
     CardContent,
     Divider,
     Grid,
@@ -13,43 +11,11 @@ import {
 } from '@mui/material';
 import MainCard from 'ui-component/cards/MainCard';
 import { gridSpacing } from 'store/constant';
+import { dispatch, useSelector } from 'store';
+import { getAvanceDepartmentUser } from 'store/slices/resultadoEvaluacion';
+import useAuth from 'hooks/useAuth';
 
-const objectiveData = [
-    {
-        name: 'Objetivo departamental 1',
-        progress: 75,
-        cantidadPersonas: 3,
-        periodo: '2023-Q1',
-        people: [
-            { name: 'Carlos Pérez', progress: 80 },
-            { name: 'Ana García', progress: 70 },
-            { name: 'Luis Rodríguez', progress: 85 }
-        ]
-    },
-    {
-        name: 'Objetivo departamental 2',
-        progress: 50,
-        cantidadPersonas: 2,
-        periodo: '2023-Q2',
-        people: [
-            { name: 'María Torres', progress: 60 },
-            { name: 'Jorge López', progress: 40 }
-        ]
-    },
-    {
-        name: 'Objetivo departamental 3',
-        progress: 90,
-        cantidadPersonas: 4,
-        periodo: '2023-Q1',
-        people: [
-            { name: 'Elena Ruiz', progress: 95 },
-            { name: 'Pedro Gómez', progress: 85 },
-            { name: 'Clara Jiménez', progress: 92 },
-            { name: 'Roberto Díaz', progress: 88 }
-        ]
-    }
-];
-
+// Función para determinar el color del progress bar según el avance
 const getColor = (progress) => {
     if (progress < 50) return 'error';
     if (progress < 80) return 'primary';
@@ -59,6 +25,38 @@ const getColor = (progress) => {
 const ProgressDepartment = ({ isLoading }) => {
     const [selectedObjective, setSelectedObjective] = useState('');
     const [selectedPeriod, setSelectedPeriod] = useState('');
+    const [listAvanceUser, setListAvanceUser] = useState({});
+    const { user } = useAuth();
+
+    // Extraemos el avance del departamento desde el state
+    const { avanceDepUser } = useSelector((state) => state.resultadoEvaluacion);
+
+    useEffect(() => {
+        setListAvanceUser(avanceDepUser);
+    }, [avanceDepUser]);
+
+    useEffect(() => {
+        if (user?.departamento?.id) {
+            dispatch(getAvanceDepartmentUser(user.departamento.id));
+        }
+    }, [dispatch, user?.departamento?.id]);
+
+    console.log('ListAvanceUser:', listAvanceUser);
+
+    // Se extrae la lista de objetivos del JSON obtenido.
+    const objectiveList = listAvanceUser?.objetivosEmpresariales || [];
+
+    // Se obtienen los valores únicos para cada select
+    const uniqueObjectives = [...new Set(objectiveList.map((obj) => obj.nombreObjetivoEmpresarial))];
+    const uniquePeriods = [...new Set(objectiveList.map((obj) => obj.nombrePeriodo))];
+
+    // Filtramos la data según el objetivo y el período seleccionados
+    const filteredData = objectiveList.filter((obj) => {
+        return (
+            (!selectedObjective || obj.nombreObjetivoEmpresarial === selectedObjective) &&
+            (!selectedPeriod || obj.nombrePeriodo === selectedPeriod)
+        );
+    });
 
     const handleObjectiveChange = (event) => {
         setSelectedObjective(event.target.value);
@@ -68,19 +66,11 @@ const ProgressDepartment = ({ isLoading }) => {
         setSelectedPeriod(event.target.value);
     };
 
-    const filteredData = objectiveData.filter((obj) => {
-        return (
-            (!selectedObjective || obj.name === selectedObjective) &&
-            (!selectedPeriod || obj.periodo === selectedPeriod)
-        );
-    });
-
-    const uniquePeriods = [...new Set(objectiveData.map((obj) => obj.periodo))];
-
     return (
         <MainCard content={false}>
             <CardContent>
                 <Grid container spacing={gridSpacing}>
+                    {/* Filtros de Objetivo y Período */}
                     <Grid item xs={12}>
                         <Grid container alignItems="center" justifyContent="space-between">
                             <Grid item>
@@ -95,9 +85,9 @@ const ProgressDepartment = ({ isLoading }) => {
                                             displayEmpty
                                         >
                                             <MenuItem value="">Todos los objetivos</MenuItem>
-                                            {objectiveData.map((obj) => (
-                                                <MenuItem key={obj.name} value={obj.name}>
-                                                    {obj.name}
+                                            {uniqueObjectives.map((objective) => (
+                                                <MenuItem key={objective} value={objective}>
+                                                    {objective}
                                                 </MenuItem>
                                             ))}
                                         </Select>
@@ -120,44 +110,48 @@ const ProgressDepartment = ({ isLoading }) => {
                             </Grid>
                         </Grid>
                     </Grid>
+
+                    {/* Renderizado de la data filtrada */}
                     <Grid item xs={12}>
                         {filteredData.map((obj) => (
-                            <Grid key={obj.name} container direction="column" sx={{ mb: 2 }}>
+                            <Grid key={obj.idemp} container direction="column" sx={{ mb: 2 }}>
                                 <Grid item>
                                     <Typography variant="subtitle1" color="inherit">
-                                        {obj.name} {selectedObjective && `- ${obj.cantidadPersonas} Personas`}
+                                        {obj.nombreObjetivoEmpresarial}{' '}
+                                        {selectedObjective && `- ${obj.usuarios.length} Persona(s)`}
                                     </Typography>
                                 </Grid>
                                 <Grid item>
                                     <LinearProgress
                                         variant="determinate"
-                                        value={obj.progress}
-                                        color={getColor(obj.progress)}
+                                        value={obj.avance}
+                                        color={getColor(obj.avance)}
                                         sx={{ height: 10, borderRadius: 5, mt: 1 }}
                                     />
                                 </Grid>
                                 <Typography variant="body2" color="textSecondary" sx={{ mt: 0.5 }}>
-                                    {obj.progress}%
+                                    {obj.avance}%
                                 </Typography>
+                                {/* Si se han seleccionado tanto objetivo como período, se muestran los usuarios asociados */}
                                 {selectedObjective && selectedPeriod && (
                                     <>
                                         <Typography variant="h5" color="textSecondary" sx={{ mt: 1 }}>
                                             Personas asociadas:
                                         </Typography>
-                                        {obj.people.map((person, index) => (
+                                        {obj.usuarios.map((usuario, index) => (
                                             <Grid key={index} container direction="column" sx={{ ml: 2, mt: 1 }}>
                                                 <Grid container justifyContent="space-between" alignItems="center">
                                                     <Typography variant="body2" color="textSecondary">
-                                                        {person.name}
+                                                        {usuario.nombre} {usuario.apellido}
                                                     </Typography>
                                                     <Typography variant="body2" color="textSecondary">
-                                                        {person.progress}%
+                                                        {usuario.avance}%
                                                     </Typography>
                                                 </Grid>
                                                 <LinearProgress
                                                     variant="determinate"
-                                                    value={person.progress}
-                                                    color={getColor(person.progress)}
+                                                    value={usuario.avance}
+                                                    color={getColor(usuario.avance)}
                                                     sx={{ height: 8, borderRadius: 5, mt: 0.5, width: '80%' }}
                                                 />
                                             </Grid>
@@ -179,5 +173,6 @@ ProgressDepartment.propTypes = {
 };
 
 export default ProgressDepartment;
+
 
 

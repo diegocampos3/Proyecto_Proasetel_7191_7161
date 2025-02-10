@@ -94,7 +94,7 @@ export const JWTProvider = ({ children }) => {
         try {
             const response = await axios.post('/auth/login', { email, password });
             const { token, ...userData } = response.data; // Extrae el token y el resto de los datos
-    
+            console.log('Imoirmiendo el resto de data:', userData )
             if (token && userData) {
                 setSession(token);
                 dispatch({

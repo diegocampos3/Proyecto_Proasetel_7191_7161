@@ -12,10 +12,25 @@ import SupervisorSatisfactionPieChart from './SupervisorSatisfactionPieChart';
 import ObjetivosBCard from './ObjetivosBCard';
 import ObjetivosDCard from './ObjetivosDCard';
 import ProgressDepartment from './ProgressDepartment';
+import { dispatch, useSelector } from 'store';
+import { getTotalObjEmpr } from 'store/slices/resultadoEvaluacion';
 
 // ==============================|| DASHBOARD ||============================== //
 
 const Dashboard = () => {
+
+    const [totalObj, setTotalObj] =  useState({})
+    const {totalObjEmpr} = useSelector((state) => state.resultadoEvaluacion);
+
+    useEffect(() => {
+        setTotalObj(totalObjEmpr)
+    }, [totalObjEmpr])
+
+    useEffect(() => {
+        dispatch(getTotalObjEmpr())
+    }, [dispatch])
+
+    console.log('Imprimiendo total:', totalObj?.totalObjetivosDepartamentales)
 
     return (
         <Grid container spacing={gridSpacing}>
@@ -23,10 +38,10 @@ const Dashboard = () => {
             <Grid item xs={12}>
                 <Grid container spacing={gridSpacing}>
                     <Grid item lg={6} md={6} sm={6} xs={12}>
-                        <ObjetivosBCard/>
+                        <ObjetivosBCard totalObj={totalObj?.totalObjetivosEmpresariales}/>
                     </Grid>
                     <Grid item lg={6} md={6} sm={6} xs={12}>
-                        <ObjetivosDCard/>
+                        <ObjetivosDCard totalObj={totalObj?.totalObjetivosDepartamentales}/>
                     </Grid>
                 </Grid>
             </Grid>

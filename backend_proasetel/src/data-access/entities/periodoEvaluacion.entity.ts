@@ -38,6 +38,7 @@ export class PeriodoEvaluacion {
     
     @Column({ type: 'boolean', nullable: false, default: false })
     estado: boolean;
+  length: number;
 
     // @OneToMany(
     //     () => EvaluacionPers,

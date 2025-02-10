@@ -11,7 +11,16 @@ import { useQueryClient } from '@tanstack/react-query';
 const initialState = {
   error: null,
   resultados: [],
-  loading: false
+  loading: false,
+  avance: [],
+  avanceDep: [],
+  avanceDepId: [],
+  avanceDepUser: [],
+  avanceUser: [],
+  totalObjEmpr: {},
+  totalObjDep: {},
+  totalObjUser: {}
+
 };
 
 const slice = createSlice({
@@ -58,6 +67,47 @@ const slice = createSlice({
     // LOADING
     setLoading(state) {
       state.loading = true;
+    },
+
+    // GET AVANCE
+    getAvancePromedioSuccess(state,action){
+      state.avance = action.payload
+    },
+
+    // GET AVANCE BY DEPARTMENT
+    getAvancePromedioDepartSuccess(state, action){
+      state.avanceDep = action.payload
+    },
+
+    // GET AVANCE BY ID DEPARTMENT
+    getAvanceDepartmentIdSuccess(state, action){
+      state.avanceDepId = action.payload
+    },
+
+    // 
+    getAvanceDepartmentUserSuccess(state, action){
+      state.avanceDepUser = action.payload
+    },
+
+    // GET AVANCE USER
+    getAvanceUserSuccess(state, action){
+      state.avanceUser = action.payload
+    },
+
+    // GET TOTAL OBJEMPR
+    getTotalObjEmprSuccess(state, action){
+      state.totalObjEmpr = action.payload
+    },
+
+    // GET TOTAL OBJ BY DEPARMENT
+
+    getTotalObjDepartSuccess(state, action){
+      state.totalObjDep = action.payload
+    },
+
+    // GET TOTAL OBJ BY USER
+    getTotalObjUserSuccess(state, action){
+      state.totalObjUser = action.payload
     }
   }
 });
@@ -82,6 +132,67 @@ export function createResultadoEvaluacion(resultadoData) {
       return { success: false, error: error.message };
     }
   };
+}
+
+export function getAvancePromedio() {
+  return async () => {
+    try {
+      const response = await axios.get('/resultado-evaluacion/promedio-avance-objemp');
+      dispatch(slice.actions.getAvancePromedioSuccess(response.data))
+    } catch (error) {
+      dispatch(slice.actions.hasError(error))
+    }
+      
+  }
+}
+
+export function getAvancePromedioDepart() {
+  return async () => {
+    try {
+      const response = await axios.get('/resultado-evaluacion/promedio-avance-dep');
+      dispatch(slice.actions.getAvancePromedioDepartSuccess(response.data))
+    } catch (error) {
+      dispatch(slice.actions.hasError(error))
+    }
+    
+  }
+}
+
+export function getAvanceDepartmentId(idDep){
+  return async () => {
+    try {
+      const response = await axios.get(`/resultado-evaluacion/promedio-avance-emprDep/${idDep}`);
+      dispatch(slice.actions.getAvanceDepartmentIdSuccess(response.data))
+
+    } catch (error) {
+      dispatch(slice.actions.hasError(error));
+    }
+  }
+}
+
+
+export function getAvanceDepartmentUser(idDep){
+  return async () => {
+    try {
+      const response = await axios.get(`/resultado-evaluacion/promedio-avance-emprDepUser/${idDep}`);
+      dispatch(slice.actions.getAvanceDepartmentUserSuccess(response.data))
+
+    } catch (error) {
+      dispatch(slice.actions.hasError(error));
+    }
+  }
+}
+
+
+export function getAvanceUser(idUser){
+  return async () => {
+    try {
+      const response = await axios.get(`/resultado-evaluacion/promedio-avance-user/${idUser}`);
+      dispatch(slice.actions.getAvanceUserSuccess(response.data))
+    } catch (error) {
+      dispatch(slice.actions.hasError(error))
+    }
+  }
 }
 
 export function getResultadosEvaluacion() {
@@ -155,4 +266,45 @@ export const useBulkCreateResultados = () => {
       return { success: false, error: error.message };
     }
   };
+
+  
 };
+
+
+export function getTotalObjEmpr() {
+  return async () => {
+    try {
+      const response = await axios.get('/resultado-evaluacion/totalObjEmpr');
+      dispatch(slice.actions.getTotalObjEmprSuccess(response.data))
+    } catch (error) {
+      dispatch(state.actions.hasError(error))
+    }
+  }
+}
+
+
+export function getTotalObjDep(idDep) {
+  return async () => {
+    try {
+      const response = await axios.get(`/resultado-evaluacion/totalObjEmprDep/${idDep}`);
+      dispatch(slice.actions.getTotalObjDepartSuccess(response.data))
+    } catch (error) {
+      dispatch(state.actions.hasError(error))
+    }
+  }
+
+}
+
+
+export function getTotalObjUser(idUser) {
+  return async () => {
+    try {
+      const response = await axios.get(`/resultado-evaluacion/totalObjUser/${idUser}`);
+      dispatch(slice.actions.getTotalObjUserSuccess(response.data))
+    } catch (error) {
+      dispatch(state.actions.hasError(error))
+    }
+  }
+
+}
+

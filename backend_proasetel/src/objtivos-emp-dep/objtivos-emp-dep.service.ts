@@ -57,19 +57,57 @@ export class ObjtivosEmpDepService {
   async findAll() {
     
     const selectObj = await this.objtivosempdepRepository.find({
-      relations: ['objetivoEmpr'],
+      relations: ['objetivoEmpr', 'departamento'],
     });
+
+    console.log('Imprimiendo selectObj', selectObj)
   
     // Mapear solo los datos de objetivoEmpr
     const result = selectObj.map((obj) => ({
       idbp: obj.id,
       id: obj.objetivoEmpr?.id,
+      idep: obj.departamento?.id,
       titulo: obj.objetivoEmpr?.titulo ?? '', 
       descripcion: obj.objetivoEmpr?.descripcion ?? '',
     }));
     return result;
   }
   
+  async findAllDep(user: User) {
+    // Cargar el usuario con su departamento
+    const loadedUser = await this.userRepository.findOne({
+        where: { id: user.id },
+        relations: ['departamento'],
+    });
+
+    if (!loadedUser) {
+        throw new BadRequestException('Usuario no encontrado');
+    }
+
+    if (!loadedUser.departamento) {
+        throw new BadRequestException('El usuario no tiene un departamento asignado');
+    }
+
+    // Filtrar objetivos solo del departamento del usuario
+    const selectObj = await this.objtivosempdepRepository.find({
+        where: { departamento: { id: loadedUser.departamento.id } },
+        relations: ['objetivoEmpr', 'departamento'],
+    });
+
+    console.log('Imprimiendo selectObj', selectObj);
+
+    // Mapear solo los datos de objetivoEmpr
+    return selectObj.map((obj) => ({
+        idbp: obj.id,
+        id: obj.objetivoEmpr?.id,
+        idep: obj.departamento?.id,
+        titulo: obj.objetivoEmpr?.titulo ?? '',
+        descripcion: obj.objetivoEmpr?.descripcion ?? '',
+    }));
+}
+
+
+
   
 
   findOne(id: string) {

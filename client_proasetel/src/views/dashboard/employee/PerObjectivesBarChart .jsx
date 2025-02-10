@@ -5,59 +5,87 @@ import { Grid, TextField, MenuItem, Typography } from '@mui/material';
 import Chart from 'react-apexcharts';
 import MainCard from 'ui-component/cards/MainCard';
 import { gridSpacing } from 'store/constant';
-
-const periods = [
-  { value: 'all', label: 'Todos' },
-  { value: '2024-Q1', label: '2024-Q1' },
-  { value: '2024-Q2', label: '2024-Q2' }
-];
-
-const objectives = [
-  { value: 'all', label: 'Todos' },
-  { value: '1', label: 'Objetivo 1' },
-  { value: '2', label: 'Objetivo 2' },
-  { value: '3', label: 'Objetivo 3' }
-];
+import { dispatch, useSelector } from 'store';
+import { getAvanceUser } from 'store/slices/resultadoEvaluacion';
+import useAuth from 'hooks/useAuth';
 
 const PerObjectivesBarChart = ({ isLoading }) => {
   const theme = useTheme();
+  const { user } = useAuth();
+  
+  // Estados para el filtro y configuración del gráfico
   const [period, setPeriod] = useState('all');
   const [objective, setObjective] = useState('all');
   const [chartOptions, setChartOptions] = useState({});
   const [chartSeries, setChartSeries] = useState([]);
+  const [listAvanceUser, setAvanceUser] = useState({});
+
+  // Extraemos la data del state
+  const { avanceUser } = useSelector((state) => state.resultadoEvaluacion);
 
   useEffect(() => {
-    // Simular llamada a API para obtener datos filtrados por periodo y objetivo
-    // Datos simulados: cada objeto tiene el nombre del objetivo y su porcentaje de avance.
-    let data = [
-      { id: '1', name: 'Objetivo 1', progress: 70, periodo: '2024-Q1' },
-      { id: '2', name: 'Objetivo 2', progress: 50, periodo: '2024-Q1' },
-      { id: '3', name: 'Objetivo 3', progress: 85, periodo: '2024-Q2' }
-    ];
+    setAvanceUser(avanceUser);
+  }, [avanceUser]);
 
-    // Filtro por objetivo (si no es "all")
-    if (objective !== 'all') {
-      data = data.filter((item) => item.id === objective);
+  useEffect(() => {
+    if (user?.id) {
+      dispatch(getAvanceUser(user.id));
     }
-    // Filtro por periodo (si no es "all")
-    if (period !== 'all') {
-      data = data.filter((item) => item.periodo === period);
-    }
+  }, [dispatch, user?.id]);
+
+  console.log('ListAvanceUser:', listAvanceUser);
+
+  // Extraemos el array de resultados; en este caso, cada objeto tiene:
+  // - idObj, nombreObj, nombrePeriodo, avance, etc.
+  const resultados = listAvanceUser?.resultados || [];
+
+  // Generamos las opciones para el select de períodos a partir de los resultados
+  const periodOptions = [
+    { value: 'all', label: 'Todos' },
+    ...Array.from(new Set(resultados.map((item) => item.nombrePeriodo))).map((period) => ({
+      value: period,
+      label: period
+    }))
+  ];
+
+  // Generamos las opciones para el select de objetivos (usamos idObj como value y nombreObj como label)
+  const objectiveOptions = [
+    { value: 'all', label: 'Todos' },
+    ...Array.from(
+      new Map(resultados.map((item) => [item.idObj, item.nombreObj])).entries()
+    ).map(([id, nombre]) => ({ value: id, label: nombre }))
+  ];
+
+  // Configuramos el gráfico cada vez que cambien los filtros o la data
+  useEffect(() => {
+    // Filtramos la data según el objetivo y el período seleccionados
+    const filteredData = resultados.filter((item) => {
+      const matchesObjective = objective === 'all' || item.idObj === objective;
+      const matchesPeriod = period === 'all' || item.nombrePeriodo === period;
+      return matchesObjective && matchesPeriod;
+    });
+
+    // Para el gráfico se usan:
+    // - Categorías: el nombre del objetivo (nombreObj)
+    // - Valores: el avance (avance)
+    const categories = filteredData.map((item) => item.nombreObj);
+    const seriesData = filteredData.map((item) => item.avance);
 
     setChartSeries([
       {
-        data: data.map((item) => item.progress)
+        data: seriesData
       }
     ]);
+
     setChartOptions({
       chart: { type: 'bar', height: 350 },
       xaxis: {
-        categories: data.map((item) => item.name)
+        categories: categories
       },
       colors: [theme.palette.primary.main],
       tooltip: { theme: theme.palette.mode }
     });
-  }, [period, objective, theme]);
+  }, [period, objective, resultados, theme]);
 
   return (
     <MainCard title="Avance de Objetivos">
@@ -70,7 +98,7 @@ const PerObjectivesBarChart = ({ isLoading }) => {
             value={period}
             onChange={(e) => setPeriod(e.target.value)}
           >
-            {periods.map((option) => (
+            {periodOptions.map((option) => (
               <MenuItem key={option.value} value={option.value}>
                 {option.label}
               </MenuItem>
@@ -85,7 +113,7 @@ const PerObjectivesBarChart = ({ isLoading }) => {
             value={objective}
             onChange={(e) => setObjective(e.target.value)}
           >
-            {objectives.map((option) => (
+            {objectiveOptions.map((option) => (
               <MenuItem key={option.value} value={option.value}>
                 {option.label}
               </MenuItem>
@@ -102,4 +130,4 @@ const PerObjectivesBarChart = ({ isLoading }) => {
   );
 };
 
-export default PerObjectivesBarChart ;
+export default PerObjectivesBarChart;
