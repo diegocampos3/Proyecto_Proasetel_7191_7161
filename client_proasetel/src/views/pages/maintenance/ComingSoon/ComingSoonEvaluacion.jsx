@@ -7,15 +7,19 @@ import CardMedia from '@mui/material/CardMedia';
 import Grid from '@mui/material/Grid';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
+import React from 'react';
 
 // third party
 import { useTimer } from 'react-timer-hook';
+import { useDispatch, useSelector } from 'react-redux';
+import { useEffect } from 'react';
 
 // project imports
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import { ThemeMode } from 'config';
-
 import { gridSpacing } from 'store/constant';
+import { getPeriodos } from 'store/slices/periodo';
+
 
 // assets
 import imageGrid from 'assets/images/maintenance/img-soon-grid.svg';
@@ -87,12 +91,52 @@ const CardMediaPurple = styled('img')({
 
 // ===========================|| COMING SOON 2 ||=========================== //
 
-const ComingSoon2 = () => {
+const ComingSoonConfig = () => {
     const theme = useTheme();
-    const time = new Date();
-    time.setSeconds(time.getSeconds() + 3600 * 24 * 2 - 3600 * 15.5);
+    // const time = new Date();
 
-    const { seconds, minutes, hours, days } = useTimer({ expiryTimestamp: time });
+    // time.setSeconds(time.getSeconds() + 3600 * 24 * 2 - 3600 * 15.5);
+    // console.log('TIMEEEEEEEE', time)
+    // const { seconds, minutes, hours, days } = useTimer({ expiryTimestamp: time });
+
+    //para el control de la muestra segun fecha
+    const dispatch = useDispatch();
+    const { periodos, isLoading, error } = useSelector((state) => state.periodo);
+    const [tiempo, setTiempo] = React.useState(null);
+    const [isWithinPeriod, setIsWithinPeriod] = React.useState(false);
+
+    useEffect(() => {
+        dispatch(getPeriodos());
+    }, [dispatch]);
+
+    useEffect(() => {
+        if (!isLoading && periodos) {
+          const periodoActivo = periodos.find(periodo => periodo.estado === true);
+          
+    
+          if (periodoActivo) {
+            try {
+              const baseDate = new Date(periodoActivo.fecha_ini_eval);              
+                setTiempo(baseDate);
+            } catch (error) {
+              console.error('Error al procesar fechas:', error);
+            }
+          }
+        }
+    }, [isLoading, periodos]);
+
+    //console.log('EEEEEEEEEEEEEEEEEEEee', tiempo)
+    const { seconds, minutes, hours, days, restart  } = useTimer({ expiryTimestamp: tiempo || new Date(), autoStart: false});
+
+    
+    React.useEffect(() => {
+        if (tiempo) {
+        const newTime = new Date(tiempo);
+        restart(newTime);
+        }
+    }, [tiempo, restart]);
+
+
  
     return (
         <ComingSoonCard>
@@ -105,7 +149,7 @@ const ComingSoon2 = () => {
                                     <Typography variant="h1">Próximamente...</Typography>
                                 </Grid>
                                 <Grid item xs={12}>
-                                    <Typography variant="body1">El periodo de configuración comenzará en ...</Typography>
+                                    <Typography variant="body1">El periodo de evaluación comenzará en ...</Typography>
                                 </Grid>
                             </Grid>
                         </PageContentWrapper>
@@ -162,4 +206,4 @@ const ComingSoon2 = () => {
     );
 };
 
-export default ComingSoon2;
+export default ComingSoonConfig;

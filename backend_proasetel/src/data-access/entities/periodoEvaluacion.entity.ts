@@ -14,10 +14,10 @@ export class PeriodoEvaluacion {
     idPeriodoEva: string;
 
     @ManyToOne(
-        () => Periodo, 
-        (periodo) => periodo.periodoEvaluacion)
-        @JoinColumn({ name: 'periodoId' })
-        periodo: Periodo;
+    () => Periodo, 
+    (periodo) => periodo.periodoEvaluacion)
+    @JoinColumn({ name: 'periodoId' })
+    periodo: Periodo;
 
     @ManyToOne(
         () => User, 
@@ -36,7 +36,7 @@ export class PeriodoEvaluacion {
     )
     feedback: Feedback
     
-    @Column({ type: 'boolean', nullable: false, default: false })
+    @Column({ type: 'boolean', nullable: true, default: null })
     estado: boolean;
   length: number;
 

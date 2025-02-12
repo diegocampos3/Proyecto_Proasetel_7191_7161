@@ -1,5 +1,5 @@
 import { Type } from "class-transformer";
-import { IsDate, IsString, Min } from "class-validator";
+import { IsBoolean, IsDate, IsString, Min } from "class-validator";
 
 export class CreatePeriodoDto {
 
@@ -38,5 +38,8 @@ export class CreatePeriodoDto {
 
     @IsString()
     textColor: string;
+
+    @IsBoolean()
+    estado: boolean;
 
 }

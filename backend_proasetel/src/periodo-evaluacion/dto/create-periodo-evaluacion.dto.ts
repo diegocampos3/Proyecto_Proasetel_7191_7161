@@ -3,7 +3,7 @@ import { IsBoolean, IsNotEmpty, IsOptional, IsUUID } from "class-validator";
 export class CreatePeriodoEvaluacionDto {
 
     @IsUUID()
-    @IsNotEmpty()
+    @IsOptional()
     idFormulario: string;
 
     @IsUUID()

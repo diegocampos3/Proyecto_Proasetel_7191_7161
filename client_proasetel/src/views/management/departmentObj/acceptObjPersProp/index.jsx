@@ -8,6 +8,7 @@ import MenuItem from '@mui/material/MenuItem';
 import Pagination from '@mui/material/Pagination';
 import Typography from '@mui/material/Typography';
 import CardContent from '@mui/material/CardContent';
+import { useEffect } from 'react';
 
 // project imports
 import ObjPersPropDetailsCard from './ObjPersPropDetailsCard';
@@ -17,6 +18,9 @@ import { gridSpacing } from 'store/constant';
 import { dispatch, useSelector } from 'store';
 import { getStaffObjPropDep } from 'store/slices/staffobj';
 import FilterObjs from './FilterObjs';
+import { getPeriodos } from 'store/slices/periodo';
+import ComingSoonConfig from 'views/pages/maintenance/ComingSoon/ComingSoonConfig';
+
 
 // assets
 import ExpandMoreRoundedIcon from '@mui/icons-material/ExpandMoreRounded';
@@ -70,7 +74,75 @@ const AcceptObjPersProp = () => {
         </Grid>
     ));
 
+
+
+//para manejo de comingsoonconfig
+
+const [periodoElegido, setPeriodoElegido] = React.useState('');
+
+    //para el control de la muestra segun fecha
+    //const dispatch = useDispatch();
+    const { periodos, isLoading, error } = useSelector((state) => state.periodo);
+    const [isWithinPeriod, setIsWithinPeriod] = React.useState(false);
+
+    useEffect(() => {
+        dispatch(getPeriodos());
+    }, [dispatch]);
+
+    useEffect(() => {
+        if (!isLoading && periodos) {
+            const now = new Date();
+            const periodoActivo = periodos
+            .find(periodo => {
+                
+                const startDate = new Date(periodo.fecha_ini_config);
+                const endDate = new Date(periodo.fecha_fin_config);
+                // Debe retornar la combinación de ambas condiciones
+                return periodo.estado === true && now >= startDate && now <= endDate;
+            });
+
+            if (periodoActivo) {
+                setIsWithinPeriod(true);
+                setPeriodoElegido(periodoActivo);
+            } else {
+                setIsWithinPeriod(false);
+                setPeriodoElegido(null);
+            }
+        }
+    }, [isLoading, periodos]);
+
+    // const handleChange = (event, newValue) => {
+    //     setValue(newValue);
+    // };
+
+
+    if (isLoading) {
+        return (
+            <Grid container justifyContent="center" alignItems="center" style={{ minHeight: '100vh' }}>
+                <CircularProgress />
+            </Grid>
+        );
+    }
+
+    if (error) {
+        return (
+            <Grid container justifyContent="center" alignItems="center" style={{ minHeight: '100vh' }}>
+                <Typography variant="h4" color="error">
+                    Error cargando períodos: {error}
+                </Typography>
+            </Grid>
+        );
+    }
+
+    if (!isWithinPeriod) {
+        return (
+            <ComingSoonConfig/>
+        );
+    }
+    
+
     return (
+
         <MainCard
             title={
                 <Grid container alignItems="center" justifyContent="space-between" spacing={gridSpacing}>

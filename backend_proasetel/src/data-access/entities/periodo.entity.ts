@@ -32,7 +32,7 @@ export class Periodo {
     fecha_fin_eval: Date;
 
     @Column({nullable: true})
-    estado: number;
+    estado: boolean;
 
     @Column()
     color: string;

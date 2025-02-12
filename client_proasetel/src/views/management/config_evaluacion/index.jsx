@@ -14,6 +14,7 @@ import Typography from '@mui/material/Typography';
 // project imports
 import UserProfile from './UserProfile';
 import Billing from './Billing';
+import SelecPeriodo from './SelecPeriodo';
 import Payment from './Payment';
 import ChangePassword from './ChangePassword';
 import useConfig from 'hooks/useConfig';
@@ -21,6 +22,7 @@ import MainCard from 'ui-component/cards/MainCard';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import { gridSpacing } from 'store/constant';
 import { ThemeMode } from 'config';
+import ComingSoonConfig from 'views/pages/maintenance/ComingSoon/ComingSoonConfig';
 
 // assets
 import PersonOutlineTwoToneIcon from '@mui/icons-material/PersonOutlineTwoTone';
@@ -28,6 +30,9 @@ import DescriptionTwoToneIcon from '@mui/icons-material/DescriptionTwoTone';
 import CreditCardTwoToneIcon from '@mui/icons-material/CreditCardTwoTone';
 import VpnKeyTwoToneIcon from '@mui/icons-material/VpnKeyTwoTone';
 import ContactSupportIcon from '@mui/icons-material/ContactSupport';
+import { getPeriodos } from 'store/slices/periodo';
+import { useDispatch, useSelector } from 'react-redux';
+import { useEffect } from 'react';
 
 // tabs
 function TabPanel({ children, value, index, ...other }) {
@@ -64,6 +69,11 @@ const tabsOption = [
     //     caption: 'Billing Information'
     // },
     {
+    label: 'Periodo',
+    icon: <DescriptionTwoToneIcon />,
+    caption: 'Selección de Periodo'
+    },
+    {
         label: 'Formulario',
         icon: <DescriptionTwoToneIcon />,
         caption: 'Selección de Formulario'
@@ -87,6 +97,8 @@ const tabsOption = [
 
 // ==============================|| PROFILE 2 ||============================== //
 
+
+
 const Profile2 = () => {
     const { mode, borderRadius } = useConfig();
     const [value, setValue] = React.useState(0);
@@ -94,6 +106,71 @@ const Profile2 = () => {
     const handleChange = (event, newValue) => {
         setValue(newValue);
     };
+
+    //para traer el idPeriodo
+    //const [selectedPeriodoId, setSelectedPeriodoId] = React.useState('');
+    const [periodoElegido, setPeriodoElegido] = React.useState('');
+
+    //para el control de la muestra segun fecha
+    // const dispatch = useDispatch();
+    // const { periodos, isLoading, error } = useSelector((state) => state.periodo);
+    // const [isWithinPeriod, setIsWithinPeriod] = React.useState(false);
+
+    // useEffect(() => {
+    //     dispatch(getPeriodos());
+    // }, [dispatch]);
+
+    // useEffect(() => {
+    //     if (!isLoading && periodos) {
+    //         const now = new Date();
+    //         const periodoActivo = periodos
+    //         .find(periodo => {
+                
+    //             const startDate = new Date(periodo.fecha_ini_config);
+    //             const endDate = new Date(periodo.fecha_fin_config);
+    //             // Debe retornar la combinación de ambas condiciones
+    //             return periodo.estado === true && now >= startDate && now <= endDate;
+    //         });
+
+    //         if (periodoActivo) {
+    //             setIsWithinPeriod(true);
+    //             setPeriodoElegido(periodoActivo);
+    //         } else {
+    //             setIsWithinPeriod(false);
+    //             setPeriodoElegido(null);
+    //         }
+    //     }
+    // }, [isLoading, periodos]);
+
+    // // const handleChange = (event, newValue) => {
+    // //     setValue(newValue);
+    // // };
+
+
+    // if (isLoading) {
+    //     return (
+    //         <Grid container justifyContent="center" alignItems="center" style={{ minHeight: '100vh' }}>
+    //             <CircularProgress />
+    //         </Grid>
+    //     );
+    // }
+
+    // if (error) {
+    //     return (
+    //         <Grid container justifyContent="center" alignItems="center" style={{ minHeight: '100vh' }}>
+    //             <Typography variant="h4" color="error">
+    //                 Error cargando períodos: {error}
+    //             </Typography>
+    //         </Grid>
+    //     );
+    // }
+
+    // if (!isWithinPeriod) {
+    //     return (
+    //         <ComingSoonConfig/>
+    //     );
+    // }
+    
 
     return (
         <Grid container spacing={gridSpacing}>
@@ -175,9 +252,12 @@ const Profile2 = () => {
                                     <UserProfile />
                                 </TabPanel> */}
                                 <TabPanel value={value} index={0}>
-                                    <Billing />
+                                    <SelecPeriodo setPeriodoElegido={setPeriodoElegido} periodoElegido={periodoElegido}/>
                                 </TabPanel>
                                 <TabPanel value={value} index={1}>
+                                    <Billing periodoElegido={periodoElegido} />
+                                </TabPanel>
+                                <TabPanel value={value} index={2}>
                                     <Payment />
                                 </TabPanel>
                                 {/* <TabPanel value={value} index={3}>
@@ -199,7 +279,7 @@ const Profile2 = () => {
                                 )}
                             </Grid>
                             <Grid item>
-                                {value < 1 && (
+                                {value < 2 && (
                                     <AnimateButton>
                                         <Button variant="contained" size="large" onClick={(e) => handleChange(e, 1 + value)}>
                                             Continuar
