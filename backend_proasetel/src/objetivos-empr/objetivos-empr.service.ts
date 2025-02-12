@@ -36,12 +36,23 @@ export class ObjetivosEmprService {
 
   }
 
-  findAll() {
-    return this.objetivosEmprRepository.find({
-      order: {
-        titulo: 'ASC',
-      }
+  async findAll() {
+    // Obtener todos los objetivos empresariales
+    const objetivos = await this.objetivosEmprRepository.find({
+      order: { titulo: 'ASC' },
+      relations: ['objetivoDep'], // Cargar la relación con objtivos-emp-dep
     });
+  
+    // Verificar la existencia en la tabla objtivos-emp-dep y actualizar el estado
+    for (const objetivo of objetivos) {
+      const existeRelacion = Array.isArray(objetivo.objetivoDep) && objetivo.objetivoDep.length > 0;
+      if (objetivo.estado !== existeRelacion) {
+        objetivo.estado = existeRelacion;
+        await this.objetivosEmprRepository.save(objetivo); // Actualizar en la base de datos
+      }
+    }
+  
+    return objetivos;
   }
 
 
@@ -95,6 +106,8 @@ async update(id: string, updateObjetivosEmprDto: UpdateObjetivosEmprDto) {
       await this.objetivosEmprRepository.save(objetivoEmpr);
       return this.findAll();
 
+      console.log('corecta actualización:')
+
     } catch (error) {
       
       this.handleDBExceptions(error);
@@ -107,6 +120,7 @@ async update(id: string, updateObjetivosEmprDto: UpdateObjetivosEmprDto) {
     const objetivoEmpr = await this.findOne( id );
 
     await this.objetivosEmprRepository.remove( objetivoEmpr);
+
 
     return this.findAll();
 

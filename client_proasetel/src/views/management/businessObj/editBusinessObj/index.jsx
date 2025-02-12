@@ -120,7 +120,7 @@ const EditBusinessObj = () => {
         }>
             {isInProgress && (
                 <Typography variant="h6" color="error" sx={{ marginBottom: 2 }}>
-                    Este objetivo ya está en curso y no puede ser editado.
+                    Este objetivo ya fue seleccionado y no puede ser editado.
                 </Typography>
             )}
 
@@ -161,17 +161,7 @@ const EditBusinessObj = () => {
                                     />
                                 </Grid>
                                 <Grid item xs={6}>
-                                    <FormControl fullWidth>
-                                        <InputLabel>Estado del Objetivo</InputLabel>
-                                        <Select
-                                            {...formik.getFieldProps('status')}
-                                            error={formik.touched.status && Boolean(formik.errors.status)}
-                                            disabled={isInProgress} // Deshabilitar si el objetivo está en curso
-                                        >
-                                            <MenuItem value={false}>Pendiente</MenuItem>
-                                            <MenuItem value={true}>En Curso</MenuItem>
-                                        </Select>
-                                    </FormControl>
+                                    
                                 </Grid>
                             </Grid>
                             <TextField

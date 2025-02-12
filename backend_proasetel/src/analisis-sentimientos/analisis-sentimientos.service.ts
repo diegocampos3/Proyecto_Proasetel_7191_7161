@@ -107,18 +107,12 @@ export class AnalisisSentimientosService {
   async getSatisfactionDataByDepartment(idDepartamento: string): Promise<any> {
     const query = this.analisisSentRepository
       .createQueryBuilder('analisis')
-      // Unir Feedback para acceder a PeriodoEvaluacion
       .leftJoin('analisis.idFeedback', 'feedback')
-      // Unir PeriodoEvaluacion para obtener información del periodo
       .leftJoin('feedback.periodoEva', 'periodoEva')
-      // Unir la entidad Periodo para obtener el nombre del periodo
-      .leftJoin('periodoEva.periodo', 'periodo')
-      // Unir User y Departamento para obtener el nombre del departamento
-      .leftJoin('periodoEva.user', 'user')
+      .leftJoin('feedback.user', 'user')
       .leftJoin('user.departamento', 'departamento')
-      // Filtrar solo por el departamento dado
+      .leftJoin('periodoEva.periodo', 'periodo')
       .where('departamento.id = :idDepartamento', { idDepartamento })
-      // Seleccionar el nombre del departamento y el nombre del periodo
       .select('departamento.nombre', 'departmentName')
       .addSelect('periodo.titulo', 'periodoName')
       .addSelect(`SUM(CASE WHEN analisis.resultado = true THEN 1 ELSE 0 END)`, 'bueno')
@@ -128,7 +122,6 @@ export class AnalisisSentimientosService {
   
     const result = await query.getRawMany();
   
-    // Reestructurar el resultado en el formato esperado para el gráfico.
     const data: Record<string, any> = {};
   
     for (const row of result) {
@@ -136,18 +129,18 @@ export class AnalisisSentimientosService {
       const periodName = row.periodoName || 'Desconocido';
       const bueno = parseInt(row.bueno, 10);
       const malo = parseInt(row.malo, 10);
-  
-      // Calcular el nivel de satisfacción (ej. porcentaje de respuestas buenas)
       const total = bueno + malo;
-      const satisfaction = total > 0 ? (bueno / total) * 100 : 0; // Nivel de satisfacción en porcentaje
+      const satisfaction = total > 0 ? (bueno / total) * 100 : 0;
   
-      // Datos por departamento individual (usando el nombre)
       if (!data[deptName]) {
         data[deptName] = {};
       }
-      data[deptName][periodName] = { Bueno: bueno, Malo: malo, Satisfaccion: satisfaction.toFixed(2) + "%" };
+      data[deptName][periodName] = {
+        Bueno: bueno,
+        Malo: malo,
+        Satisfaccion: satisfaction.toFixed(2) + "%"
+      };
   
-      // Acumulado en "all"
       if (!data['all']) {
         data['all'] = {};
       }
@@ -156,11 +149,12 @@ export class AnalisisSentimientosService {
       }
       data['all'][periodName].Bueno += bueno;
       data['all'][periodName].Malo += malo;
-      data['all'][periodName].Satisfaccion = (data['all'][periodName].Bueno / (data['all'][periodName].Bueno + data['all'][periodName].Malo)) * 100;
+      data['all'][periodName].Satisfaccion = ((data['all'][periodName].Bueno / (data['all'][periodName].Bueno + data['all'][periodName].Malo)) * 100).toFixed(2);
     }
   
     return data;
-  }
+}
+
   
 }
 

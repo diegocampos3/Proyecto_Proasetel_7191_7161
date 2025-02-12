@@ -6,6 +6,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { ObjtivosEmpDep } from 'src/data-access/entities/objtivos-emp-dep.entity';
 import { QueryFailedError, Repository } from 'typeorm';
 import { ObjetivosEmpr } from 'src/data-access/entities/objetivosEmpr.entity';
+import { isUUID } from 'class-validator';
 
 @Injectable()
 export class ObjtivosEmpDepService {
@@ -110,9 +111,19 @@ export class ObjtivosEmpDepService {
 
   
 
-  findOne(id: string) {
-    return `This action returns a #${id} objtivosEmpDep`;
+async findOne(id: string): Promise<boolean> {
+  // Verificar si el ID es un UUID válido
+  if (!isUUID(id)) {
+    throw new BadRequestException(`El ID proporcionado no es un UUID válido: ${id}`);
   }
+
+  const exists = await this.objtivosempdepRepository.exist({
+    where: { objetivoEmpr: { id } },
+  });
+
+  return exists;
+}
+
 
   update(id: number, updateObjtivosEmpDepDto: UpdateObjtivosEmpDepDto) {
     return `This action updates a #${id} objtivosEmpDep`;

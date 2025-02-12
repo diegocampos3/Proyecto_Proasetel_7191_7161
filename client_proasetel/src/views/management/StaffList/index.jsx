@@ -12,6 +12,7 @@ import MainCard from 'ui-component/cards/MainCard';
 
 import { dispatch, useSelector } from 'store';
 import { getPersonal } from 'store/slices/personal';
+import useAuth from 'hooks/useAuth';
 
 // ==============================|| STAFF LIST ||============================== //
 
@@ -21,6 +22,11 @@ const StaffList = () => {
     const [drawerOpen, setDrawerOpen] = useState(false);
 
     const { personal } = useSelector((state) => state.personal);
+
+    const { logout, user } = useAuth();
+
+
+    console.log('Imprimiendo rol de usuario:', user?.rol)
      
 
     const handleToggleDrawer = () => {
@@ -41,6 +47,7 @@ const StaffList = () => {
             <Box sx={{ display: drawerOpen ? 'flex' : 'block' }}>
                 <Grid container sx={{ position: 'relative', display: drawerOpen ? 'flex' : 'block' }}>
                     <Grid item xs={12} {...{ sm: drawerOpen && 8 }}>
+                        
                         <Filter {...{ handleToggleDrawer, rows: personal, setRows }} />
                         <StaffTable {...{ rows }} />
                     </Grid>

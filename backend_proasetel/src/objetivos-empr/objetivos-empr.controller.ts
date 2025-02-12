@@ -26,7 +26,7 @@ export class ObjetivosEmprController {
   }
 
   @Patch(':id')
-  @Auth(ValidRoles.admin)
+  @Auth(ValidRoles.admin, ValidRoles.supervisor)
   update(
     @Param('id', ParseUUIDPipe) id: string, 
     @Body() updateObjetivosEmprDto: UpdateObjetivosEmprDto

@@ -247,13 +247,7 @@ const PerObjTable = ({ open, setOpen, listPerObj, setRowValue}) => {
                                                 </Tooltip>
                                             </Stack>
                                         </TableCell>
-                                        <TableCell align="center" sx={{ pr: 3, ...(open && { display: 'none'})}}>
-                                            <Stack direction="row" alignItems="center" spacing={1} justifyContent="center">
-                                                <Button>
-                                                    Evaluar
-                                                </Button>
-                                            </Stack>
-                                        </TableCell>
+                                        
                                     </TableRow>
                                 );
                                 

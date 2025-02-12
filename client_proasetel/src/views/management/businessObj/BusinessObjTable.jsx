@@ -302,7 +302,7 @@ const BusinessObjTable = ({ open, setOpen, listBusinessObj, setRowValue }) => {
                 <DialogContent>
                     {rowToDelete?.estado ? (
                         <DialogContentText id="confirm-dialog-description" color="error">
-                            Este objetivo está en curso y no se puede eliminar.
+                            Este objetivo está ya fue seleccionado y no se puede eliminar.
                         </DialogContentText>
                     ) : (
                         <DialogContentText id="confirm-dialog-description">

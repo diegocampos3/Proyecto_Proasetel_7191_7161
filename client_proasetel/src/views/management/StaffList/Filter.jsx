@@ -15,12 +15,17 @@ import AddIcon from '@mui/icons-material/AddTwoTone';
 import FilterListIcon from '@mui/icons-material/FilterListTwoTone';
 
 import SearchIcon from '@mui/icons-material/Search';
+import useAuth from 'hooks/useAuth';
 
 // ==============================|| STAFF - SEARCH FILTER ||============================== //
 
 const Filter = ({ handleToggleDrawer, rows, setRows }) => {
     const [search, setSearch] = React.useState('');
 
+    const { logout, user } = useAuth();
+
+
+    console.log('Imprimiendo rol de usuario:', user?.rol)
     
 
     const handleSearch = (event) => {
@@ -76,14 +81,18 @@ const Filter = ({ handleToggleDrawer, rows, setRows }) => {
                     value={search}
                     onChange={handleSearch}
                 />
-                <Stack direction="row" alignItems="center" justifyContent={{ xs: 'center' }} spacing={1.25}>
+
+                {user?.rol !== "supervisor" && (
+                     <Stack direction="row" alignItems="center" justifyContent={{ xs: 'center' }} spacing={1.25}>
                     
-                    <Tooltip title="Filtrar">
-                        <IconButton size="large" onClick={handleToggleDrawer}>
-                            <FilterListIcon />
-                        </IconButton>
-                    </Tooltip>
-                </Stack>
+                     <Tooltip title="Filtrar">
+                         <IconButton size="large" onClick={handleToggleDrawer}>
+                             <FilterListIcon />
+                         </IconButton>
+                     </Tooltip>
+                 </Stack>
+                )}  
+               
             </Stack>
             
         </>

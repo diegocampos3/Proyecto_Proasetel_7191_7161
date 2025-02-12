@@ -82,10 +82,13 @@ export class AuthController {
   
 
   @Get()
-  findAll() {
-    return this.authService.findAll();
+  @Auth()
+  findAll(
+    @GetUser() user: User
+  ) {
+    return this.authService.findAll(user);
   }
-  
+
 
 
   // Endpoint de prueba
@@ -102,33 +105,6 @@ export class AuthController {
       user
     }
   }
-
-  // Casos de prueba de Autorización
-    // @SetMetadata('rol', ['admin', 'supervisor', 'empleado'])
-
-  // @Get('private2')
-  // @RoleProtected( ValidRoles.admin, ValidRoles.supervisor)
-  // @UseGuards( AuthGuard(), UserRoleGuard)
-  // privateRoute2(
-  //   @GetUser() user: User
-  // ){
-  //   return {
-  //     ok: true,
-  //     user
-  //   }
-  // }
-
-
-  // @Get('private3')
-  // @Auth( ValidRoles.admin) // Para proteger la ruta podemos solo utilizar el Auth
-  // privateRoute3(
-  //   @GetUser() user: User
-  // ){
-  //   return {
-  //     ok: true,
-  //     user
-  //   }
-  // }
 
 
 }

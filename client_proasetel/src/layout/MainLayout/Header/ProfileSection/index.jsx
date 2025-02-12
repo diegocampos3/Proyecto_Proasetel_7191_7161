@@ -22,6 +22,7 @@ import Popper from '@mui/material/Popper';
 import Stack from '@mui/material/Stack';
 import Switch from '@mui/material/Switch';
 import Typography from '@mui/material/Typography';
+import { ListItem } from '@mui/material';
 
 // third-party
 import { FormattedMessage } from 'react-intl';
@@ -38,6 +39,8 @@ import { ThemeMode } from 'config';
 // assets
 import { IconLogout, IconSearch, IconSettings, IconUser } from '@tabler/icons-react';
 import useConfig from 'hooks/useConfig';
+import { IconMail } from '@tabler/icons-react';
+
 
 // ==============================|| PROFILE MENU ||============================== //
 
@@ -54,6 +57,9 @@ const ProfileSection = () => {
     const [open, setOpen] = useState(false);
 
     console.log('Imprimiendo logout', user)
+
+
+    user?.nombres
     /**
      * anchorRef is used on different components and specifying one type leads to other components throwing an error
      * */
@@ -166,81 +172,9 @@ const ProfileSection = () => {
                             <Paper>
                                 {open && (
                                     <MainCard border={false} elevation={16} content={false} boxShadow shadow={theme.shadows[16]}>
-                                        
-                                        {/*}
-                                        <Box sx={{ p: 2, pb: 0 }}>
-                                            <Stack>
-                                                <Stack direction="row" spacing={0.5} alignItems="center">
-                                                    <Typography variant="h4">Good Morning,</Typography>
-                                                    <Typography component="span" variant="h4" sx={{ fontWeight: 400 }}>
-                                                        {user?.name}
-                                                    </Typography>
-                                                </Stack>
-                                                <Typography variant="subtitle2">Project Admin</Typography>
-                                            </Stack>
-                                            <OutlinedInput
-                                                sx={{ width: '100%', pr: 1, pl: 2, my: 2 }}
-                                                id="input-search-profile"
-                                                value={value}
-                                                onChange={(e) => setValue(e.target.value)}
-                                                placeholder="Search profile options"
-                                                startAdornment={
-                                                    <InputAdornment position="start">
-                                                        <IconSearch stroke={1.5} size="16px" />
-                                                    </InputAdornment>
-                                                }
-                                                aria-describedby="search-helper-text"
-                                                inputProps={{
-                                                    'aria-label': 'weight'
-                                                }}
-                                            />
-                                            <Divider />
-                                        </Box>
-                                        */}
-                                        <PerfectScrollbar style={{ height: '100%', maxHeight: 'calc(100vh - 250px)', overflowX: 'hidden' }}>
                                             
                                             <Box sx={{ p: 2, pt: 0 }}>
                                                 <UpgradePlanCard />
-                                                <Divider />
-                                                {/*
-                                                <Card sx={{ bgcolor: mode === ThemeMode.DARK ? 'dark.800' : 'primary.light', my: 2 }}>
-                                                    <CardContent>
-                                                        <Grid container spacing={3} direction="column">
-                                                            <Grid item>
-                                                                <Grid item container alignItems="center" justifyContent="space-between">
-                                                                    <Grid item>
-                                                                        <Typography variant="subtitle1">Start DND Mode</Typography>
-                                                                    </Grid>
-                                                                    <Grid item>
-                                                                        <Switch
-                                                                            color="primary"
-                                                                            checked={sdm}
-                                                                            onChange={(e) => setSdm(e.target.checked)}
-                                                                            name="sdm"
-                                                                            size="small"
-                                                                        />
-                                                                    </Grid>
-                                                                </Grid>
-                                                            </Grid>
-                                                            <Grid item>
-                                                                <Grid item container alignItems="center" justifyContent="space-between">
-                                                                    <Grid item>
-                                                                        <Typography variant="subtitle1">Allow Notifications</Typography>
-                                                                    </Grid>
-                                                                    <Grid item>
-                                                                        <Switch
-                                                                            checked={notification}
-                                                                            onChange={(e) => setNotification(e.target.checked)}
-                                                                            name="sdm"
-                                                                            size="small"
-                                                                        />
-                                                                    </Grid>
-                                                                </Grid>
-                                                            </Grid>
-                                                        </Grid>
-                                                    </CardContent>
-                                                </Card>
-                                                */}
                                                 <Divider />
                                                 <List
                                                     component="nav"
@@ -252,32 +186,9 @@ const ProfileSection = () => {
                                                         '& .MuiListItemButton-root': { mt: 0.5 }
                                                     }}
                                                 >
-                                                    {/*
-                                                    <ListItemButton
-                                                        sx={{ borderRadius: `${borderRadius}px` }}
-                                                        selected={selectedIndex === 0}
-                                                        onClick={(event) =>
-                                                            handleListItemClick(event, 0, '/apps/user/account-profile/profile1')
-                                                        }
-                                                    >
-                                                        <ListItemIcon>
-                                                            <IconSettings stroke={1.5} size="20px" />
-                                                        </ListItemIcon>
-                                                        <ListItemText
-                                                            primary={
-                                                                <Typography variant="body2">
-                                                                    <FormattedMessage id="account-settings" />
-                                                                </Typography>
-                                                            }
-                                                        />
-                                                    </ListItemButton>
-                                                    <ListItemButton
-                                                        sx={{ borderRadius: `${borderRadius}px` }}
-                                                        selected={selectedIndex === 1}
-                                                        onClick={(event) =>
-                                                            handleListItemClick(event, 1, '/apps/user/social-profile/posts')
-                                                        }
-                                                    >
+                                                    
+                                                    
+                                                    <ListItem sx={{ borderRadius: `${borderRadius}px`, display: 'flex', alignItems: 'center' }}>
                                                         <ListItemIcon>
                                                             <IconUser stroke={1.5} size="20px" />
                                                         </ListItemIcon>
@@ -286,12 +197,14 @@ const ProfileSection = () => {
                                                                 <Grid container spacing={1} justifyContent="space-between">
                                                                     <Grid item>
                                                                         <Typography variant="body2">
-                                                                            <FormattedMessage id="social-profile" />
+                                                                            {user?.nombres
+                                                                                ? user?.nombres.replace(/\b\w/g, (char) => char.toUpperCase()) 
+                                                                                : 'Sin nombre'}
                                                                         </Typography>
                                                                     </Grid>
                                                                     <Grid item>
                                                                         <Chip
-                                                                            label="02"
+                                                                            label={user?.rol ? user?.rol.replace(/\b\w/g, (char) => char.toUpperCase()) : 'Sin rol'}
                                                                             size="small"
                                                                             color="warning"
                                                                             sx={{ '& .MuiChip-label': { mt: 0.25 } }}
@@ -300,9 +213,27 @@ const ProfileSection = () => {
                                                                 </Grid>
                                                             }
                                                         />
-                                                    </ListItemButton>
+                                                    </ListItem>
 
-                                                    */}
+
+                                                <ListItem sx={{ borderRadius: `${borderRadius}px`, display: 'flex', alignItems: 'center' }}>
+                                                    <ListItemIcon>
+                                                        <IconMail stroke={1.5} size="20px" />
+                                                    </ListItemIcon>
+                                                    <ListItemText
+                                                        primary={
+                                                            <Grid container spacing={1} justifyContent="space-between">
+                                                                <Grid item>
+                                                                    <Typography variant="body2">
+                                                                        {user?.email ? user.email : 'Sin email'}
+                                                                    </Typography>
+                                                                </Grid>
+                                                            </Grid>
+                                                        }
+                                                    />
+                                                </ListItem>
+
+
                                                     <ListItemButton
                                                         sx={{ borderRadius: `${borderRadius}px` }}
                                                         selected={selectedIndex === 4}
@@ -321,7 +252,6 @@ const ProfileSection = () => {
                                                     </ListItemButton>
                                                 </List>
                                             </Box>
-                                        </PerfectScrollbar>
                                     </MainCard>
                                 )}
                             </Paper>

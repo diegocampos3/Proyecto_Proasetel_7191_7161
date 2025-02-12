@@ -6,7 +6,9 @@ import { dispatch } from "../index";
 
 const initialState = {
     error: null,
-    businessObjs: []
+    businessObjs: [],
+
+
 };
 
 const slice = createSlice({
@@ -76,7 +78,12 @@ export function addBusinessObj(businessObj){
 export function updateBusinessObj(businessObjId, businessObj) {
     return async () => {
         try {
+            console.log('Imprimiendo ObjSelect:', {
+                businessObjId,
+                businessObj
+            })
             const response = await axios.patch(`/objetivos-empr/${businessObjId}`, businessObj);
+            console.log('Imprimiendo actualización:', response.data)
             dispatch(slice.actions.updateBusinessObjSuccess(response.data));
             return { success: true}
         } catch (error) {

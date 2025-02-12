@@ -30,7 +30,7 @@ export class ObjtivosEmpDepController {
     return this.objtivosEmpDepService.findAllDep(user);
   }
 
-  @Get(':id')
+  @Get('verificarObjEmp/:id')
   findOne(@Param('id') id: string) {
     return this.objtivosEmpDepService.findOne(id);
   }

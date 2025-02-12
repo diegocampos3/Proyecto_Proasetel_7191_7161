@@ -31,6 +31,9 @@ import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } 
 // Redux
 import { dispatch } from 'store';
 import { addBusinessObjDep } from 'store/slices/departmentobj';
+import { updateBusinessObj } from 'store/slices/businessobj'; 
+
+
 
 const Alert = React.forwardRef((props, ref) => (
     <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />
@@ -66,8 +69,10 @@ const BusinnesObjDetailsCard = ({ id, titulo, descripcion, select}) => {
         objetivoEmprId: id
     }
 
+   
+
     const result = await dispatch(addBusinessObjDep(data));
-    
+
     if(result.success){
         setSnackbarMessage('Selección de Objetivo Empresarial Exitoso');
         setSnackbarSeverity('success');
@@ -104,7 +109,7 @@ const BusinnesObjDetailsCard = ({ id, titulo, descripcion, select}) => {
                     </Grid>
                 </Grid>
                 <Grid item xs={12}>
-                    <Typography variant="caption">Objetivo Empresarial_{id.slice(0,6)}</Typography>
+                    <Typography variant="caption">Objetivo Empresarial</Typography>
                     <Typography variant="h3">{capitalizeFirstLetters(titulo)}</Typography>
                     <Typography variant="caption">Titulo</Typography>
                 </Grid>

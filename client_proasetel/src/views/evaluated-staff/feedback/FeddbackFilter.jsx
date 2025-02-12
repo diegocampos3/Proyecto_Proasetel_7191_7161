@@ -19,6 +19,9 @@ import AddIcon from '@mui/icons-material/AddTwoTone';
 
 const FeddbackFilter = ({rows, setRows }) => {
     
+    
+    console.log('Imorimiendo Rows: ', rows)
+    
     const [search, setSearch] = React.useState('');
 
     const handleSearch = (event) => {

@@ -60,17 +60,22 @@ const AddStaffDialog = ({ open, handleToggleAddDialog, row }) => {
             isActive: estado === 1,
         };
 
-        try {
-            dispatch(updatePersonal(updatedData));
+        const result =  await dispatch(updatePersonal(updatedData));
+        
+        console.log('Imprimiendo result', result)
+        if(result.success){
+
             setSnackbarMessage('Correcta Actualización');
             setSnackbarSeverity('success');
             setSnackbarOpen(true);
             handleToggleAddDialog(); // Cierra la ventana modal si la actualización es exitosa
-        } catch (error) {
-            console.error('Error actualizando usuario:', error);
-            setSnackbarMessage('Error al actualizar los datos');
+
+        }else{
+            setSnackbarMessage(result.error);
             setSnackbarSeverity('error');
             setSnackbarOpen(true);
+            //handleToggleAddDialog(); // Cierra la ventana modal si la actualización es exitosa
+
         }
     };
 

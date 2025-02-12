@@ -55,7 +55,9 @@ export class User  {
     //Relación
     @ManyToOne(
         () => Departamento,
-        ( departamento ) => departamento.user
+        ( departamento ) => departamento.user,
+        { nullable: true } 
+
     )
     departamento: Departamento
 

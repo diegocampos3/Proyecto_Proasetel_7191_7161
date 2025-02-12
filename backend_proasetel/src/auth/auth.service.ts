@@ -1,6 +1,6 @@
 import { BadRequestException, ForbiddenException, Injectable, InternalServerErrorException, Logger, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Not, Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt'
 
 import { CreateUserDto, LoginUserDto, UpdateUserDto } from './dto';
@@ -107,50 +107,85 @@ export class AuthService {
   
 
   // Actualización de usuario 
-  async update(id: string, updateUserDto: UpdateUserDto) {
-    const { departamento: departamentoNombre, ...restoDatos } = updateUserDto;
-  
-    let departamento: Departamento | undefined = undefined;
-  
-    if (departamentoNombre) {
-      // Busca el departamento por nombre o ID
+ // Actualización de usuario 
+async update(id: string, updateUserDto: UpdateUserDto) {
+  const { departamento: departamentoNombre, rol, ...restoDatos } = updateUserDto;
+
+  let departamento: Departamento | undefined = undefined;
+
+  if (departamentoNombre) {
+      // Busca el departamento por nombre
       departamento = await this.departamentoRepository.findOne({
-        where: { nombre: departamentoNombre.toLowerCase() },
+          where: { nombre: departamentoNombre.toLowerCase() },
       });
-  
+
       if (!departamento) {
-        throw new NotFoundException(`El departamento ${departamentoNombre} no fue encontrado`);
+          throw new NotFoundException(`El departamento ${departamentoNombre} no fue encontrado`);
       }
-    }
-  
-    // Prepara los datos para la actualización
-    const user = await this.userRepository.preload({
-      id: id,
-      ...restoDatos,
-      departamento, // Asigna el objeto completo del departamento
-    });
-  
-    if (!user) {
+  }
+
+  // Buscar el usuario antes de actualizarlo
+  const existingUser = await this.userRepository.findOne({
+      where: { id },
+      relations: ['departamento'],
+  });
+
+  if (!existingUser) {
       throw new NotFoundException(`El usuario con id ${id} no fue encontrado`);
-    }
-  
-    try {
+  }
+
+  // Si el rol se actualiza a "supervisor", verificar si ya hay otro supervisor en el departamento
+  if (rol === 'supervisor') {
+      if (!departamento && existingUser.departamento) {
+          // Si el usuario no actualiza el departamento, usar el actual
+          departamento = existingUser.departamento;
+      }
+
+      if (departamento) {
+          const existingSupervisor = await this.userRepository.findOne({
+              where: { departamento: departamento, rol: 'supervisor' },
+          });
+
+          if (existingSupervisor && existingSupervisor.id !== id) {
+              throw new BadRequestException(`Ya se encuentra un supervisor asignado en el departamento ${departamento.nombre}`);
+          }
+      } else {
+          throw new BadRequestException(`No se puede asignar el rol de supervisor sin un departamento`);
+      }
+  }
+
+  // Prepara los datos para la actualización
+  const user = await this.userRepository.preload({
+      id,
+      ...restoDatos,
+      rol, // Asigna el nuevo rol
+      departamento, // Asigna el objeto del departamento
+  });
+
+  if (!user) {
+      throw new NotFoundException(`El usuario con id ${id} no fue encontrado`);
+  }
+
+  try {
       const savedUser = await this.userRepository.save(user);
+      
       // Retorna el usuario con su departamento cargado
       return this.userRepository.findOne({
-        where: { id: savedUser.id },
-        select: ['id', 'nombres', 'apellidos', 'email', 'rol', 'isActive'],
-        relations: ['departamento'], // Asegura que la relación está cargada
+          where: { id: savedUser.id },
+          select: ['id', 'nombres', 'apellidos', 'email', 'rol', 'isActive'],
+          relations: ['departamento'],
       }).then(user =>
-        user ? {
-          ...user,
-          departamento: user.departamento?.nombre || null
-        }: null
-      ) 
-    } catch (error) {
+          user ? {
+              ...user,
+              departamento: user.departamento?.nombre || null
+          } : null
+      );
+
+  } catch (error) {
       this.handleDBErrors(error);
-    }
   }
+}
+
   
   
 
@@ -249,20 +284,49 @@ export class AuthService {
   }
   
 
-  async findAll() {
+  async findAll(user: User) {
+    const userWithDepartment = await this.userRepository.findOne({
+        where: { id: user.id },
+        relations: ['departamento'],
+    });
+
+    if (!userWithDepartment) {
+        throw new Error('Usuario no encontrado');
+    }
+
+    console.log('Imprimiendo departamento:', userWithDepartment.departamento);
+
+    let whereCondition: any = {};
+
+    if (userWithDepartment.rol === 'admin') {
+        whereCondition = { id: Not(userWithDepartment.id) };
+    } else if (userWithDepartment.rol === 'supervisor') {
+        if (!userWithDepartment.departamento) {
+            throw new Error('El supervisor no tiene un departamento asignado');
+        }
+
+        whereCondition = {
+            departamento: userWithDepartment.departamento,
+            id: Not(userWithDepartment.id)
+        };
+    } else if (userWithDepartment.rol === 'superUser') {
+        whereCondition = { id: Not(userWithDepartment.id) };
+    }
+
     return this.userRepository.find({
-      select: ['id', 'nombres', 'apellidos', 'email', 'rol', 'isActive'],
-      relations: ['departamento'],
-      order: {
-        nombres: 'ASC',
-      }
-    }).then(users => 
-      users.map(user => ({
-        ...user,
-        departamento: user.departamento?.nombre || null,  
-      }))
+        select: ['id', 'nombres', 'apellidos', 'email', 'rol', 'isActive'],
+        relations: ['departamento'], 
+        where: whereCondition,
+        order: { nombres: 'ASC' }
+    }).then(users =>
+        users.map(u => ({
+            ...u,
+            departamento: u.departamento?.nombre || null,
+        }))
     );
-  }
+}
+
+  
   
 
   async findOne(term: string) {

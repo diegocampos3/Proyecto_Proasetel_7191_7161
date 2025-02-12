@@ -34,6 +34,10 @@ const EditDepartmentBody = ({ row, onValuesChange, setIsFormValid }) => {
 
     const { values, errors, touched, handleChange, handleBlur, handleSubmit, isValid } = formik;
 
+    const capitalizeFirstLetters = (str) => {
+        return str.replace(/\b\w/g, char => char.toUpperCase());
+    };
+
     // Sincronizar los valores y la validez de Formik con el callback
     useEffect(() => {
         onValuesChange(values);
@@ -51,7 +55,7 @@ const EditDepartmentBody = ({ row, onValuesChange, setIsFormValid }) => {
                                     fullWidth
                                     label="Nombre"
                                     name="nombre"
-                                    value={values.nombre}
+                                    value={capitalizeFirstLetters(values.nombre)}
                                     onChange={handleChange}
                                     onBlur={handleBlur}
                                     error={Boolean(touched.nombre && errors.nombre)}

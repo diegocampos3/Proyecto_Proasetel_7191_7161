@@ -42,7 +42,7 @@ export function getPersonal() {
     return async () => {
         try {
             const response = await axios.get(`/auth`);
-            dispatch(slice.actions.getPersonalSuccess(response.data))
+            dispatch(slice.actions.getPersonalSuccess(response.data));
         } catch (error) {
             dispatch(slice.actions.hasError(error))
         }
@@ -61,8 +61,12 @@ export function updatePersonal(data) {
                 }
             );
             dispatch(slice.actions.updatePersonalSuccess(response.data));
+            return { success: true }; 
+
         } catch (error) {
             dispatch(slice.actions.hasError(error));
+            return { success: false, error: error.message }; 
+
         }
     };
 }

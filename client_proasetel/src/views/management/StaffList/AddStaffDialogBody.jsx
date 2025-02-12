@@ -10,6 +10,7 @@ import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
 import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
+import useAuth from 'hooks/useAuth';
 
 
 import { dispatch, useSelector } from 'store';
@@ -20,6 +21,14 @@ const AddStaffDialogBody = ({ row, onValuesChange }) => {
     const [departamentoNombre, setDepartamentoNombre] = useState(row?.departamento || '');
     const [estado, setEstado] = useState(row?.isActive ? 1 : 2); // 1 para activo, 2 para inactivo
     const [rol, setRol] = useState(row?.rol || "");
+    
+    const { logout, user } = useAuth();
+
+
+    console.log('Imprimiendo rol de usuario:', user?.rol)
+     
+
+    console.log('Imprimiendo rol de usuario:', user)
 
     // Obtener los departments desde el store de Redux
     const { departments } = useSelector((state) => state.department);
@@ -124,10 +133,12 @@ const AddStaffDialogBody = ({ row, onValuesChange }) => {
                                 onChange={handleRolChange}
                                 label="Rol"
                             >
+                                
                                 <MenuItem value="user">User</MenuItem>
                                 <MenuItem value="empleado">Empleado</MenuItem>
+                                {user?.rol !== "supervisor" && (
                                 <MenuItem value="supervisor">Supervisor</MenuItem>
-                            </Select>
+                                )}                            </Select>
                         </FormControl>
                     </Stack>
                 </Grid>

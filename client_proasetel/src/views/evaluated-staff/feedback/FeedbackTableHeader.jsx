@@ -24,7 +24,7 @@ const headCells = [
     {
         id: 'Periodo',
         numeric: false,
-        label: 'Título'
+        label: 'Periodo'
     },
     {
         id: 'Descripcion',

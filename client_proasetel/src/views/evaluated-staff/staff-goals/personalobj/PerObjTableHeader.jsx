@@ -104,9 +104,7 @@ const PerObjTableHeader = ({ drawer, onSelectAllClick, order, orderBy, numSelect
                     <TableCell sortDirection={false} align="center" sx={drawer ? { pr: 3, display: 'none' } : { pr: 3 }}>
                         Eliminar
                     </TableCell>
-                     <TableCell sortDirection={false} align="center" sx={drawer ? { pr: 3, display: 'none' } : { pr: 3 }}>
-                        Evaluar
-                    </TableCell>
+                    
                  </>
                 )}
             </TableRow>

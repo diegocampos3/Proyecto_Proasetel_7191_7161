@@ -112,7 +112,7 @@ const AddStaffDialogBody = ({ row, onValuesChange }) => {
                                 label="Estado"
                             >
                                 <MenuItem value={1}>Activo</MenuItem>
-                                <MenuItem value={2}>Inactivo</MenuItem>
+                                <MenuItem value={2}>Inctiv</MenuItem>
                             </Select>
                         </FormControl>
                         <FormControl fullWidth>

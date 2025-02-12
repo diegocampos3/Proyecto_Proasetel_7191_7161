@@ -1,7 +1,7 @@
 import  { FormattedMessage}  from 'react-intl';
 
 // assets
-import { IconUserCheck, IconCalendar, IconBuilding, IconTarget, IconMouse, IconCheck, IconListDetails, IconFileCheck } from '@tabler/icons-react';
+import { IconUserCheck, IconCalendar, IconBuilding, IconTarget, IconMouse, IconCheck, IconListDetails, IconFileCheck,IconDeviceAnalytics  } from '@tabler/icons-react';
 
 
 // constant
@@ -13,7 +13,8 @@ const icons = {
     IconMouse,
     IconCheck,
     IconListDetails,
-    IconFileCheck
+    IconFileCheck,
+    IconDeviceAnalytics
 
 }
 

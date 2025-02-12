@@ -141,16 +141,7 @@ const AddBusinessObj = () => {
                                     />
                                 </Grid>
                                 <Grid item xs={6}>
-                                    <FormControl fullWidth>
-                                        <InputLabel>Estado del Objetivo</InputLabel>
-                                        <Select
-                                            {...formik.getFieldProps('status')}
-                                            error={touched.status && Boolean(errors.status)}
-                                        >
-                                            <MenuItem value={false}>Pendiente</MenuItem>
-                                            <MenuItem value={true}>En Curso</MenuItem>
-                                        </Select>
-                                    </FormControl>
+                                    
                                 </Grid>
                             </Grid>
                             <TextField
