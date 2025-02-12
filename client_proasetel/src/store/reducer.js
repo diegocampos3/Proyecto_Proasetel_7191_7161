@@ -27,6 +27,7 @@ import respuestasPreguntasReducer from './slices/respuestasPreguntas';
 import periodsEvaReducer from './slices/periodsEva'
 import feedbackReducer from './slices/feedback'
 import resultadoEvaluacionReducer from './slices/resultadoEvaluacion';
+import periodoReducer from './slices/periodo';
 
 
 // ==============================|| COMBINE REDUCER ||============================== //
@@ -61,6 +62,7 @@ const reducer = combineReducers({
     periodsEva: periodsEvaReducer,
     feedback: feedbackReducer,
     resultadoEvaluacion: resultadoEvaluacionReducer,
+    periodo:periodoReducer,
 });
 
 export default reducer;

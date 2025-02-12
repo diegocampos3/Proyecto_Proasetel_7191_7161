@@ -7,6 +7,9 @@ import CardMedia from '@mui/material/CardMedia';
 import Grid from '@mui/material/Grid';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
+import { useDispatch, useSelector } from 'react-redux';
+import React from 'react';
+import { useEffect } from 'react';
 
 // third party
 import { useTimer } from 'react-timer-hook';
@@ -14,8 +17,8 @@ import { useTimer } from 'react-timer-hook';
 // project imports
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import { ThemeMode } from 'config';
-
 import { gridSpacing } from 'store/constant';
+import { getPeriodos } from 'store/slices/periodo';
 
 // assets
 import imageGrid from 'assets/images/maintenance/img-soon-grid.svg';
@@ -87,13 +90,47 @@ const CardMediaPurple = styled('img')({
 
 // ===========================|| COMING SOON 2 ||=========================== //
 
-const ComingSoon2 = () => {
-    const theme = useTheme();
-    const time = new Date();
-    time.setSeconds(time.getSeconds() + 3600 * 24 * 2 - 3600 * 15.5);
+const ComingSoonConfig = () => {
 
-    const { seconds, minutes, hours, days } = useTimer({ expiryTimestamp: time });
- 
+    //para el control de la muestra segun fecha
+    const dispatch = useDispatch();
+    const theme = useTheme();
+    const { periodos, isLoading, error } = useSelector((state) => state.periodo);
+    const [tiempo, setTiempo] = React.useState(null);
+    const [isWithinPeriod, setIsWithinPeriod] = React.useState(false);
+
+    useEffect(() => {
+        dispatch(getPeriodos());
+    }, [dispatch]);
+
+    useEffect(() => {
+        if (!isLoading && periodos) {
+          const periodoActivo = periodos.find(periodo => periodo.estado === true);
+          
+    
+          if (periodoActivo) {
+            try {
+              const baseDate = new Date(periodoActivo.fecha_ini_config);              
+                setTiempo(baseDate);
+            } catch (error) {
+              console.error('Error al procesar fechas:', error);
+            }
+          }
+        }
+    }, [isLoading, periodos]);
+
+    //console.log('EEEEEEEEEEEEEEEEEEEee', tiempo)
+    const { seconds, minutes, hours, days, restart  } = useTimer({ expiryTimestamp: tiempo || new Date(), autoStart: false});
+
+    
+    React.useEffect(() => {
+        if (tiempo) {
+        const newTime = new Date(tiempo);
+        restart(newTime);
+        }
+    }, [tiempo, restart]);
+
+
     return (
         <ComingSoonCard>
             <CardContent>
@@ -162,4 +199,4 @@ const ComingSoon2 = () => {
     );
 };
 
-export default ComingSoon2;
+export default ComingSoonConfig;

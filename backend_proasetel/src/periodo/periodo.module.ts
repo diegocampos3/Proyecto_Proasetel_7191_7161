@@ -13,6 +13,11 @@ import { MessagesWsModule } from 'src/messages-ws/messages-ws.module';
     TypeOrmModule.forFeature([Periodo]),
     AuthModule,
     MessagesWsModule
-  ]
+  ],
+   exports: [
+      TypeOrmModule, 
+      PeriodoService, 
+    ],
+
 })
 export class PeriodoModule {}

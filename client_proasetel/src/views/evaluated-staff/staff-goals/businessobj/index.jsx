@@ -1,4 +1,5 @@
 import React from 'react';
+import { useEffect } from 'react';
 
 // material-ui
 import Button from '@mui/material/Button';
@@ -16,6 +17,8 @@ import { gridSpacing } from 'store/constant';
 import { dispatch, useSelector } from 'store';
 import { getBusinessObjDep } from 'store/slices/departmentobj';
 import FilterObjs from '../FilterObjs';
+import { getPeriodos } from 'store/slices/periodo';
+import ComingSoonConfig from 'views/pages/maintenance/ComingSoon/ComingSoonConfig';
 
 // assets
 import ExpandMoreRoundedIcon from '@mui/icons-material/ExpandMoreRounded';
@@ -70,6 +73,72 @@ const BusinessObj = () => {
             <BusinnesObjDetailsCard idbp={obj.idbp} id={obj.id} titulo={obj.titulo} descripcion={obj.descripcion} setListBusinessObj={setListBusinessObj} />
         </Grid>
     ));
+
+
+    //para manejo de comingsoonconfig
+
+    const [periodoElegido, setPeriodoElegido] = React.useState('');
+
+    //para el control de la muestra segun fecha
+    //const dispatch = useDispatch();
+    const { periodos, isLoading, error } = useSelector((state) => state.periodo);
+    const [isWithinPeriod, setIsWithinPeriod] = React.useState(false);
+
+    useEffect(() => {
+        dispatch(getPeriodos());
+    }, [dispatch]);
+
+    useEffect(() => {
+        if (!isLoading && periodos) {
+            const now = new Date();
+            const periodoActivo = periodos
+            .find(periodo => {
+                
+                const startDate = new Date(periodo.fecha_ini_config);
+                const endDate = new Date(periodo.fecha_fin_config);
+                // Debe retornar la combinación de ambas condiciones
+                return periodo.estado === true && now >= startDate && now <= endDate;
+            });
+
+            if (periodoActivo) {
+                setIsWithinPeriod(true);
+                setPeriodoElegido(periodoActivo);
+            } else {
+                setIsWithinPeriod(false);
+                setPeriodoElegido(null);
+            }
+        }
+    }, [isLoading, periodos]);
+
+    // const handleChange = (event, newValue) => {
+    //     setValue(newValue);
+    // };
+
+
+    if (isLoading) {
+        return (
+            <Grid container justifyContent="center" alignItems="center" style={{ minHeight: '100vh' }}>
+                <CircularProgress />
+            </Grid>
+        );
+    }
+
+    if (error) {
+        return (
+            <Grid container justifyContent="center" alignItems="center" style={{ minHeight: '100vh' }}>
+                <Typography variant="h4" color="error">
+                    Error cargando períodos: {error}
+                </Typography>
+            </Grid>
+        );
+    }
+
+    if (!isWithinPeriod) {
+        return (
+            <ComingSoonConfig/>
+        );
+    }
+    
 
     return (
         <MainCard

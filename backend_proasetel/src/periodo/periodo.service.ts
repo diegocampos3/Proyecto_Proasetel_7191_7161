@@ -7,6 +7,7 @@ import { fromZonedTime } from 'date-fns-tz';
 import { Not, Repository } from 'typeorm';
 import { validate as isUUID } from 'uuid'
 import { MessagesWsGateway } from 'src/messages-ws/messages-ws.gateway';
+import { PeriodoEvaluacion } from 'src/data-access/entities/periodoEvaluacion.entity';
 
 
 @Injectable()
@@ -18,6 +19,9 @@ export class PeriodoService {
     
     @InjectRepository(Periodo)
     private readonly periodoRepository: Repository<Periodo>,
+
+    // @InjectRepository(PeriodoEvaluacion)
+    // private readonly periodoEvaRepository: Repository<PeriodoEvaluacion>,
     
     private readonly messagesWsGateway: MessagesWsGateway  // Inyectamos el servicio de WebSocket
 
@@ -134,9 +138,11 @@ async  update(id: string, updatePeriodoDto: UpdatePeriodoDto) {
 
       await this.periodoRepository.save(periodo);
       return this.findAll();
+      //console.log('PERIODOOOOOOO', periodo)
+      //return periodo;
       
     } catch (error) {
-
+      //console.log('PERIODOOOOOOO')
       this.handleDBExceptions(error);
       
     }

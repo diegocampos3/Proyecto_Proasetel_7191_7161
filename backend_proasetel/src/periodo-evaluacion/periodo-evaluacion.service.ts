@@ -7,6 +7,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/data-access/entities/usuario.entity';
 import { isUUID } from 'class-validator';
 import { Formulario } from 'src/data-access/entities/formulario.entity';
+import { MessageBody } from '@nestjs/websockets';
+import { Periodo } from 'src/data-access/entities/periodo.entity';
 
 @Injectable()
 export class PeriodoEvaluacionService {
@@ -19,7 +21,10 @@ export class PeriodoEvaluacionService {
     private readonly periodoEvaRepository: Repository<PeriodoEvaluacion>,
 
     @InjectRepository(Formulario)
-    private readonly formularioRepository: Repository<Formulario>
+    private readonly formularioRepository: Repository<Formulario>,
+
+    @InjectRepository(Periodo)
+    private readonly periodoRepository: Repository<Periodo>,
     
   ){}
   
@@ -39,7 +44,7 @@ export class PeriodoEvaluacionService {
       }
   
       const periodoEva = this.periodoEvaRepository.create({
-        formulario: { idFormulario },
+        // formulario: { idFormulario },
         periodo: { idPeriodo }, 
         user,      
       });
@@ -95,25 +100,54 @@ export class PeriodoEvaluacionService {
   async update(id: string, updatePeriodoEvaluacionDto: UpdatePeriodoEvaluacionDto, user: User) {
     
     try {
-      if (!isUUID(id)) {
-        throw new BadRequestException('El ID de periodo no es válido');
-      }
+      // if (!isUUID(id)) {
+      //   throw new BadRequestException('El ID de periodo no es válido');
+      // }
   
-      const periodoEva = await this.periodoEvaRepository.findOne({ where: { idPeriodoEva: id } });
-      if (!periodoEva) {
-        throw new BadRequestException('No se encontró la evaluación de periodo con ese ID');
-      }
-  
-      const updatedPeriodoEva = Object.assign(periodoEva, updatePeriodoEvaluacionDto);
-      
-      updatedPeriodoEva.user = user;
+      // const periodoEva = await this.periodoEvaRepository.findOne({ where: { idPeriodoEva: id } });
+      // if (!periodoEva) {
+      //   throw new BadRequestException('No se encontró la evaluación de periodo con ese ID');
+      // }
 
-      await this.periodoEvaRepository.save(updatedPeriodoEva);
+
+      const formulario = await this.formularioRepository.findOne({
+        where: { idFormulario: updatePeriodoEvaluacionDto.idFormulario}
+      })
+
+      const periodo = await this.periodoRepository.findOne({
+        where: { idPeriodo: updatePeriodoEvaluacionDto.idPeriodo },
+      });
   
-      return updatedPeriodoEva;
+      const periodoEva = await this.periodoEvaRepository.preload({
+        idPeriodoEva: id,
+        periodo,
+        formulario,
+        ...updatePeriodoEvaluacionDto
+      });
+
+      console.log('baaaaaaaaaccccckkkkkkkkkk',periodoEva)
+
+      if (!periodoEva) {
+        throw new NotFoundException(`Periodo con id ${id} no encontrado`);
+      }
+
+      // const updatedPeriodoEva = Object.assign(periodoEva, updatePeriodoEvaluacionDto);
+      
+      // updatedPeriodoEva.user = user;
+      // updatedPeriodoEva.periodo = periodo;
+
+
+      await this.periodoEvaRepository.save(periodoEva);
+      return periodoEva;
+
+      // await this.periodoEvaRepository.save(updatedPeriodoEva);
+      // console.log('baaaaaaaaaccccckkkkkkkkkk',updatedPeriodoEva)
+  
+      // return updatedPeriodoEva;
 
     } catch (error) {
-      throw new InternalServerErrorException('Error al actualizar la evaluación de periodo');
+      //throw new InternalServerErrorException('Error al actualizar la evaluación de Periodo');
+      throw error.MessageBody;
     }
   }
   

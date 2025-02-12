@@ -26,7 +26,7 @@ export class PeriodoController {
   }
 
   @Patch(':id')
-  @Auth(ValidRoles.admin)
+  @Auth(ValidRoles.admin, ValidRoles.empleado)
   update(@Param('id') id: string, @Body() updatePeriodoDto: UpdatePeriodoDto) {
     return this.periodoService.update(id, updatePeriodoDto);
   }

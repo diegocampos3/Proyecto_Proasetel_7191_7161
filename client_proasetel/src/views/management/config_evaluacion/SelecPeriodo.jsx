@@ -13,22 +13,23 @@ import { Snackbar, Alert } from '@mui/material';
 // project imports
 import { gridSpacing } from 'store/constant';
 import { getFormularios, useUpdateFormulario } from 'store/slices/formulario';
+import { getPeriodos, updatePeriodo } from 'store/slices/periodo';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogActions from '@mui/material/DialogActions';
-import { getPeriodsEva, updatePeriodoEva } from 'store/slices/periodsEva';
+import { createPeriodoEva } from 'store/slices/periodsEva';
 
 
 // ==============================|| PROFILE 2 - BILLING ||============================== //
 
-const Billing = ({periodoElegido}) => {
-    console.log('Periodo seleccionado:', periodoElegido);
+const SelecPeriodo = ({ setPeriodoElegido, periodoElegido }) => {
     const [city, setCity] = React.useState('1');
 
-    const[formulario,setFormulario]= React.useState(''); 
+    // const[formulario,setFormulario]= React.useState(''); 
+    const [periodo, setPeriodo] = React.useState('');
 
     //fuera para el guardado del formulario seleccionado
     const dispatch = useDispatch();
@@ -43,9 +44,14 @@ const Billing = ({periodoElegido}) => {
     const handleSnackbarClose = () => setSnackbarOpen(false);
 
 
+    // const handleChangeCity = (event) => {
+    //     // setCity(event.target.value);
+    //     setFormulario(event.target.value);
+    // };
+
     const handleChangeCity = (event) => {
         // setCity(event.target.value);
-        setFormulario(event.target.value);
+        setPeriodo(event.target.value);
     };
 
     const [Country, setCountry] = React.useState('1');
@@ -61,18 +67,32 @@ const Billing = ({periodoElegido}) => {
     };
 
     //traer los formularios
-    const { formularios } = useSelector((state) => state.formulario)
-    const [listFormularios, setListFormularios] = useState([]) 
+    // const { formularios } = useSelector((state) => state.formulario)
+    // const [listFormularios, setListFormularios] = useState([]) 
 
+    //traer los periodos
+    const { periodos } = useSelector((state) => state.periodo)
+    const [listPeriodos, setListPeriodos] = useState([])
+
+    //para periodoeva
+    const { periodsEva } = useSelector((state) => state.periodsEva)
     
+    // useEffect(() => {
+    //     setListFormularios(formularios.filter((formulario) => formulario.estado === 1));
+    // }, [formularios]);
+
     useEffect(() => {
-        setListFormularios(formularios.filter((formulario) => formulario.estado === 1));
-    }, [formularios]);
+        setListPeriodos(periodos.filter((periodo) => periodo.estado === null));
+    }, [periodos]);
 
     //console.log('aaaaaaa', listFormularios)
 
+    // useEffect(() => {
+    //     dispatch(getFormularios());
+    // }, []);
+
     useEffect(() => {
-        dispatch(getFormularios());
+        dispatch(getPeriodos());
     }, []);
 
     // const handleGuardar = () => {
@@ -106,46 +126,40 @@ const Billing = ({periodoElegido}) => {
     };
 
     // Obtener el nombre del formulario seleccionado
-    const selectedFormulario = listFormularios.find((f) => f.idFormulario === formulario);
-    
-    const {periodsEva} = useSelector((state) => state.periodsEva)
+    // const selectedFormulario = listFormularios.find((f) => f.idFormulario === formulario);
+    const selectedPeriodo = listPeriodos.find((f) => f.idPeriodo === periodo);
 
-    console.log("aaaatttttttttttt", periodsEva)
     const handleGuardar = async () => {
-        if (formulario) {
+        //if (formulario) {
+        if (periodo) {
+            
             const updateFormularioDto = { estado: 2 }; // Solo actualizamos el estado a 2
-            const result = await updateFormulario(formulario, updateFormularioDto); // Usar la función del hook
+            const updatePeriodoDto = { estado: true };
+            const result = await dispatch(updatePeriodo(periodo, updatePeriodoDto)); // Usar la función del hook
+            // console.log('updatePeriodoDto', updatePeriodoDto)
+            
+            const periodoEva = {idPeriodo: periodo};
 
             if (result.success) {
                 // Si la actualización fue exitosa, actualizar la lista de formularios
-                dispatch(getFormularios());              
-
-                // const idPeriodoEva = await dispatch(getPeriodsEva()).filter(item => item.periodo === periodoElegido) // Usa la constante importada
-                // .map(item => item.idPeriodoEva);
-
-                await dispatch(getPeriodsEva());
-                // const idPeriodoEva = periodsEva.filter(item => item.periodo.idPeriodo === periodoElegido);//.map(item => item.idPeriodoEva);
-                const idPeriodoEva = periodsEva.find(item => item.periodo.idPeriodo === periodoElegido)?.idPeriodoEva || null;
-                // const finalIdPeriodoEva = idPeriodoEva.idPeriodoEva
+                dispatch(getPeriodos());
                 
-
-                //console.log('periodoEvaaaa', idPeriodoEva)
-
-                const resultado2 = await dispatch(updatePeriodoEva(idPeriodoEva,{idFormulario:formulario}));
-                // console.log('periodoELEGIDOOOOOOO', periodoElegido)
+                setPeriodoElegido(periodo);
+                
+                const resultado2 = await dispatch(createPeriodoEva(periodoEva));
                 if(resultado2.success){
-                    //console.log('BIEEEEEEEEEEEEEEEEENN FORMULARIO')
-                } 
+                    console.log('BIEEEEEEEEEEEEEEEEEEEEEEN')
+                }
                 else{
                     console.error("error", resultado2.error)
                 }
 
-                setFormulario(''); // Limpiar la selección
-                setSnackbarMessage('Formulario definido satisfactoriamente para este Periodo');
+                setPeriodo(''); // Limpiar la selección
+                setSnackbarMessage('Periodo seleccionado satisfactoriamente');
                 setSnackbarSeverity('success');
                 setSnackbarOpen(true);
             } else {
-                console.error('Error al actualizar el formulario:', result.error);
+                console.error('Error al actualizar el periodo:', result.error);
             }
 
         }
@@ -158,10 +172,10 @@ const Billing = ({periodoElegido}) => {
         <Grid container spacing={gridSpacing}>
 
             <Grid item xs={12} sm={12}>
-                <TextField id="standard-select-category" select label="Seleccione un formulario" value={formulario} fullWidth onChange={handleChangeCity}>
-                    {listFormularios.map((option) => (
-                        <MenuItem key={option.idFormulario} value={option.idFormulario}>
-                            {option.nombre}
+                <TextField id="standard-select-category" select label="Seleccione un Periodo" value={periodo} fullWidth onChange={handleChangeCity}>
+                    {listPeriodos.map((option) => (
+                        <MenuItem key={option.idPeriodo} value={option.idPeriodo}>
+                            {option.titulo}
                         </MenuItem>
                     ))}
                 </TextField>
@@ -172,7 +186,7 @@ const Billing = ({periodoElegido}) => {
                     variant="contained" 
                     color="primary" 
                     onClick={handleConfirmGuardar}
-                    disabled={!formulario}
+                    disabled={!periodo}
                 >
                     Guardar
                 </Button>
@@ -188,8 +202,8 @@ const Billing = ({periodoElegido}) => {
                 <DialogTitle id="confirm-dialog-title">Confirmar acción</DialogTitle>
                 <DialogContent>
                     <DialogContentText id="confirm-dialog-description">
-                        ¿Está seguro de que desea establecer el formulario{' '}
-                        <strong>{selectedFormulario?.nombre}</strong> como definitivo para este período de evaluación?
+                        ¿Está seguro de que desea seleccionar el Periodo{' '}
+                        <strong>{selectedPeriodo?.titulo}</strong> como definitivo?
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>
@@ -215,4 +229,4 @@ const Billing = ({periodoElegido}) => {
     );
 };
 
-export default Billing;
+export default SelecPeriodo;
